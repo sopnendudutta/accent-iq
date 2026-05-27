@@ -6,31 +6,36 @@ import compression from "compression";
 import rateLimit from "express-rate-limit";
 
 import { env } from "./config/env";
-import healthRoutes from "./routes/health.routes";
-import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
-import { success } from "zod";
 import apiRoutes from "./routes";
+import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 
 const app = express();
+
 app.use(helmet());
 
+app.use(
+    cors({
+        origin: env.CORS_ORIGIN,
+        credentials: true,
+    })
+);
 
-app.use("/api/v1", apiRoutes);
-
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
-
-app.use(rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 1000,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: {
-        success: false,
-        Message: "Too many requests.Please try again later."
-    }
-}));
+app.use(
+    rateLimit({
+        windowMs: 15 * 60 * 1000,
+        limit: 1000,
+        standardHeaders: true,
+        legacyHeaders: false,
+        message: {
+            success: false,
+            message: "Too many requests. Please try again later.",
+        },
+    })
+);
 
 app.use(compression());
+
+// Very important: keep this before routes
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -38,7 +43,7 @@ if (env.NODE_ENV === "development") {
     app.use(morgan("dev"));
 }
 
-app.use("/api/v1", healthRoutes);
+app.use("/api/v1", apiRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
