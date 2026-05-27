@@ -9,9 +9,13 @@ import { env } from "./config/env";
 import healthRoutes from "./routes/health.routes";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 import { success } from "zod";
+import apiRoutes from "./routes";
 
 const app = express();
 app.use(helmet());
+
+
+app.use("/api/v1", apiRoutes);
 
 app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
 
@@ -34,7 +38,7 @@ if (env.NODE_ENV === "development") {
     app.use(morgan("dev"));
 }
 
-app.use("/api", healthRoutes);
+app.use("/api/v1", healthRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
