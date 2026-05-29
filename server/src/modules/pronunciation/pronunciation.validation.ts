@@ -14,6 +14,12 @@ export const analyzePronunciationSchema = z.object({
     }),
 });
 
+export const pronunciationHistoryIdSchema = z.object({
+    params: z.object({
+        id: z.string().min(1, "History id is required"),
+    }),
+});
+
 export type AnalyzePronunciationInput = z.infer<
     typeof analyzePronunciationSchema
 >["body"];

@@ -30,7 +30,8 @@ export const pronunciationService = {
     ): Promise<PronunciationResult> => {
         const { text, accent } = payload;
 
-        const result = mockPronunciationData(text, accent as Accent);
+        const accentValue = accent as Accent;
+        const result = mockPronunciationData(text, accentValue);
 
         let saved = false;
 
@@ -38,7 +39,7 @@ export const pronunciationService = {
             await prisma.pronunciationHistory.create({
                 data: {
                     text,
-                    accent: accent as Accent,
+                    accent: accentValue,
                     phonetic: result.phonetic,
                     syllables: result.syllables,
                     tips: result.tips,
@@ -51,11 +52,52 @@ export const pronunciationService = {
 
         return {
             text,
-            accent: accent as Accent,
+            accent: accentValue,
             phonetic: result.phonetic,
             syllables: result.syllables,
             tips: result.tips,
             saved,
         };
+    },
+
+    getHistory: async (userId: string) => {
+        return prisma.pronunciationHistory.findMany({
+            where: {
+                userId,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+    },
+
+    getHistoryById: async (historyId: string, userId: string) => {
+        return prisma.pronunciationHistory.findFirst({
+            where: {
+                id: historyId,
+                userId,
+            },
+        });
+    },
+
+    deleteHistoryById: async (historyId: string, userId: string) => {
+        const historyItem = await prisma.pronunciationHistory.findFirst({
+            where: {
+                id: historyId,
+                userId,
+            },
+        });
+
+        if (!historyItem) {
+            return null;
+        }
+
+        await prisma.pronunciationHistory.delete({
+            where: {
+                id: historyId,
+            },
+        });
+
+        return historyItem;
     },
 };
