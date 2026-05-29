@@ -1,19 +1,29 @@
 import { z } from "zod";
+import {
+    PRONUNCIATION_ACCENTS,
+    PRONUNCIATION_INPUT_TYPES,
+    PRONUNCIATION_MAX_TEXT_LENGTH,
+} from "./pronunciation.constants";
 
 export const analyzePronunciationSchema = z.object({
     body: z
         .object({
-            inputType: z.enum(["TEXT", "VOICE"], {
-                message: "Input type must be TEXT or VOICE",
-            }).default("TEXT"),
+            inputType: z
+                .enum(PRONUNCIATION_INPUT_TYPES, {
+                    message: "Input type must be TEXT or VOICE",
+                })
+                .default("TEXT"),
 
             text: z
                 .string()
                 .trim()
-                .max(200, "Text must be less than 200 characters")
+                .max(
+                    PRONUNCIATION_MAX_TEXT_LENGTH,
+                    `Text must be less than ${PRONUNCIATION_MAX_TEXT_LENGTH} characters`
+                )
                 .optional(),
 
-            accent: z.enum(["US", "UK", "AUSTRALIAN", "INDIAN"], {
+            accent: z.enum(PRONUNCIATION_ACCENTS, {
                 message: "Accent must be US, UK, AUSTRALIAN, or INDIAN",
             }),
         })

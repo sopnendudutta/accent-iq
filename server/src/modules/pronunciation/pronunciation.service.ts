@@ -1,7 +1,7 @@
 import { Accent, Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import { AnalyzePronunciationInput } from "./pronunciation.validation";
-
+import { PRONUNCIATION_OPTIONS } from "./pronunciation.constants";
 type InputType = "TEXT" | "VOICE";
 
 type PronunciationAnalysis = {
@@ -141,65 +141,7 @@ const getMockPronunciationData = (
 
 export const pronunciationService = {
     getOptions: async () => {
-        return {
-            accents: [
-                {
-                    value: "US",
-                    label: "American English",
-                    exampleWord: "schedule",
-                    examplePronunciation: "SKEH-jool",
-                    enabled: true,
-                },
-                {
-                    value: "UK",
-                    label: "British English",
-                    exampleWord: "schedule",
-                    examplePronunciation: "SHED-yool",
-                    enabled: true,
-                },
-                {
-                    value: "AUSTRALIAN",
-                    label: "Australian English",
-                    exampleWord: "schedule",
-                    examplePronunciation: "SHED-yool",
-                    enabled: true,
-                },
-                {
-                    value: "INDIAN",
-                    label: "Indian English",
-                    exampleWord: "schedule",
-                    examplePronunciation: "SKEH-jool",
-                    enabled: true,
-                },
-            ],
-
-            inputTypes: [
-                {
-                    value: "TEXT",
-                    label: "Text input",
-                    enabled: true,
-                },
-                {
-                    value: "VOICE",
-                    label: "Voice input",
-                    enabled: false,
-                    message: "Voice input is planned but not enabled yet.",
-                },
-            ],
-
-            limits: {
-                maxTextLength: 200,
-            },
-
-            features: {
-                guestAnalysis: true,
-                loggedInHistory: true,
-                voiceInput: false,
-                audioScoring: false,
-                favorites: false,
-                progressTracking: false,
-            },
-        };
+        return PRONUNCIATION_OPTIONS;
     }
     ,
     analyzePronunciation: async (
