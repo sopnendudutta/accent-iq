@@ -7,6 +7,25 @@ import {
 } from "./pronunciation.validation";
 
 export const pronunciationController = {
+
+    getOptions: async (
+        req: OptionalAuthRequest,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const options = await pronunciationService.getOptions();
+
+            res.status(200).json({
+                success: true,
+                message: "Pronunciation options fetched successfully",
+                data: options,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+    ,
     analyzePronunciation: async (
         req: OptionalAuthRequest,
         res: Response,

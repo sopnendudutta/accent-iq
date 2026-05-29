@@ -4,7 +4,7 @@ import { authMiddleware } from "../../middleware/auth.middleware";
 import { pronunciationController } from "./pronunciation.controller";
 
 const router = Router();
-
+router.get("/options", pronunciationController.getOptions);
 router.post(
     "/analyze",
     optionalAuth,
