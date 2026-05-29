@@ -17,6 +17,8 @@ model User {
   providerAccountId String?
   passwordHash      String?
 
+  pronunciationHistory PronunciationHistory[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -27,4 +29,28 @@ enum AuthProvider {
   GOOGLE
   META
   EMAIL
+}
+
+enum Accent {
+  US
+  UK
+  AUSTRALIAN
+  INDIAN
+}
+
+model PronunciationHistory {
+  id String @id @default(cuid())
+
+  text   String
+  accent Accent
+
+  phonetic  String?
+  syllables Json?
+  tips      Json?
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
