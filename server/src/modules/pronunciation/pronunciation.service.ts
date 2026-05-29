@@ -1,25 +1,126 @@
-import { Accent } from "@prisma/client";
+import { Accent, Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import { AnalyzePronunciationInput } from "./pronunciation.validation";
 
-type PronunciationResult = {
+type PronunciationAnalysis = {
     text: string;
+    normalizedText: string;
     accent: Accent;
-    phonetic: string;
-    syllables: string[];
-    tips: string[];
+    pronunciation: {
+        phonetic: string;
+        ipa: string;
+        syllables: string[];
+        stressPattern: string;
+    };
+    guidance: {
+        mouthTip: string;
+        commonMistake: string;
+        tips: string[];
+    };
+    practice: {
+        slowPractice: string;
+        exampleSentence: string;
+        repeatCount: number;
+    };
+};
+
+type PronunciationResult = PronunciationAnalysis & {
     saved: boolean;
 };
 
-const mockPronunciationData = (text: string, accent: Accent) => {
+const getMockPronunciationData = (
+    text: string,
+    accent: Accent
+): PronunciationAnalysis => {
+    const normalizedText = text.trim().toLowerCase();
+
+    if (normalizedText === "schedule") {
+        const accentMap = {
+            US: {
+                phonetic: "SKEH-jool",
+                ipa: "/ˈskedʒuːl/",
+                syllables: ["SKEH", "jool"],
+                stressPattern: "First syllable stress",
+                mouthTip: "Start with a clear SK sound.",
+            },
+            UK: {
+                phonetic: "SHED-yool",
+                ipa: "/ˈʃedjuːl/",
+                syllables: ["SHED", "yool"],
+                stressPattern: "First syllable stress",
+                mouthTip: "Start with a soft SH sound.",
+            },
+            AUSTRALIAN: {
+                phonetic: "SHED-yool",
+                ipa: "/ˈʃedjuːl/",
+                syllables: ["SHED", "yool"],
+                stressPattern: "First syllable stress",
+                mouthTip: "Use a relaxed SH sound at the beginning.",
+            },
+            INDIAN: {
+                phonetic: "SKEH-jool",
+                ipa: "/ˈskedʒuːl/",
+                syllables: ["SKEH", "jool"],
+                stressPattern: "First syllable stress",
+                mouthTip: "Keep the first syllable clear and avoid rushing the ending.",
+            },
+        };
+
+        const selected = accentMap[accent];
+
+        return {
+            text,
+            normalizedText,
+            accent,
+            pronunciation: {
+                phonetic: selected.phonetic,
+                ipa: selected.ipa,
+                syllables: selected.syllables,
+                stressPattern: selected.stressPattern,
+            },
+            guidance: {
+                mouthTip: selected.mouthTip,
+                commonMistake: "Avoid saying the word too flat or too fast.",
+                tips: [
+                    "Say the first syllable clearly.",
+                    "Pause slightly between syllables while practicing.",
+                    "Repeat slowly first, then increase your speed naturally.",
+                ],
+            },
+            practice: {
+                slowPractice: selected.syllables.join(" ... "),
+                exampleSentence: "I need to check my schedule.",
+                repeatCount: 5,
+            },
+        };
+    }
+
+    const syllables = normalizedText.split(/[\s-]+/).filter(Boolean);
+
     return {
-        phonetic: `${text} pronunciation for ${accent}`,
-        syllables: text.split(/[\s-]+/),
-        tips: [
-            `Practice saying "${text}" slowly first.`,
-            `Focus on clear mouth movement for ${accent} pronunciation.`,
-            "Repeat the word multiple times and compare your sound.",
-        ],
+        text,
+        normalizedText,
+        accent,
+        pronunciation: {
+            phonetic: `${text} pronunciation for ${accent}`,
+            ipa: "IPA will be generated later",
+            syllables,
+            stressPattern: "Stress pattern will be generated later",
+        },
+        guidance: {
+            mouthTip: `Focus on clear mouth movement for ${accent} pronunciation.`,
+            commonMistake: "Avoid rushing the word.",
+            tips: [
+                `Practice saying "${text}" slowly first.`,
+                `Focus on clarity for ${accent} pronunciation.`,
+                "Repeat the word multiple times and compare your sound.",
+            ],
+        },
+        practice: {
+            slowPractice: syllables.join(" ... "),
+            exampleSentence: `Practice using "${text}" in a simple sentence.`,
+            repeatCount: 5,
+        },
     };
 };
 
@@ -31,7 +132,8 @@ export const pronunciationService = {
         const { text, accent } = payload;
 
         const accentValue = accent as Accent;
-        const result = mockPronunciationData(text, accentValue);
+
+        const analysisResult = getMockPronunciationData(text, accentValue);
 
         let saved = false;
 
@@ -40,9 +142,10 @@ export const pronunciationService = {
                 data: {
                     text,
                     accent: accentValue,
-                    phonetic: result.phonetic,
-                    syllables: result.syllables,
-                    tips: result.tips,
+                    phonetic: analysisResult.pronunciation.phonetic,
+                    syllables: analysisResult.pronunciation.syllables,
+                    tips: analysisResult.guidance.tips,
+                    result: analysisResult as Prisma.InputJsonValue,
                     userId,
                 },
             });
@@ -51,11 +154,7 @@ export const pronunciationService = {
         }
 
         return {
-            text,
-            accent: accentValue,
-            phonetic: result.phonetic,
-            syllables: result.syllables,
-            tips: result.tips,
+            ...analysisResult,
             saved,
         };
     },

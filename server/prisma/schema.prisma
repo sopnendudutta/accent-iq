@@ -47,6 +47,7 @@ model PronunciationHistory {
   phonetic  String?
   syllables Json?
   tips      Json?
+  history   Json?
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
