@@ -1,0 +1,49 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules/
+server/node_modules/
+client/node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+server/dist/
+client/dist/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+server/.env
+server/.env.local
+client/.env
+client/.env.local
+
+# Prisma generated files
+generated/
+server/generated/
+src/generated/
+server/src/generated/
+node_modules/.prisma/
+
+# Vite / local files
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

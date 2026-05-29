@@ -2,12 +2,12 @@ import { Router } from "express";
 
 const router = Router();
 
-router.get("/health", (req, res) => {
+router.get("/", (req, res) => {
     res.status(200).json({
         success: true,
-        service: "accentIQ API",
+        message: "AccentIQ backend is running",
+        service: "AccentIQ API",
         status: "ok",
-        database: "not connected yet"
     });
 });
 
