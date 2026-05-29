@@ -1,21 +1,53 @@
-import type { ErrorRequestHandler, RequestHandler } from "express";
+import { Request, Response, NextFunction } from "express";
+import { ZodError } from "zod";
+import { Prisma } from "@prisma/client";
+import { AppError } from "../utils/appError";
 
-type AppError = Error & {
-    statusCode?: number;
+export const notFoundHandler = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    next(new AppError(`Route not found: ${req.originalUrl}`, 404));
 };
 
-export const notFoundHandler: RequestHandler = (req, res) => {
-    res.status(404).json({
-        success: false,
-        message: `Route not found: ${req.method} ${req.originalUrl}`
-    });
-};
+export const errorHandler = (
+    error: unknown,
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    console.error(error);
 
-export const errorHandler: ErrorRequestHandler = (err: AppError, _req, res, _next) => {
-    const statusCode = err.statusCode || 500;
+    if (error instanceof AppError) {
+        return res.status(error.statusCode).json({
+            success: false,
+            message: error.message,
+        });
+    }
 
-    res.status(statusCode).json({
+    if (error instanceof ZodError) {
+        return res.status(400).json({
+            success: false,
+            message: "Validation failed",
+            errors: error.issues.map((issue) => ({
+                path: issue.path.join("."),
+                message: issue.message,
+            })),
+        });
+    }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2002") {
+            return res.status(409).json({
+                success: false,
+                message: "Duplicate value already exists",
+            });
+        }
+    }
+
+    return res.status(500).json({
         success: false,
-        message: err.message || "Internal server error"
+        message: "Internal server error",
     });
 };

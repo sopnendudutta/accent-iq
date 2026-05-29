@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { AuthProvider } from "@prisma/client";
 import { prisma } from "../config/prisma";
 import { generateToken } from "../utils/jwt";
+import { AppError } from "../utils/appError";
 
 type RegisterInput = {
     name?: string;
@@ -29,7 +30,7 @@ export const register = async (input: RegisterInput) => {
     });
 
     if (existingUser) {
-        throw new Error("User with this email already exists");
+        throw new AppError("User with this email already exists", 409);
     }
 
     const passwordHash = await bcrypt.hash(input.password, SALT_ROUNDS);
@@ -74,7 +75,7 @@ export const login = async (input: LoginInput) => {
     });
 
     if (!user || user.provider !== AuthProvider.EMAIL || !user.passwordHash) {
-        throw new Error("Invalid email or password");
+        throw new AppError("Invalid email or password", 401);
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -83,7 +84,7 @@ export const login = async (input: LoginInput) => {
     );
 
     if (!isPasswordValid) {
-        throw new Error("Invalid email or password");
+        throw new AppError("Invalid email or password", 401);
     }
 
     const token = generateToken({
@@ -114,7 +115,7 @@ export const getMe = async (userId: string) => {
     });
 
     if (!user) {
-        throw new Error("User not found");
+        throw new AppError("User not found", 404);
     }
 
     return removeSensitiveUserFields(user);
