@@ -380,8 +380,7 @@ Completed in Chat 7:
 - [x] Voice placeholder added
 - [x] Pronunciation options endpoint added
 - [x] Pronunciation constants centralized
-- [x] Pronunciation API documentation added
-- [x] Pronunciation testing checklist added
+
 
 Not started yet:
 
