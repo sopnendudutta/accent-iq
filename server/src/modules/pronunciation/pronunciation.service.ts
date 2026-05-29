@@ -2,7 +2,10 @@ import { Accent, Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import { AnalyzePronunciationInput } from "./pronunciation.validation";
 
+type InputType = "TEXT" | "VOICE";
+
 type PronunciationAnalysis = {
+    inputType: InputType;
     text: string;
     normalizedText: string;
     accent: Accent;
@@ -30,12 +33,22 @@ type PronunciationResult = PronunciationAnalysis & {
 
 const getMockPronunciationData = (
     text: string,
-    accent: Accent
+    accent: Accent,
+    inputType: InputType
 ): PronunciationAnalysis => {
     const normalizedText = text.trim().toLowerCase();
 
     if (normalizedText === "schedule") {
-        const accentMap = {
+        const accentMap: Record<
+            Accent,
+            {
+                phonetic: string;
+                ipa: string;
+                syllables: string[];
+                stressPattern: string;
+                mouthTip: string;
+            }
+        > = {
             US: {
                 phonetic: "SKEH-jool",
                 ipa: "/ˈskedʒuːl/",
@@ -69,6 +82,7 @@ const getMockPronunciationData = (
         const selected = accentMap[accent];
 
         return {
+            inputType,
             text,
             normalizedText,
             accent,
@@ -98,6 +112,7 @@ const getMockPronunciationData = (
     const syllables = normalizedText.split(/[\s-]+/).filter(Boolean);
 
     return {
+        inputType,
         text,
         normalizedText,
         accent,
@@ -129,17 +144,23 @@ export const pronunciationService = {
         payload: AnalyzePronunciationInput,
         userId?: string
     ): Promise<PronunciationResult> => {
-        const { text, accent } = payload;
+        const { text, accent, inputType } = payload;
 
         const accentValue = accent as Accent;
+        const inputTypeValue = inputType as InputType;
 
-        const analysisResult = getMockPronunciationData(text, accentValue);
+        const analysisResult = getMockPronunciationData(
+            text,
+            accentValue,
+            inputTypeValue
+        );
 
         let saved = false;
 
         if (userId) {
             await prisma.pronunciationHistory.create({
                 data: {
+                    inputType: inputTypeValue,
                     text,
                     accent: accentValue,
                     phonetic: analysisResult.pronunciation.phonetic,

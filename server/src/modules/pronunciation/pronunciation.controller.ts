@@ -17,6 +17,13 @@ export const pronunciationController = {
                 body: req.body,
             });
 
+            if (validatedData.body.inputType === "VOICE") {
+                return res.status(501).json({
+                    success: false,
+                    message: "Voice pronunciation input is planned but not enabled yet. Use TEXT input for now.",
+                });
+            }
+
             const result = await pronunciationService.analyzePronunciation(
                 validatedData.body,
                 req.user?.id

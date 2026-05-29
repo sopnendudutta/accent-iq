@@ -41,17 +41,24 @@ enum Accent {
 model PronunciationHistory {
   id String @id @default(cuid())
 
+  inputType PronunciationInputType @default(TEXT)
+
   text   String
   accent Accent
 
   phonetic  String?
   syllables Json?
   tips      Json?
-  history   Json?
+  result    Json?
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum PronunciationInputType {
+  TEXT
+  VOICE
 }
