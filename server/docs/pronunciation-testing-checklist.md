@@ -383,3 +383,13 @@ Completed in Chat 7:
 - [x] Pronunciation API documentation added
 - [x] Pronunciation testing checklist added
 
+Not started yet:
+
+- [ ] Frontend
+- [ ] Real AI pronunciation generation
+- [ ] Real voice/audio upload
+- [ ] Speech-to-text
+- [ ] Audio pronunciation scoring
+- [ ] Favorites
+- [ ] Progress tracking
+- [ ] User personalization
