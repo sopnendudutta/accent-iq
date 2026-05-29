@@ -9,4 +9,5 @@ we are planning simple ui/ux for better experience !
 ## Base URL
 
 ```txt
+voice / text is been currently developed and research for better alternatives are being suggested 
 http://localhost:5000/api/v1/pronunciation
