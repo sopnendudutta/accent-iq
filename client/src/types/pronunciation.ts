@@ -38,3 +38,39 @@ export type PronunciationOptionsResponse = {
     message: string;
     data: PronunciationOptions;
 };
+
+export type PronunciationAnalyzeRequest = {
+    text: string;
+    accent: string;
+    inputType: string;
+};
+
+export type PronunciationResultData = {
+    inputType: string;
+    text: string;
+    normalizedText: string;
+    accent: string;
+    pronunciation: {
+        phonetic: string;
+        ipa: string;
+        syllables: string[];
+        stressPattern: string;
+    };
+    guidance: {
+        mouthTip: string;
+        commonMistake: string;
+        tips: string[];
+    };
+    practice: {
+        slowPractice: string;
+        exampleSentence: string;
+        repeatCount: number;
+    };
+    saved: boolean;
+};
+
+export type PronunciationAnalyzeResponse = {
+    success: boolean;
+    message: string;
+    data: PronunciationResultData;
+};
