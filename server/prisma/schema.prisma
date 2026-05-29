@@ -9,13 +9,18 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  imageUrl  String?
-  provider  AuthProvider
+  id                String       @id @default(cuid())
+  name              String?
+  email             String       @unique
+  imageUrl          String?
+  provider          AuthProvider @default(EMAIL)
+  providerAccountId String?
+  passwordHash      String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([provider, providerAccountId])
 }
 
 enum AuthProvider {

@@ -7,6 +7,7 @@ import rateLimit from "express-rate-limit";
 
 import { env } from "./config/env";
 import apiRoutes from "./routes";
+import authRoutes from "./routes/auth.routes";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
 
 const app = express();
@@ -35,16 +36,21 @@ app.use(
 
 app.use(compression());
 
-// Very important: keep this before routes
-app.use(express.json({ limit: "10kb" }));
-app.use(express.urlencoded({ extended: true }));
-
 if (env.NODE_ENV === "development") {
     app.use(morgan("dev"));
 }
 
-app.use("/api/v1", apiRoutes);
+// Body parsers must come BEFORE routes
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true }));
 
+
+
+// Routes
+app.use("/api/v1", apiRoutes);
+app.use("/api/v1/auth", authRoutes);
+
+// Error handlers
 app.use(notFoundHandler);
 app.use(errorHandler);
 
