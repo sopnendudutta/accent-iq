@@ -1,4 +1,10 @@
 import type {
+    AuthResponse,
+    LoginRequest,
+    RegisterRequest,
+} from "../types/auth";
+
+import type {
     PronunciationAnalyzeRequest,
     PronunciationAnalyzeResponse,
     PronunciationOptionsResponse,
@@ -41,6 +47,46 @@ export async function analyzePronunciation(
 
     if (!response.ok) {
         throw new Error(data.message || "Failed to analyze pronunciation");
+    }
+
+    return data;
+}
+
+export async function registerUser(
+    payload: RegisterRequest
+): Promise<AuthResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/register`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Registration failed");
+    }
+
+    return data;
+}
+
+export async function loginUser(payload: LoginRequest): Promise<AuthResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Login failed");
     }
 
     return data;
