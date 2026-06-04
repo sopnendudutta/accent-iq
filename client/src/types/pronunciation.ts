@@ -74,3 +74,20 @@ export type PronunciationAnalyzeResponse = {
     message: string;
     data: PronunciationResultData;
 };
+
+export type PronunciationHistoryItem = {
+    id: string;
+    text: string;
+    accent: string;
+    phonetic?: string | null;
+    syllables?: string[] | null;
+    tips?: string[] | null;
+    userId?: string | null;
+    createdAt: string;
+};
+
+export type PronunciationHistoryResponse = {
+    success: boolean;
+    message: string;
+    data: PronunciationHistoryItem[];
+};

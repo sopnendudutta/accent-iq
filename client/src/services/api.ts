@@ -10,6 +10,7 @@ import type {
 import type {
     PronunciationAnalyzeRequest,
     PronunciationAnalyzeResponse,
+    PronunciationHistoryResponse,
     PronunciationOptionsResponse,
 } from "../types/pronunciation";
 
@@ -38,11 +39,19 @@ export async function getPronunciationOptions(): Promise<PronunciationOptionsRes
 export async function analyzePronunciation(
     payload: PronunciationAnalyzeRequest
 ): Promise<PronunciationAnalyzeResponse> {
+    const token = localStorage.getItem("accentiq_token");
+
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+    };
+
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}/api/v1/pronunciation/analyze`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify(payload),
     });
 
@@ -50,6 +59,29 @@ export async function analyzePronunciation(
 
     if (!response.ok) {
         throw new Error(data.message || "Failed to analyze pronunciation");
+    }
+
+    return data;
+}
+
+export async function getPronunciationHistory(): Promise<PronunciationHistoryResponse> {
+    const token = localStorage.getItem("accentiq_token");
+
+    if (!token) {
+        throw new Error("Login required to view pronunciation history");
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/v1/pronunciation/history`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch pronunciation history");
     }
 
     return data;

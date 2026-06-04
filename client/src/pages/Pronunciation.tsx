@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
     analyzePronunciation,
+    getPronunciationHistory,
     getPronunciationOptions,
 } from "../services/api";
 import type {
@@ -8,6 +9,7 @@ import type {
     InputTypeOption,
     PronunciationAnalyzeResponse,
     PronunciationFeatures,
+    PronunciationHistoryItem,
     PronunciationLimits,
 } from "../types/pronunciation";
 
@@ -27,6 +29,43 @@ function Pronunciation() {
     const [result, setResult] = useState<PronunciationAnalyzeResponse | null>(
         null
     );
+
+    const [history, setHistory] = useState<PronunciationHistoryItem[]>([]);
+    const [historyMessage, setHistoryMessage] = useState("");
+    const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+
+    async function loadPronunciationHistory() {
+        const token = localStorage.getItem("accentiq_token");
+
+        if (!token) {
+            setHistory([]);
+            setHistoryMessage("Login to save and view pronunciation history.");
+            return;
+        }
+
+        try {
+            setIsHistoryLoading(true);
+
+            const response = await getPronunciationHistory();
+
+            setHistory(response.data);
+            setHistoryMessage(
+                response.data.length > 0
+                    ? "Pronunciation history loaded successfully."
+                    : "No pronunciation history yet. Analyze a word to save your first item."
+            );
+        } catch (error) {
+            console.error(error);
+            setHistory([]);
+            setHistoryMessage("Could not load pronunciation history.");
+        } finally {
+            setIsHistoryLoading(false);
+        }
+    }
+
+    function formatDate(dateString: string) {
+        return new Date(dateString).toLocaleString();
+    }
 
     useEffect(() => {
         async function loadPronunciationOptions() {
@@ -50,6 +89,7 @@ function Pronunciation() {
         }
 
         loadPronunciationOptions();
+        loadPronunciationHistory();
     }, []);
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -86,6 +126,10 @@ function Pronunciation() {
 
             setResult(response);
             setFormMessage(response.message || "Pronunciation analyzed successfully");
+
+            if (response.data.saved) {
+                await loadPronunciationHistory();
+            }
         } catch (error) {
             console.error(error);
 
@@ -258,6 +302,64 @@ function Pronunciation() {
                     </p>
                 </div>
             )}
+
+            <div className="history-section">
+                <div className="history-header">
+                    <h2>Pronunciation History</h2>
+
+                    <button
+                        type="button"
+                        className="secondary-button"
+                        onClick={loadPronunciationHistory}
+                        disabled={isHistoryLoading}
+                    >
+                        {isHistoryLoading ? "Loading..." : "Refresh History"}
+                    </button>
+                </div>
+
+                {historyMessage && <p className="history-message">{historyMessage}</p>}
+
+                {history.length > 0 && (
+                    <div className="history-list">
+                        {history.map((item) => (
+                            <div key={item.id} className="history-card">
+                                <div className="history-card-header">
+                                    <div>
+                                        <span className="result-label">Text</span>
+                                        <h3>{item.text}</h3>
+                                    </div>
+
+                                    <div className="accent-badge">{item.accent}</div>
+                                </div>
+
+                                {item.phonetic && (
+                                    <p>
+                                        <strong>Pronunciation:</strong> {item.phonetic}
+                                    </p>
+                                )}
+
+                                {item.syllables && item.syllables.length > 0 && (
+                                    <p>
+                                        <strong>Syllables:</strong> {item.syllables.join(" • ")}
+                                    </p>
+                                )}
+
+                                {item.tips && item.tips.length > 0 && (
+                                    <ul>
+                                        {item.tips.map((tip) => (
+                                            <li key={tip}>{tip}</li>
+                                        ))}
+                                    </ul>
+                                )}
+
+                                <p className="history-date">
+                                    Saved on {formatDate(item.createdAt)}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
 
             {features && (
                 <div className="info-box">
