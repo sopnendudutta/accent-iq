@@ -1671,6 +1671,117 @@ li {
   font-size: 15px;
 }
 
+
+/* Settings account polish */
+
+.profile-overview-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-overview-card::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 180px;
+  height: 180px;
+  border-radius: 999px;
+  background: var(--color-coral-soft);
+}
+
+.profile-overview-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg,
+      var(--color-coral),
+      color-mix(in srgb, var(--color-sand) 70%, var(--color-coral) 30%));
+  color: #ffffff;
+
+  font-size: 24px;
+  font-weight: 900;
+  font-family: var(--font-heading);
+  box-shadow: 0 14px 30px rgba(239, 90, 77, 0.24);
+}
+
+.profile-overview-header h2 {
+  margin: 6px 0 0;
+}
+
+.profile-overview-header p {
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.account-action-row {
+  margin-top: 22px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.danger-soft-button {
+  color: var(--color-error-text);
+  border-color: var(--color-error-border);
+  background: var(--color-error-bg);
+}
+
+.danger-soft-button:hover {
+  color: var(--color-error-text);
+  border-color: var(--color-error-border);
+  background: var(--color-error-bg);
+}
+
+.current-feature-list {
+  margin-top: 22px;
+  display: grid;
+  gap: 12px;
+}
+
+.current-feature-list div {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-soft);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.current-feature-list strong {
+  color: var(--color-heading);
+  font-size: 15px;
+}
+
+.current-feature-list span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-muted);
+
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
 /* Final UI safety cleanup */
 
 body {
@@ -2080,6 +2191,31 @@ textarea {
 
   .settings-actions {
     display: grid;
+  }
+
+  .profile-overview-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+  }
+
+  .account-action-row {
+    display: grid;
+  }
+
+  .account-action-row .primary-cta,
+  .account-action-row .secondary-button {
+    width: 100%;
+  }
+
+  .current-feature-list div {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 

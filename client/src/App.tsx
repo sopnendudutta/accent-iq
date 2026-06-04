@@ -112,6 +112,7 @@ function App() {
                   isAuthLoading={isAuthLoading}
                   theme={theme}
                   onThemeToggle={handleThemeToggle}
+                  onLogout={handleLogout}
                 />
               }
             />
