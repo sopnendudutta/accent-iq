@@ -1782,6 +1782,202 @@ li {
   white-space: nowrap;
 }
 
+
+/* About page and NotFound page */
+
+.about-page,
+.not-found-page {
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.about-hero {
+  padding: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  align-items: center;
+
+  background:
+    radial-gradient(circle at top right, var(--color-coral-soft), transparent 36%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--color-sand) 18%, var(--color-surface) 82%),
+      var(--color-surface));
+
+  box-shadow: var(--shadow-soft);
+}
+
+.about-hero p {
+  max-width: 720px;
+  font-size: 19px;
+}
+
+.about-actions,
+.not-found-actions {
+  margin-top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.about-summary-card,
+.about-card,
+.about-panel,
+.about-safety-note,
+.not-found-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.about-summary-card {
+  padding: 22px;
+}
+
+.about-summary-card h2 {
+  margin: 8px 0 0;
+}
+
+.about-summary-card p {
+  font-size: 15px;
+}
+
+.about-section-grid {
+  margin-top: 22px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.about-card {
+  padding: 22px;
+}
+
+.about-card span {
+  font-size: 28px;
+}
+
+.about-card h3 {
+  margin: 14px 0 0;
+}
+
+.about-card p {
+  font-size: 15px;
+}
+
+.about-info-layout {
+  margin-top: 22px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.about-panel {
+  padding: 24px;
+}
+
+.about-panel h2 {
+  margin-top: 8px;
+}
+
+.about-panel-warm {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--color-sand) 22%, var(--color-surface) 78%),
+      var(--color-surface));
+}
+
+.about-list {
+  margin-top: 22px;
+  display: grid;
+  gap: 12px;
+}
+
+.about-list div {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-soft);
+}
+
+.about-list strong {
+  display: block;
+  color: var(--color-heading);
+  font-size: 15px;
+}
+
+.about-list span {
+  display: block;
+  margin-top: 6px;
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.about-safety-note {
+  margin-top: 22px;
+  padding: 26px;
+  background: var(--color-coral-soft);
+}
+
+.about-safety-note h2 {
+  margin-top: 8px;
+}
+
+.not-found-page {
+  min-height: 60vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.not-found-card {
+  width: min(100%, 720px);
+  padding: 42px;
+  text-align: center;
+
+  background:
+    radial-gradient(circle at top, var(--color-coral-soft), transparent 42%),
+    var(--color-surface);
+}
+
+.not-found-code {
+  display: inline-flex;
+  margin-bottom: 18px;
+
+  color: var(--color-coral);
+  font-family: var(--font-heading);
+  font-size: clamp(64px, 12vw, 120px);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.08em;
+}
+
+.not-found-card .home-eyebrow {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.not-found-card p {
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.not-found-actions {
+  justify-content: center;
+}
+
+
 /* Final UI safety cleanup */
 
 body {
@@ -1891,6 +2087,15 @@ textarea {
   }
 
   .settings-feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about-hero,
+  .about-info-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .about-section-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -2216,6 +2421,31 @@ textarea {
   .current-feature-list div {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .about-hero,
+  .about-summary-card,
+  .about-card,
+  .about-panel,
+  .about-safety-note,
+  .not-found-card {
+    padding: 18px;
+  }
+
+  .about-section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-actions,
+  .not-found-actions {
+    display: grid;
+  }
+
+  .about-actions .primary-cta,
+  .about-actions .secondary-cta,
+  .not-found-actions .primary-cta,
+  .not-found-actions .secondary-cta {
+    width: 100%;
   }
 }
 

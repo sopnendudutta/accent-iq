@@ -1,39 +1,127 @@
+import { Link } from "react-router";
+
 function About() {
     return (
-        <section className="page">
-            <h1>About AccentIQ</h1>
+        <section className="page about-page">
+            <div className="about-hero">
+                <div>
+                    <span className="home-eyebrow">About AccentIQ</span>
 
-            <p>
-                AccentIQ helps users practice English pronunciation across different
-                accents. In V1, users can type a word or sentence and receive a simple
-                pronunciation analysis.
-            </p>
+                    <h1>Pronunciation practice that feels simple and friendly.</h1>
 
-            <h2>What AccentIQ does</h2>
-            <p>
-                AccentIQ gives beginner-friendly pronunciation feedback, accent options,
-                and basic suggestions to help users improve their spoken English over
-                time.
-            </p>
+                    <p>
+                        AccentIQ helps learners practice English pronunciation across
+                        different accents using beginner-friendly text guidance, syllables,
+                        stress patterns, and practice tips.
+                    </p>
 
-            <h2>Data privacy and safety</h2>
-            <p>
-                For V1, login and signup are optional. Guest users can try the basic
-                pronunciation feature without creating an account.
-            </p>
+                    <div className="about-actions">
+                        <Link className="primary-cta" to="/pronunciation">
+                            Start practicing
+                        </Link>
 
-            <p>
-                When users choose to log in, their pronunciation history can be saved so
-                they can track progress later. Sensitive features like voice upload and
-                real AI voice analysis are not active yet.
-            </p>
+                        <Link className="secondary-cta" to="/register">
+                            Create free account
+                        </Link>
+                    </div>
+                </div>
 
-            <h2>V1 safety note</h2>
-            <p>
-                AccentIQ is currently in an early version. Voice input and advanced AI
-                pronunciation scoring are planned for future versions, but they are not
-                enabled yet.
-            </p>
+                <div className="about-summary-card">
+                    <span className="result-label">V1 focus</span>
+                    <h2>Text-first pronunciation help</h2>
+
+                    <p>
+                        In this version, users can type a word or sentence, select an
+                        accent, and get simple pronunciation guidance.
+                    </p>
+                </div>
+            </div>
+
+            <div className="about-section-grid">
+                <div className="about-card">
+                    <span>🎯</span>
+                    <h3>Our goal</h3>
+                    <p>
+                        Help learners speak more clearly by making pronunciation practice
+                        easier to understand and repeat.
+                    </p>
+                </div>
+
+                <div className="about-card">
+                    <span>🌍</span>
+                    <h3>Accent options</h3>
+                    <p>
+                        AccentIQ supports multiple English accent options like US, UK,
+                        Australian, and Indian English in V1.
+                    </p>
+                </div>
+
+                <div className="about-card">
+                    <span>📚</span>
+                    <h3>Beginner-friendly</h3>
+                    <p>
+                        Feedback is shown in readable sections: phonetics, IPA, syllables,
+                        stress, guidance, and practice.
+                    </p>
+                </div>
+            </div>
+
+            <div className="about-info-layout">
+                <div className="about-panel">
+                    <span className="result-label">Available now</span>
+                    <h2>What AccentIQ can do today</h2>
+
+                    <div className="about-list">
+                        <div>
+                            <strong>Guest pronunciation analysis</strong>
+                            <span>Try the app without creating an account.</span>
+                        </div>
+
+                        <div>
+                            <strong>Logged-in history</strong>
+                            <span>Save and view pronunciation practice history.</span>
+                        </div>
+
+                        <div>
+                            <strong>Light and dark mode</strong>
+                            <span>Choose the visual mode that feels comfortable.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="about-panel about-panel-warm">
+                    <span className="result-label">Coming later</span>
+                    <h2>Planned future improvements</h2>
+
+                    <div className="about-list">
+                        <div>
+                            <strong>Voice input</strong>
+                            <span>Upload or record speech for pronunciation practice.</span>
+                        </div>
+
+                        <div>
+                            <strong>AI audio scoring</strong>
+                            <span>Compare pronunciation quality more deeply.</span>
+                        </div>
+
+                        <div>
+                            <strong>Favorites and progress</strong>
+                            <span>Save difficult words and track learning over time.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="about-safety-note">
+                <span className="result-label">Safety note</span>
+                <h2>Built carefully, one version at a time.</h2>
+
+                <p>
+                    Login is optional in V1. Guest users can practice without an account.
+                    Voice upload and real AI voice scoring are not enabled yet, so the app
+                    stays simple and secure while the foundation is being built.
+                </p>
+            </div>
         </section>
     );
 }
