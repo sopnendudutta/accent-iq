@@ -14,9 +14,29 @@ import NotFound from "./pages/NotFound";
 import { getCurrentUser, logoutUser } from "./services/api";
 import type { AuthUser } from "./types/auth";
 
+type ThemeMode = "light" | "dark";
+
+const THEME_STORAGE_KEY = "accentiq_theme";
+
+function getInitialTheme(): ThemeMode {
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+
+  if (savedTheme === "dark") {
+    return "dark";
+  }
+
+  return "light";
+}
+
 function App() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  }, [theme]);
 
   useEffect(() => {
     async function loadCurrentUser() {
@@ -47,6 +67,12 @@ function App() {
     setUser(userData);
   }
 
+  function handleThemeToggle() {
+    setTheme((currentTheme) => {
+      return currentTheme === "light" ? "dark" : "light";
+    });
+  }
+
   async function handleLogout() {
     const token = localStorage.getItem("accentiq_token");
 
@@ -68,6 +94,8 @@ function App() {
         user={user}
         isAuthLoading={isAuthLoading}
         onLogout={handleLogout}
+        theme={theme}
+        onThemeToggle={handleThemeToggle}
       />
 
       <main className="main-content">
