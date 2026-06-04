@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
 import { Prisma } from "@prisma/client";
-import { AppError } from "../utils/appError";
+import { AppError } from "../utils/appError.js";
 
 export const notFoundHandler = (
     req: Request,

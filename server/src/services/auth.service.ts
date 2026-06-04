@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import { AuthProvider } from "@prisma/client";
-import { prisma } from "../config/prisma";
-import { generateToken } from "../utils/jwt";
-import { AppError } from "../utils/appError";
+import { prisma } from "../config/prisma.js";
+import { generateToken } from "../utils/jwt.js";
+import { AppError } from "../utils/appError.js";
 
 type RegisterInput = {
     name?: string;

@@ -5,12 +5,11 @@ import morgan from "morgan";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 
-import { env } from "./config/env";
-import apiRoutes from "./routes";
-import authRoutes from "./routes/auth.routes";
-import { errorHandler, notFoundHandler } from "./middleware/error.middleware";
-import pronunciationRoutes from "./modules/pronunciation/pronunciation.routes";
-
+import { env } from "./config/env.js";
+import apiRoutes from "./routes/index.js";
+import authRoutes from "./routes/auth.routes.js";
+import { errorHandler, notFoundHandler } from "./middleware/error.middleware.js";
+import pronunciationRoutes from "./modules/pronunciation/pronunciation.routes.js";
 
 const app = express();
 
@@ -45,8 +44,6 @@ if (env.NODE_ENV === "development") {
 // Body parsers must come BEFORE routes
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
-
-
 
 // Routes
 app.use("/api/v1", apiRoutes);

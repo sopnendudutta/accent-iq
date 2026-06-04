@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import * as userService from "../services/user.service";
+import * as userService from "../services/user.service.js";
 import type {
     CreateUserInput,
     UpdateUserInput,
-} from "../validations/user.validation";
+} from "../validations/user.validation.js";
 
 export const getAllUsers = async (
     req: Request,

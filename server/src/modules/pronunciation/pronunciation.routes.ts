@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { optionalAuth } from "../../middleware/optionalAuth.middleware";
-import { authMiddleware } from "../../middleware/auth.middleware";
-import { pronunciationController } from "./pronunciation.controller";
+import { optionalAuth } from "../../middleware/optionalAuth.middleware.js";
+import { authMiddleware } from "../../middleware/auth.middleware.js";
+import { pronunciationController } from "./pronunciation.controller.js";
 
 const router = Router();
 

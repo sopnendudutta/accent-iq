@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
-import * as authService from "../services/auth.service";
-import { AuthRequest } from "../middleware/auth.middleware";
+import * as authService from "../services/auth.service.js";
+import { AuthRequest } from "../middleware/auth.middleware.js";
 
 const registerSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters").optional(),

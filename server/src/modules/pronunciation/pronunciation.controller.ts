@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import type { JwtPayloadData } from "../../utils/jwt";
-import { pronunciationService } from "./pronunciation.service";
+import type { JwtPayloadData } from "../../utils/jwt.js";
+import { pronunciationService } from "./pronunciation.service.js";
 import {
     analyzePronunciationSchema,
     favoritePronunciationSchema,
     pronunciationFavoriteIdSchema,
     pronunciationHistoryIdSchema,
-} from "./pronunciation.validation";
+} from "./pronunciation.validation.js";
 
 type RequestWithUser = Request & {
     user?: JwtPayloadData;

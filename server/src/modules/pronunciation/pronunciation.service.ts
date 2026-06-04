@@ -1,10 +1,10 @@
 import { Accent, Prisma } from "@prisma/client";
-import { prisma } from "../../config/prisma";
+import { prisma } from "../../config/prisma.js";
 import {
     AnalyzePronunciationInput,
     FavoritePronunciationInput,
-} from "./pronunciation.validation";
-import { PRONUNCIATION_OPTIONS } from "./pronunciation.constants";
+} from "./pronunciation.validation.js";
+import { PRONUNCIATION_OPTIONS } from "./pronunciation.constants.js";
 
 type InputType = "TEXT" | "VOICE";
 

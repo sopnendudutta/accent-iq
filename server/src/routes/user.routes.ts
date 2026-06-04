@@ -1,10 +1,10 @@
 import { Router } from "express";
-import * as userController from "../controllers/user.controller";
-import { validate } from "../middleware/validate.middleware";
+import * as userController from "../controllers/user.controller.js";
+import { validate } from "../middleware/validate.middleware.js";
 import {
     createUserSchema,
     updateUserSchema,
-} from "../validations/user.validation";
+} from "../validations/user.validation.js";
 
 const router = Router();
 

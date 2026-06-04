@@ -3,7 +3,7 @@ import {
     PRONUNCIATION_ACCENTS,
     PRONUNCIATION_INPUT_TYPES,
     PRONUNCIATION_MAX_TEXT_LENGTH,
-} from "./pronunciation.constants";
+} from "./pronunciation.constants.js";
 
 export const analyzePronunciationSchema = z.object({
     body: z
