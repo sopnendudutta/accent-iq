@@ -1,6 +1,9 @@
 import type {
     AuthResponse,
+    AuthUser,
     LoginRequest,
+    LogoutResponse,
+    MeResponse,
     RegisterRequest,
 } from "../types/auth";
 
@@ -87,6 +90,46 @@ export async function loginUser(payload: LoginRequest): Promise<AuthResponse> {
 
     if (!response.ok) {
         throw new Error(data.message || "Login failed");
+    }
+
+    return data;
+}
+
+export async function getCurrentUser(token: string): Promise<AuthUser> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+    });
+
+    const data: MeResponse = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch current user");
+    }
+
+    if ("user" in data.data) {
+        return data.data.user;
+    }
+
+    return data.data;
+}
+
+export async function logoutUser(token: string): Promise<LogoutResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Logout failed");
     }
 
     return data;

@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { loginUser } from "../services/api";
+import type { AuthUser } from "../types/auth";
 
-function Login() {
+type LoginProps = {
+    onAuthSuccess: (user: AuthUser) => void;
+};
+
+function Login({ onAuthSuccess }: LoginProps) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -27,9 +32,14 @@ function Login() {
             });
 
             const token = response.data?.token || response.data?.accessToken;
+            const user = response.data?.user;
 
             if (token) {
                 localStorage.setItem("accentiq_token", token);
+            }
+
+            if (user) {
+                onAuthSuccess(user);
             }
 
             setMessage(response.message || "Logged in successfully.");

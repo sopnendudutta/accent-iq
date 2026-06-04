@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router";
+
 import Navbar from "./components/layout/Navbar";
 
 import Home from "./pages/Home";
@@ -9,10 +11,64 @@ import About from "./pages/About";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
+import { getCurrentUser, logoutUser } from "./services/api";
+import type { AuthUser } from "./types/auth";
+
 function App() {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadCurrentUser() {
+      const token = localStorage.getItem("accentiq_token");
+
+      if (!token) {
+        setUser(null);
+        setIsAuthLoading(false);
+        return;
+      }
+
+      try {
+        const currentUser = await getCurrentUser(token);
+        setUser(currentUser);
+      } catch (error) {
+        console.error(error);
+        localStorage.removeItem("accentiq_token");
+        setUser(null);
+      } finally {
+        setIsAuthLoading(false);
+      }
+    }
+
+    loadCurrentUser();
+  }, []);
+
+  function handleAuthSuccess(userData: AuthUser) {
+    setUser(userData);
+  }
+
+  async function handleLogout() {
+    const token = localStorage.getItem("accentiq_token");
+
+    try {
+      if (token) {
+        await logoutUser(token);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      localStorage.removeItem("accentiq_token");
+      setUser(null);
+    }
+  }
+
   return (
     <div className="app">
-      <Navbar />
+      <Navbar
+        user={user}
+        isAuthLoading={isAuthLoading}
+        onLogout={handleLogout}
+      />
 
       <main className="main-content">
         <Routes>
@@ -20,8 +76,17 @@ function App() {
           <Route path="/pronunciation" element={<Pronunciation />} />
           <Route path="/about" element={<About />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+
+          <Route
+            path="/login"
+            element={<Login onAuthSuccess={handleAuthSuccess} />}
+          />
+
+          <Route
+            path="/register"
+            element={<Register onAuthSuccess={handleAuthSuccess} />}
+          />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { registerUser } from "../services/api";
+import type { AuthUser } from "../types/auth";
 
-function Register() {
+type RegisterProps = {
+    onAuthSuccess: (user: AuthUser) => void;
+};
+
+function Register({ onAuthSuccess }: RegisterProps) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -29,9 +34,14 @@ function Register() {
             });
 
             const token = response.data?.token || response.data?.accessToken;
+            const user = response.data?.user;
 
             if (token) {
                 localStorage.setItem("accentiq_token", token);
+            }
+
+            if (user) {
+                onAuthSuccess(user);
             }
 
             setMessage(response.message || "Account created successfully.");
@@ -58,27 +68,27 @@ function Register() {
             </p>
 
             <form className="auth-form" onSubmit={handleSubmit}>
-                <label htmlFor="name">Name</label>
+                <label htmlFor="register-name">Name</label>
                 <input
-                    id="name"
+                    id="register-name"
                     type="text"
                     value={name}
                     onChange={(event) => setName(event.target.value)}
                     placeholder="Your name"
                 />
 
-                <label htmlFor="email">Email</label>
+                <label htmlFor="register-email">Email</label>
                 <input
-                    id="email"
+                    id="register-email"
                     type="email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     placeholder="you@example.com"
                 />
 
-                <label htmlFor="password">Password</label>
+                <label htmlFor="register-password">Password</label>
                 <input
-                    id="password"
+                    id="register-password"
                     type="password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
