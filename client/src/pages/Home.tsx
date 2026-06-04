@@ -1,25 +1,6 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { checkBackendHealth } from "../services/api";
 
 function Home() {
-    const [backendStatus, setBackendStatus] = useState("Checking backend...");
-
-    useEffect(() => {
-        async function testBackend() {
-            try {
-                const data = await checkBackendHealth();
-
-                setBackendStatus(data.message || "Backend is running");
-            } catch (error) {
-                setBackendStatus("Backend is not connected");
-                console.error(error);
-            }
-        }
-
-        testBackend();
-    }, []);
-
     return (
         <section className="page home-page">
             <div className="home-hero">
