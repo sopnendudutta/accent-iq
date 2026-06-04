@@ -17,7 +17,8 @@ model User {
   providerAccountId String?
   passwordHash      String?
 
-  pronunciationHistory PronunciationHistory[]
+  pronunciationHistory   PronunciationHistory[]
+  pronunciationFavorites PronunciationFavorite[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -56,6 +57,37 @@ model PronunciationHistory {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model PronunciationFavorite {
+  id String @id @default(cuid())
+
+  inputType PronunciationInputType @default(TEXT)
+
+  text           String
+  normalizedText String
+  accent         Accent
+
+  phonetic      String?
+  ipa           String?
+  syllables     Json?
+  stressPattern String?
+
+  mouthTip      String?
+  commonMistake String?
+  tips          Json?
+
+  exampleSentence String?
+  result          Json?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, normalizedText, accent])
+  @@index([userId])
 }
 
 enum PronunciationInputType {

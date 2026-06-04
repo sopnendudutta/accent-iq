@@ -3,6 +3,8 @@ import type { JwtPayloadData } from "../../utils/jwt";
 import { pronunciationService } from "./pronunciation.service";
 import {
     analyzePronunciationSchema,
+    favoritePronunciationSchema,
+    pronunciationFavoriteIdSchema,
     pronunciationHistoryIdSchema,
 } from "./pronunciation.validation";
 
@@ -171,6 +173,108 @@ export const pronunciationController = {
             res.status(200).json({
                 success: true,
                 message: "Pronunciation history item deleted successfully",
+                data: deletedItem,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    addFavorite: async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const userId = getUserId(req);
+
+            if (!userId) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Unauthorized",
+                });
+            }
+
+            const validatedData = favoritePronunciationSchema.parse({
+                body: req.body,
+            });
+
+            const favorite = await pronunciationService.addFavorite(
+                validatedData.body,
+                userId
+            );
+
+            res.status(201).json({
+                success: true,
+                message: "Pronunciation favorite saved successfully",
+                data: favorite,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    getFavorites: async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const userId = getUserId(req);
+
+            if (!userId) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Unauthorized",
+                });
+            }
+
+            const favorites = await pronunciationService.getFavorites(userId);
+
+            res.status(200).json({
+                success: true,
+                message: "Pronunciation favorites fetched successfully",
+                data: favorites,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    deleteFavoriteById: async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const userId = getUserId(req);
+
+            if (!userId) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Unauthorized",
+                });
+            }
+
+            const validatedData = pronunciationFavoriteIdSchema.parse({
+                params: req.params,
+            });
+
+            const deletedItem = await pronunciationService.deleteFavoriteById(
+                validatedData.params.id,
+                userId
+            );
+
+            if (!deletedItem) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Pronunciation favorite not found",
+                });
+            }
+
+            res.status(200).json({
+                success: true,
+                message: "Pronunciation favorite deleted successfully",
                 data: deletedItem,
             });
         } catch (error) {

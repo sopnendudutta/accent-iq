@@ -4,11 +4,31 @@ import { authMiddleware } from "../../middleware/auth.middleware";
 import { pronunciationController } from "./pronunciation.controller";
 
 const router = Router();
+
 router.get("/options", pronunciationController.getOptions);
+
 router.post(
     "/analyze",
     optionalAuth,
     pronunciationController.analyzePronunciation
+);
+
+router.get(
+    "/favorites",
+    authMiddleware,
+    pronunciationController.getFavorites
+);
+
+router.post(
+    "/favorites",
+    authMiddleware,
+    pronunciationController.addFavorite
+);
+
+router.delete(
+    "/favorites/:id",
+    authMiddleware,
+    pronunciationController.deleteFavoriteById
 );
 
 router.get(
