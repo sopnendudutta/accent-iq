@@ -18,7 +18,7 @@ const envSchema = z.object({
     AI_PROVIDER: z.enum(["gemini", "groq", "auto"]).default("gemini"),
 
     GEMINI_API_KEY: z.string().optional(),
-    GEMINI_MODEL: z.string().default("gemini-1.5-flash"),
+    GEMINI_MODEL: z.string().default("gemini-3.5-flash"),
 
     GROQ_API_KEY: z.string().optional(),
     GROQ_MODEL: z.string().default("llama-3.1-8b-instant"),
