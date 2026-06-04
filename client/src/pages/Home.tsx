@@ -66,49 +66,6 @@ function Home() {
                         <p>{backendStatus}</p>
                     </div>
                 </div>
-
-                <div className="home-preview-card" aria-label="Sample pronunciation card">
-                    <div className="preview-top-row">
-                        <span className="preview-badge">Sample result</span>
-                        <span className="accent-badge">US English</span>
-                    </div>
-
-                    <div className="preview-word-block">
-                        <span className="result-label">Word</span>
-                        <h2>schedule</h2>
-                        <p className="preview-pronunciation">SKEH-jool</p>
-                    </div>
-
-                    <div className="preview-grid">
-                        <div className="preview-mini-card">
-                            <span>IPA</span>
-                            <strong>/ˈskedʒuːl/</strong>
-                        </div>
-
-                        <div className="preview-mini-card">
-                            <span>Syllables</span>
-                            <strong>sched · ule</strong>
-                        </div>
-
-                        <div className="preview-mini-card">
-                            <span>Stress</span>
-                            <strong>First syllable</strong>
-                        </div>
-
-                        <div className="preview-mini-card">
-                            <span>Practice</span>
-                            <strong>Repeat 3x slowly</strong>
-                        </div>
-                    </div>
-
-                    <div className="preview-tip-box">
-                        <span>Speaking tip</span>
-                        <p>
-                            Start with a clear <strong>“skeh”</strong> sound, then finish
-                            softly with <strong>“jool”</strong>.
-                        </p>
-                    </div>
-                </div>
             </div>
         </section>
     );
