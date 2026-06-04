@@ -1,19 +1,14 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { env } from "../config/env";
+import { NextFunction, Request, Response } from "express";
+import { verifyToken } from "../utils/jwt";
 
-type JwtPayLoad = {
-    id?: string;
-    userId?: string;
-    email?: string;
+export type AuthenticatedUser = {
+    userId: string;
+    email: string;
+    provider: string;
 };
 
-
 export interface OptionalAuthRequest extends Request {
-    user?: {
-        id: string;
-        email?: string;
-    };
+    user?: AuthenticatedUser;
 }
 
 export const optionalAuth = (
@@ -21,34 +16,31 @@ export const optionalAuth = (
     res: Response,
     next: NextFunction
 ) => {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return next();
-    }
-
-    const token = authHeader.split(" ")[1];
-
     try {
-        const decoded = jwt.verify(token, env.JWT_SECRET) as JwtPayLoad;
-        const userId = decoded.userId || decoded.id;
+        const authHeader = req.headers.authorization;
 
-        if (!userId) {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid token payload",
-            });
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return next();
         }
-        req.user = {
-            id: userId,
-            email: decoded.email,
-        };
-        next();
-    } catch {
-        return res.status(401).json({
-            success: false,
-            message: "Invalid token payload/expired token ",
-        });
-    }
 
+        const token = authHeader.split(" ")[1];
+
+        if (!token) {
+            return next();
+        }
+
+        const decoded = verifyToken(token);
+
+        req.user = {
+            userId: decoded.userId,
+            email: decoded.email,
+            provider: decoded.provider,
+        };
+
+        next();
+    } catch (error) {
+        // Optional auth should not block guest users.
+        // If token is invalid, continue as guest.
+        next();
+    }
 };

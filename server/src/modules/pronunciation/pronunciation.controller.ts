@@ -1,15 +1,23 @@
-import { NextFunction, Response } from "express";
-import { OptionalAuthRequest } from "../../middleware/optionalAuth.middleware";
+import { NextFunction, Request, Response } from "express";
+import type { JwtPayloadData } from "../../utils/jwt";
 import { pronunciationService } from "./pronunciation.service";
 import {
     analyzePronunciationSchema,
     pronunciationHistoryIdSchema,
 } from "./pronunciation.validation";
 
-export const pronunciationController = {
+type RequestWithUser = Request & {
+    user?: JwtPayloadData;
+};
 
+const getUserId = (req: Request): string | undefined => {
+    const authReq = req as RequestWithUser;
+    return authReq.user?.userId;
+};
+
+export const pronunciationController = {
     getOptions: async (
-        req: OptionalAuthRequest,
+        req: Request,
         res: Response,
         next: NextFunction
     ) => {
@@ -24,10 +32,10 @@ export const pronunciationController = {
         } catch (error) {
             next(error);
         }
-    }
-    ,
+    },
+
     analyzePronunciation: async (
-        req: OptionalAuthRequest,
+        req: Request,
         res: Response,
         next: NextFunction
     ) => {
@@ -39,13 +47,16 @@ export const pronunciationController = {
             if (validatedData.body.inputType === "VOICE") {
                 return res.status(501).json({
                     success: false,
-                    message: "Voice pronunciation input is planned but not enabled yet. Use TEXT input for now.",
+                    message:
+                        "Voice pronunciation input is planned but not enabled yet. Use TEXT input for now.",
                 });
             }
 
+            const userId = getUserId(req);
+
             const result = await pronunciationService.analyzePronunciation(
                 validatedData.body,
-                req.user?.id
+                userId
             );
 
             res.status(200).json({
@@ -59,19 +70,21 @@ export const pronunciationController = {
     },
 
     getHistory: async (
-        req: OptionalAuthRequest,
+        req: Request,
         res: Response,
         next: NextFunction
     ) => {
         try {
-            if (!req.user?.id) {
+            const userId = getUserId(req);
+
+            if (!userId) {
                 return res.status(401).json({
                     success: false,
                     message: "Unauthorized",
                 });
             }
 
-            const history = await pronunciationService.getHistory(req.user.id);
+            const history = await pronunciationService.getHistory(userId);
 
             res.status(200).json({
                 success: true,
@@ -84,12 +97,14 @@ export const pronunciationController = {
     },
 
     getHistoryById: async (
-        req: OptionalAuthRequest,
+        req: Request,
         res: Response,
         next: NextFunction
     ) => {
         try {
-            if (!req.user?.id) {
+            const userId = getUserId(req);
+
+            if (!userId) {
                 return res.status(401).json({
                     success: false,
                     message: "Unauthorized",
@@ -102,7 +117,7 @@ export const pronunciationController = {
 
             const historyItem = await pronunciationService.getHistoryById(
                 validatedData.params.id,
-                req.user.id
+                userId
             );
 
             if (!historyItem) {
@@ -123,12 +138,14 @@ export const pronunciationController = {
     },
 
     deleteHistoryById: async (
-        req: OptionalAuthRequest,
+        req: Request,
         res: Response,
         next: NextFunction
     ) => {
         try {
-            if (!req.user?.id) {
+            const userId = getUserId(req);
+
+            if (!userId) {
                 return res.status(401).json({
                     success: false,
                     message: "Unauthorized",
@@ -141,7 +158,7 @@ export const pronunciationController = {
 
             const deletedItem = await pronunciationService.deleteHistoryById(
                 validatedData.params.id,
-                req.user.id
+                userId
             );
 
             if (!deletedItem) {
