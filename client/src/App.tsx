@@ -104,7 +104,17 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/pronunciation" element={<Pronunciation />} />
             <Route path="/about" element={<About />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route
+              path="/settings"
+              element={
+                <Settings
+                  user={user}
+                  isAuthLoading={isAuthLoading}
+                  theme={theme}
+                  onThemeToggle={handleThemeToggle}
+                />
+              }
+            />
 
             <Route
               path="/login"
