@@ -91,3 +91,44 @@ export type PronunciationHistoryResponse = {
     message: string;
     data: PronunciationHistoryItem[];
 };
+
+export type PronunciationFavoriteRequest = Omit<
+    PronunciationResultData,
+    "saved"
+>;
+
+export type PronunciationFavoriteItem = {
+    id: string;
+    inputType: string;
+    text: string;
+    normalizedText: string;
+    accent: string;
+
+    phonetic?: string | null;
+    ipa?: string | null;
+    syllables?: string[] | null;
+    stressPattern?: string | null;
+
+    mouthTip?: string | null;
+    commonMistake?: string | null;
+    tips?: string[] | null;
+
+    exampleSentence?: string | null;
+    result?: PronunciationFavoriteRequest | null;
+
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type PronunciationFavoritesResponse = {
+    success: boolean;
+    message: string;
+    data: PronunciationFavoriteItem[];
+};
+
+export type PronunciationFavoriteResponse = {
+    success: boolean;
+    message: string;
+    data: PronunciationFavoriteItem;
+};

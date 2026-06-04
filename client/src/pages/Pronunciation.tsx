@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import {
+    addPronunciationFavorite,
     analyzePronunciation,
+    getPronunciationFavorites,
     getPronunciationHistory,
     getPronunciationOptions,
+    removePronunciationFavorite,
 } from "../services/api";
 import type {
     AccentOption,
     InputTypeOption,
     PronunciationAnalyzeResponse,
+    PronunciationFavoriteItem,
     PronunciationFeatures,
     PronunciationHistoryItem,
     PronunciationLimits,
@@ -42,9 +46,25 @@ function Pronunciation() {
     const [historyMessage, setHistoryMessage] = useState("");
     const [isHistoryLoading, setIsHistoryLoading] = useState(false);
 
+    const [favorites, setFavorites] = useState<PronunciationFavoriteItem[]>([]);
+    const [favoritesMessage, setFavoritesMessage] = useState("");
+    const [isFavoritesLoading, setIsFavoritesLoading] = useState(false);
+    const [isFavoriteSubmitting, setIsFavoriteSubmitting] = useState(false);
+    const [favoriteActionMessage, setFavoriteActionMessage] = useState("");
+    const [favoriteActionType, setFavoriteActionType] =
+        useState<MessageType>("info");
+
     const selectedAccentLabel =
         accents.find((accent) => accent.value === selectedAccent)?.label ||
         "Choose accent";
+
+    const currentResultFavorite = result
+        ? favorites.find(
+            (favorite) =>
+                favorite.normalizedText === result.data.normalizedText &&
+                favorite.accent === result.data.accent
+        )
+        : undefined;
 
     async function loadPronunciationHistory() {
         const token = localStorage.getItem("accentiq_token");
@@ -72,6 +92,35 @@ function Pronunciation() {
             setHistoryMessage("Could not load pronunciation history.");
         } finally {
             setIsHistoryLoading(false);
+        }
+    }
+
+    async function loadPronunciationFavorites() {
+        const token = localStorage.getItem("accentiq_token");
+
+        if (!token) {
+            setFavorites([]);
+            setFavoritesMessage("Login to save and view favorite pronunciations.");
+            return;
+        }
+
+        try {
+            setIsFavoritesLoading(true);
+
+            const response = await getPronunciationFavorites();
+
+            setFavorites(response.data);
+            setFavoritesMessage(
+                response.data.length > 0
+                    ? "Favorite pronunciations loaded successfully."
+                    : "No favorites yet. Save a pronunciation result to see it here."
+            );
+        } catch (error) {
+            console.error(error);
+            setFavorites([]);
+            setFavoritesMessage("Could not load pronunciation favorites.");
+        } finally {
+            setIsFavoritesLoading(false);
         }
     }
 
@@ -104,12 +153,14 @@ function Pronunciation() {
 
         loadPronunciationOptions();
         loadPronunciationHistory();
+        loadPronunciationFavorites();
     }, []);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         setFormMessage("");
+        setFavoriteActionMessage("");
         setResult(null);
 
         const cleanedText = text.trim();
@@ -159,6 +210,81 @@ function Pronunciation() {
             }
         } finally {
             setIsSubmitting(false);
+        }
+    }
+
+    async function handleToggleResultFavorite() {
+        const token = localStorage.getItem("accentiq_token");
+
+        if (!token) {
+            setFavoriteActionType("info");
+            setFavoriteActionMessage("Login to save pronunciations to favorites.");
+            return;
+        }
+
+        if (!result) {
+            return;
+        }
+
+        try {
+            setIsFavoriteSubmitting(true);
+            setFavoriteActionMessage("");
+
+            if (currentResultFavorite) {
+                await removePronunciationFavorite(currentResultFavorite.id);
+                setFavoriteActionType("success");
+                setFavoriteActionMessage("Removed from favorites.");
+            } else {
+                await addPronunciationFavorite({
+                    inputType: result.data.inputType,
+                    text: result.data.text,
+                    normalizedText: result.data.normalizedText,
+                    accent: result.data.accent,
+                    pronunciation: result.data.pronunciation,
+                    guidance: result.data.guidance,
+                    practice: result.data.practice,
+                });
+
+                setFavoriteActionType("success");
+                setFavoriteActionMessage("Saved to favorites.");
+            }
+
+            await loadPronunciationFavorites();
+        } catch (error) {
+            console.error(error);
+            setFavoriteActionType("error");
+
+            if (error instanceof Error) {
+                setFavoriteActionMessage(error.message);
+            } else {
+                setFavoriteActionMessage("Could not update favorite.");
+            }
+        } finally {
+            setIsFavoriteSubmitting(false);
+        }
+    }
+
+    async function handleRemoveFavorite(favoriteId: string) {
+        try {
+            setIsFavoritesLoading(true);
+            setFavoriteActionMessage("");
+
+            await removePronunciationFavorite(favoriteId);
+            setFavoriteActionType("success");
+            setFavoriteActionMessage("Favorite removed successfully.");
+
+            await loadPronunciationFavorites();
+        } catch (error) {
+            console.error(error);
+            setFavoriteActionType("error");
+
+            if (error instanceof Error) {
+                setFavoriteActionMessage(error.message);
+            } else {
+                setFavoriteActionMessage("Could not remove favorite.");
+            }
+        } finally {
+            setIsFavoritesLoading(false);
         }
     }
 
@@ -297,8 +423,32 @@ function Pronunciation() {
                                     <h3>{result.data.text}</h3>
                                 </div>
 
-                                <div className="accent-badge">{result.data.accent}</div>
+                                <div className="practice-status-row">
+                                    <button
+                                        type="button"
+                                        className="secondary-button"
+                                        onClick={handleToggleResultFavorite}
+                                        disabled={isFavoriteSubmitting}
+                                    >
+                                        {isFavoriteSubmitting
+                                            ? "Saving..."
+                                            : currentResultFavorite
+                                                ? "Remove Favorite"
+                                                : "Save Favorite"}
+                                    </button>
+
+                                    <div className="accent-badge">{result.data.accent}</div>
+                                </div>
                             </div>
+
+                            {favoriteActionMessage && (
+                                <div
+                                    className={`inline-message inline-message-${favoriteActionType}`}
+                                >
+                                    <strong>Favorites:</strong>
+                                    <p>{favoriteActionMessage}</p>
+                                </div>
+                            )}
 
                             <div className="result-grid">
                                 <div className="result-card result-card-main">
@@ -364,10 +514,95 @@ function Pronunciation() {
                             <p className="save-note">
                                 {result.data.saved
                                     ? "This result was saved to your history."
-                                    : "Guest result only. Login later to save pronunciation history."}
+                                    : "Guest result only. Login later to save pronunciation history and favorites."}
                             </p>
                         </div>
                     )}
+
+                    <div className="history-section polished-history-section">
+                        <div className="history-header">
+                            <div>
+                                <span className="result-label">Saved favorites</span>
+                                <h2>Favorite Pronunciations</h2>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="secondary-button"
+                                onClick={loadPronunciationFavorites}
+                                disabled={isFavoritesLoading}
+                            >
+                                {isFavoritesLoading ? "Loading..." : "Refresh Favorites"}
+                            </button>
+                        </div>
+
+                        {favoritesMessage && (
+                            <p className="history-message">{favoritesMessage}</p>
+                        )}
+
+                        {favorites.length > 0 && (
+                            <div className="history-list">
+                                {favorites.map((item) => (
+                                    <div key={item.id} className="history-card">
+                                        <div className="history-card-header">
+                                            <div>
+                                                <span className="result-label">Favorite</span>
+                                                <h3>{item.text}</h3>
+                                            </div>
+
+                                            <div className="practice-status-row">
+                                                <button
+                                                    type="button"
+                                                    className="secondary-button"
+                                                    onClick={() => handleRemoveFavorite(item.id)}
+                                                    disabled={isFavoritesLoading}
+                                                >
+                                                    Remove
+                                                </button>
+
+                                                <div className="accent-badge">{item.accent}</div>
+                                            </div>
+                                        </div>
+
+                                        {item.phonetic && (
+                                            <p>
+                                                <strong>Pronunciation:</strong> {item.phonetic}
+                                            </p>
+                                        )}
+
+                                        {item.ipa && (
+                                            <p>
+                                                <strong>IPA:</strong> {item.ipa}
+                                            </p>
+                                        )}
+
+                                        {item.syllables && item.syllables.length > 0 && (
+                                            <p>
+                                                <strong>Syllables:</strong>{" "}
+                                                {item.syllables.join(" • ")}
+                                            </p>
+                                        )}
+
+                                        {item.mouthTip && (
+                                            <p>
+                                                <strong>Mouth tip:</strong> {item.mouthTip}
+                                            </p>
+                                        )}
+
+                                        {item.exampleSentence && (
+                                            <p>
+                                                <strong>Example:</strong> {item.exampleSentence}
+                                            </p>
+                                        )}
+
+                                        <p className="history-date">
+                                            Favorited on {formatDate(item.createdAt)}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
 
                     <div className="history-section polished-history-section">
                         <div className="history-header">
@@ -446,6 +681,18 @@ function Pronunciation() {
                                 <div className="feature-row">
                                     <span>Guest analysis</span>
                                     <strong>{features.guestAnalysis ? "Available" : "Coming soon"}</strong>
+                                </div>
+
+                                <div className="feature-row">
+                                    <span>Logged-in history</span>
+                                    <strong>
+                                        {features.loggedInHistory ? "Available" : "Coming soon"}
+                                    </strong>
+                                </div>
+
+                                <div className="feature-row">
+                                    <span>Favorites</span>
+                                    <strong>{features.favorites ? "Available" : "Coming soon"}</strong>
                                 </div>
 
                                 <div className="feature-row">

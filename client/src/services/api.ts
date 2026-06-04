@@ -10,11 +10,18 @@ import type {
 import type {
     PronunciationAnalyzeRequest,
     PronunciationAnalyzeResponse,
+    PronunciationFavoriteRequest,
+    PronunciationFavoriteResponse,
+    PronunciationFavoritesResponse,
     PronunciationHistoryResponse,
     PronunciationOptionsResponse,
 } from "../types/pronunciation";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+function getStoredToken() {
+    return localStorage.getItem("accentiq_token");
+}
 
 export async function checkBackendHealth() {
     const response = await fetch(`${API_BASE_URL}/api/v1/health`);
@@ -39,7 +46,7 @@ export async function getPronunciationOptions(): Promise<PronunciationOptionsRes
 export async function analyzePronunciation(
     payload: PronunciationAnalyzeRequest
 ): Promise<PronunciationAnalyzeResponse> {
-    const token = localStorage.getItem("accentiq_token");
+    const token = getStoredToken();
 
     const headers: Record<string, string> = {
         "Content-Type": "application/json",
@@ -65,7 +72,7 @@ export async function analyzePronunciation(
 }
 
 export async function getPronunciationHistory(): Promise<PronunciationHistoryResponse> {
-    const token = localStorage.getItem("accentiq_token");
+    const token = getStoredToken();
 
     if (!token) {
         throw new Error("Login required to view pronunciation history");
@@ -82,6 +89,84 @@ export async function getPronunciationHistory(): Promise<PronunciationHistoryRes
 
     if (!response.ok) {
         throw new Error(data.message || "Failed to fetch pronunciation history");
+    }
+
+    return data;
+}
+
+export async function getPronunciationFavorites(): Promise<PronunciationFavoritesResponse> {
+    const token = getStoredToken();
+
+    if (!token) {
+        throw new Error("Login required to view pronunciation favorites");
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/v1/pronunciation/favorites`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch pronunciation favorites");
+    }
+
+    return data;
+}
+
+export async function addPronunciationFavorite(
+    payload: PronunciationFavoriteRequest
+): Promise<PronunciationFavoriteResponse> {
+    const token = getStoredToken();
+
+    if (!token) {
+        throw new Error("Login required to save pronunciation favorites");
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/v1/pronunciation/favorites`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to save pronunciation favorite");
+    }
+
+    return data;
+}
+
+export async function removePronunciationFavorite(
+    favoriteId: string
+): Promise<PronunciationFavoriteResponse> {
+    const token = getStoredToken();
+
+    if (!token) {
+        throw new Error("Login required to remove pronunciation favorites");
+    }
+
+    const response = await fetch(
+        `${API_BASE_URL}/api/v1/pronunciation/favorites/${favoriteId}`,
+        {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to remove pronunciation favorite");
     }
 
     return data;
