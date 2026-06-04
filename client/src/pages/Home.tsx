@@ -60,11 +60,6 @@ function Home() {
                             <span>Logged-in users get history</span>
                         </div>
                     </div>
-
-                    <div className="status-box home-status">
-                        <strong>Backend status:</strong>
-                        <p>{backendStatus}</p>
-                    </div>
                 </div>
             </div>
         </section>
