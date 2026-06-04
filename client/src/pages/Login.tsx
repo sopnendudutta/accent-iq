@@ -1,4 +1,6 @@
 import { useState } from "react";
+import type { FormEvent } from "react";
+import { Link, useNavigate } from "react-router";
 import { loginUser } from "../services/api";
 import type { AuthUser } from "../types/auth";
 
@@ -6,19 +8,23 @@ type LoginProps = {
     onAuthSuccess: (user: AuthUser) => void;
 };
 
+type MessageType = "success" | "error" | "info";
+
 function Login({ onAuthSuccess }: LoginProps) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const navigate = useNavigate();
     const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState<MessageType>("info");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         setMessage("");
 
         if (!email.trim() || !password.trim()) {
+            setMessageType("error");
             setMessage("Please enter email and password.");
             return;
         }
@@ -40,11 +46,16 @@ function Login({ onAuthSuccess }: LoginProps) {
 
             if (user) {
                 onAuthSuccess(user);
+                navigate("/pronunciation", { replace: true });
+                return;
             }
 
+            setMessageType("success");
             setMessage(response.message || "Logged in successfully.");
         } catch (error) {
             console.error(error);
+
+            setMessageType("error");
 
             if (error instanceof Error) {
                 setMessage(error.message);
@@ -57,43 +68,85 @@ function Login({ onAuthSuccess }: LoginProps) {
     }
 
     return (
-        <section className="page">
-            <h1>Login</h1>
+        <section className="page auth-page">
+            <div className="auth-layout">
+                <div className="auth-benefits-panel">
+                    <span className="home-eyebrow">Welcome back</span>
 
-            <p>
-                Login is optional in V1. Guests can still use pronunciation analysis.
-            </p>
+                    <h1>Continue your pronunciation practice.</h1>
 
-            <form className="auth-form" onSubmit={handleSubmit}>
-                <label htmlFor="login-email">Email</label>
-                <input
-                    id="login-email"
-                    type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    placeholder="you@example.com"
-                />
+                    <p>
+                        Login to keep your AccentIQ practice history connected to your
+                        account and continue improving across English accents.
+                    </p>
 
-                <label htmlFor="login-password">Password</label>
-                <input
-                    id="login-password"
-                    type="password"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    placeholder="Your password"
-                />
+                    <div className="auth-benefit-list">
+                        <div>
+                            <strong>Save practice history</strong>
+                            <span>Review your recent pronunciation attempts.</span>
+                        </div>
 
-                <button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Logging in..." : "Login"}
-                </button>
-            </form>
+                        <div>
+                            <strong>Practice across accents</strong>
+                            <span>Use US, UK, Australian, and Indian English options.</span>
+                        </div>
 
-            {message && (
-                <div className="info-box">
-                    <strong>Status:</strong>
-                    <p>{message}</p>
+                        <div>
+                            <strong>Guest mode still works</strong>
+                            <span>You can practice without logging in too.</span>
+                        </div>
+                    </div>
                 </div>
-            )}
+
+                <div className="auth-card">
+                    <div className="auth-card-header">
+                        <span className="logo-mark">A</span>
+                        <div>
+                            <h2>Login</h2>
+                            <p>Access your AccentIQ account.</p>
+                        </div>
+                    </div>
+
+                    <form className="auth-form" onSubmit={handleSubmit}>
+                        <div className="form-field">
+                            <label htmlFor="login-email">Email</label>
+                            <input
+                                id="login-email"
+                                type="email"
+                                value={email}
+                                onChange={(event) => setEmail(event.target.value)}
+                                placeholder="you@example.com"
+                            />
+                        </div>
+
+                        <div className="form-field">
+                            <label htmlFor="login-password">Password</label>
+                            <input
+                                id="login-password"
+                                type="password"
+                                value={password}
+                                onChange={(event) => setPassword(event.target.value)}
+                                placeholder="Your password"
+                            />
+                        </div>
+
+                        <button type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? "Logging in..." : "Login"}
+                        </button>
+                    </form>
+
+                    {message && (
+                        <div className={`auth-message auth-message-${messageType}`}>
+                            <strong>Status:</strong>
+                            <p>{message}</p>
+                        </div>
+                    )}
+
+                    <p className="auth-switch-text">
+                        New to AccentIQ? <Link to="/register">Create an account</Link>
+                    </p>
+                </div>
+            </div>
         </section>
     );
 }

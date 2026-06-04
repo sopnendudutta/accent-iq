@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Routes, Route } from "react-router";
+import { Routes, Route, useLocation } from "react-router";
 
 import Navbar from "./components/layout/Navbar";
 
@@ -32,7 +32,7 @@ function App() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
-
+  const location = useLocation();
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem(THEME_STORAGE_KEY, theme);
@@ -99,24 +99,26 @@ function App() {
       />
 
       <main className="main-content">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/pronunciation" element={<Pronunciation />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/settings" element={<Settings />} />
+        <div className="route-transition" key={location.pathname}>
+          <Routes location={location}>
+            <Route path="/" element={<Home />} />
+            <Route path="/pronunciation" element={<Pronunciation />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/settings" element={<Settings />} />
 
-          <Route
-            path="/login"
-            element={<Login onAuthSuccess={handleAuthSuccess} />}
-          />
+            <Route
+              path="/login"
+              element={<Login onAuthSuccess={handleAuthSuccess} />}
+            />
 
-          <Route
-            path="/register"
-            element={<Register onAuthSuccess={handleAuthSuccess} />}
-          />
+            <Route
+              path="/register"
+              element={<Register onAuthSuccess={handleAuthSuccess} />}
+            />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </main>
     </div>
   );
