@@ -105,9 +105,9 @@ function Pronunciation() {
     const [historyActionMessage, setHistoryActionMessage] = useState("");
     const [historyActionType, setHistoryActionType] =
         useState<MessageType>("info");
-    const [userPreferences, setUserPreferences] = useState<AccentIQUserPreferences>(() =>
-        getUserPreferences()
-    );
+
+    const [userPreferences, setUserPreferences] =
+        useState<AccentIQUserPreferences>(() => getUserPreferences());
 
     const [favorites, setFavorites] = useState<PronunciationFavoriteItem[]>([]);
     const [favoritesMessage, setFavoritesMessage] = useState("");
@@ -129,6 +129,31 @@ function Pronunciation() {
         )
         : undefined;
 
+    const favoriteButtonLabel = isFavoriteSubmitting
+        ? currentResultFavorite
+            ? "Removing..."
+            : "Saving..."
+        : currentResultFavorite
+            ? "★ Saved"
+            : "☆ Save Favorite";
+
+    const favoriteButtonTitle = currentResultFavorite
+        ? "Remove this pronunciation from favorites"
+        : "Save this pronunciation to favorites";
+
+    const hasAuthToken = Boolean(localStorage.getItem("accentiq_token"));
+
+    const favoriteCountLabel =
+        favorites.length === 1
+            ? "1 saved favorite"
+            : `${favorites.length} saved favorites`;
+
+    const historyCountLabel =
+        history.length === 1 ? "1 saved item" : `${history.length} saved items`;
+
+    const hasHistoryFilters =
+        historySearchText.trim().length > 0 || historyAccentFilter !== "ALL";
+
     const historySearchQuery = historySearchText.trim().toLowerCase();
 
     const filteredHistory = history.filter((item) => {
@@ -136,13 +161,18 @@ function Pronunciation() {
             !historySearchQuery ||
             item.text.toLowerCase().includes(historySearchQuery) ||
             item.accent.toLowerCase().includes(historySearchQuery) ||
-            item.phonetic?.toLowerCase().includes(historySearchQuery);
+            Boolean(item.phonetic?.toLowerCase().includes(historySearchQuery));
 
         const matchesAccent =
             historyAccentFilter === "ALL" || item.accent === historyAccentFilter;
 
         return matchesText && matchesAccent;
     });
+
+    const filteredHistoryCountLabel =
+        filteredHistory.length === 1
+            ? "1 matching item"
+            : `${filteredHistory.length} matching items`;
 
     async function loadPronunciationHistory() {
         const token = localStorage.getItem("accentiq_token");
@@ -303,7 +333,9 @@ function Pronunciation() {
 
         if (!token) {
             setFavoriteActionType("info");
-            setFavoriteActionMessage("Login to save pronunciations to favorites.");
+            setFavoriteActionMessage(
+                "Login to save this pronunciation to your favorites."
+            );
             return;
         }
 
@@ -318,7 +350,9 @@ function Pronunciation() {
             if (currentResultFavorite) {
                 await removePronunciationFavorite(currentResultFavorite.id);
                 setFavoriteActionType("success");
-                setFavoriteActionMessage("Removed from favorites.");
+                setFavoriteActionMessage(
+                    "Removed from favorites. You can save it again anytime."
+                );
             } else {
                 await addPronunciationFavorite({
                     inputType: result.data.inputType,
@@ -331,7 +365,7 @@ function Pronunciation() {
                 });
 
                 setFavoriteActionType("success");
-                setFavoriteActionMessage("Saved to favorites.");
+                setFavoriteActionMessage("Saved to favorites. You can revisit it below.");
             }
 
             await loadPronunciationFavorites();
@@ -404,6 +438,11 @@ function Pronunciation() {
         } finally {
             setIsHistoryLoading(false);
         }
+    }
+
+    function handleResetHistoryFilters() {
+        setHistorySearchText("");
+        setHistoryAccentFilter("ALL");
     }
 
     async function handleClearHistory() {
@@ -595,15 +634,14 @@ function Pronunciation() {
                                 <div className="practice-status-row">
                                     <button
                                         type="button"
-                                        className="secondary-button"
+                                        className={`favorite-action-button ${currentResultFavorite ? "favorite-action-button-saved" : ""
+                                            }`}
                                         onClick={handleToggleResultFavorite}
                                         disabled={isFavoriteSubmitting}
+                                        aria-pressed={Boolean(currentResultFavorite)}
+                                        title={favoriteButtonTitle}
                                     >
-                                        {isFavoriteSubmitting
-                                            ? "Saving..."
-                                            : currentResultFavorite
-                                                ? "Remove Favorite"
-                                                : "Save Favorite"}
+                                        {favoriteButtonLabel}
                                     </button>
 
                                     <div className="accent-badge">{result.data.accent}</div>
@@ -694,111 +732,145 @@ function Pronunciation() {
                         </div>
                     )}
 
-                    <div className="history-section polished-history-section">
-                        <div className="history-header">
+                    <div className="history-section polished-history-section favorites-polish-section">
+                        <div className="history-header favorites-section-header">
                             <div>
                                 <span className="result-label">Saved favorites</span>
                                 <h2>Favorite Pronunciations</h2>
+
+                                <p className="section-supporting-text">
+                                    Keep your most useful pronunciation results in one easy place.
+                                </p>
                             </div>
 
-                            <button
-                                type="button"
-                                className="secondary-button"
-                                onClick={loadPronunciationFavorites}
-                                disabled={isFavoritesLoading}
-                            >
-                                {isFavoritesLoading ? "Loading..." : "Refresh Favorites"}
-                            </button>
+                            <div className="section-header-actions">
+                                <span className="section-count-pill">{favoriteCountLabel}</span>
+
+                                <button
+                                    type="button"
+                                    className="secondary-button"
+                                    onClick={loadPronunciationFavorites}
+                                    disabled={isFavoritesLoading}
+                                >
+                                    {isFavoritesLoading ? "Loading..." : "Refresh"}
+                                </button>
+                            </div>
                         </div>
 
                         {favoritesMessage && (
                             <p className="history-message">{favoritesMessage}</p>
                         )}
 
+                        {!isFavoritesLoading && favorites.length === 0 && (
+                            <div className="empty-state-card">
+                                <span className="empty-state-icon">⭐</span>
+
+                                <h3>
+                                    {hasAuthToken
+                                        ? "No favorites saved yet"
+                                        : "Login to save favorites"}
+                                </h3>
+
+                                <p>
+                                    {hasAuthToken
+                                        ? "Analyze a pronunciation result, then click Save Favorite to keep it here."
+                                        : "Guest users can analyze words, but favorites are saved only after login."}
+                                </p>
+                            </div>
+                        )}
+
                         {favorites.length > 0 && (
-                            <div className="history-list">
+                            <div className="favorites-grid">
                                 {favorites.map((item) => (
-                                    <div key={item.id} className="history-card">
-                                        <div className="history-card-header">
+                                    <div key={item.id} className="favorite-card">
+                                        <div className="favorite-card-top">
                                             <div>
-                                                <span className="result-label">Favorite</span>
+                                                <span className="result-label">Favorite word</span>
                                                 <h3>{item.text}</h3>
                                             </div>
 
-                                            <div className="practice-status-row">
-                                                <button
-                                                    type="button"
-                                                    className="secondary-button"
-                                                    onClick={() => handleRemoveFavorite(item.id)}
-                                                    disabled={isFavoritesLoading}
-                                                >
-                                                    Remove
-                                                </button>
-
-                                                <div className="accent-badge">{item.accent}</div>
-                                            </div>
+                                            <div className="accent-badge">{item.accent}</div>
                                         </div>
 
                                         {item.phonetic && (
-                                            <p>
-                                                <strong>Pronunciation:</strong> {item.phonetic}
-                                            </p>
+                                            <p className="favorite-pronunciation">{item.phonetic}</p>
                                         )}
 
-                                        {item.ipa && (
-                                            <p>
-                                                <strong>IPA:</strong> {item.ipa}
-                                            </p>
-                                        )}
+                                        <div className="favorite-detail-grid">
+                                            {item.ipa && (
+                                                <div className="favorite-detail-mini">
+                                                    <span>IPA</span>
+                                                    <strong>{item.ipa}</strong>
+                                                </div>
+                                            )}
 
-                                        {item.syllables && item.syllables.length > 0 && (
-                                            <p>
-                                                <strong>Syllables:</strong>{" "}
-                                                {item.syllables.join(" • ")}
-                                            </p>
-                                        )}
+                                            {item.syllables && item.syllables.length > 0 && (
+                                                <div className="favorite-detail-mini">
+                                                    <span>Syllables</span>
+                                                    <strong>{item.syllables.join(" • ")}</strong>
+                                                </div>
+                                            )}
+                                        </div>
 
                                         {item.mouthTip && (
-                                            <p>
-                                                <strong>Mouth tip:</strong> {item.mouthTip}
-                                            </p>
+                                            <div className="favorite-tip-box">
+                                                <span>Mouth tip</span>
+                                                <p>{item.mouthTip}</p>
+                                            </div>
                                         )}
 
                                         {item.exampleSentence && (
-                                            <p>
-                                                <strong>Example:</strong> {item.exampleSentence}
-                                            </p>
+                                            <div className="favorite-tip-box favorite-example-box">
+                                                <span>Example</span>
+                                                <p>{item.exampleSentence}</p>
+                                            </div>
                                         )}
 
-                                        <p className="history-date">
-                                            Favorited on {formatDate(item.createdAt)}
-                                        </p>
+                                        <div className="favorite-card-footer">
+                                            <span>Favorited on {formatDate(item.createdAt)}</span>
+
+                                            <button
+                                                type="button"
+                                                className="secondary-button danger-soft-button compact-danger-button"
+                                                onClick={() => handleRemoveFavorite(item.id)}
+                                                disabled={isFavoritesLoading}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         )}
                     </div>
 
-                    <div className="history-section polished-history-section">
-                        <div className="history-header">
+                    <div className="history-section polished-history-section history-polish-section">
+                        <div className="history-header history-section-header">
                             <div>
                                 <span className="result-label">Saved practice</span>
                                 <h2>Pronunciation History</h2>
+
+                                <p className="section-supporting-text">
+                                    Review your saved practice results, search by word, or filter by
+                                    accent.
+                                </p>
                             </div>
 
-                            <div className="practice-status-row">
+                            <div className="section-header-actions">
+                                <span className="section-count-pill">{historyCountLabel}</span>
+
                                 <button
                                     type="button"
                                     className="secondary-button"
                                     onClick={loadPronunciationHistory}
                                     disabled={isHistoryLoading}
                                 >
-                                    {isHistoryLoading ? "Loading..." : "Refresh History"}
+                                    {isHistoryLoading ? "Loading..." : "Refresh"}
                                 </button>
 
                                 <button
                                     type="button"
-                                    className="secondary-button"
+                                    className="secondary-button danger-soft-button"
                                     onClick={handleClearHistory}
                                     disabled={isHistoryLoading || history.length === 0}
                                 >
@@ -816,115 +888,165 @@ function Pronunciation() {
                             </div>
                         )}
 
+                        {!isHistoryLoading && history.length === 0 && (
+                            <div className="empty-state-card">
+                                <span className="empty-state-icon">📚</span>
+
+                                <h3>
+                                    {hasAuthToken
+                                        ? "No history saved yet"
+                                        : "Login to save pronunciation history"}
+                                </h3>
+
+                                <p>
+                                    {hasAuthToken
+                                        ? "Analyze a word while logged in and your practice result will appear here."
+                                        : "Guest users can practice freely, but history is saved only after login."}
+                                </p>
+                            </div>
+                        )}
+
                         {history.length > 0 && (
-                            <>
-                                <div className="form-grid-two">
-                                    <div className="form-field">
-                                        <label htmlFor="historySearch">Search history</label>
-                                        <input
-                                            id="historySearch"
-                                            type="text"
-                                            value={historySearchText}
-                                            onChange={(event) =>
-                                                setHistorySearchText(event.target.value)
-                                            }
-                                            placeholder="Search by text, accent, or pronunciation"
-                                        />
-                                    </div>
+                            <div className="history-toolbar">
+                                <div className="form-field">
+                                    <label htmlFor="historySearch">Search history</label>
 
-                                    <div className="form-field">
-                                        <label htmlFor="historyAccentFilter">
-                                            Filter by accent
-                                        </label>
-                                        <select
-                                            id="historyAccentFilter"
-                                            value={historyAccentFilter}
-                                            onChange={(event) =>
-                                                setHistoryAccentFilter(event.target.value)
-                                            }
-                                        >
-                                            <option value="ALL">All accents</option>
-
-                                            {accents.map((accent) => (
-                                                <option key={accent.value} value={accent.value}>
-                                                    {accent.label}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                    <input
+                                        id="historySearch"
+                                        type="text"
+                                        value={historySearchText}
+                                        onChange={(event) =>
+                                            setHistorySearchText(event.target.value)
+                                        }
+                                        placeholder="Search by word, accent, or pronunciation"
+                                    />
                                 </div>
 
-                                <p className="history-message">
-                                    Showing {filteredHistory.length} of {history.length} history
-                                    item{history.length === 1 ? "" : "s"}.
-                                </p>
-                            </>
+                                <div className="form-field">
+                                    <label htmlFor="historyAccentFilter">Filter by accent</label>
+
+                                    <select
+                                        id="historyAccentFilter"
+                                        value={historyAccentFilter}
+                                        onChange={(event) =>
+                                            setHistoryAccentFilter(event.target.value)
+                                        }
+                                    >
+                                        <option value="ALL">All accents</option>
+
+                                        {accents.map((accent) => (
+                                            <option key={accent.value} value={accent.value}>
+                                                {accent.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="history-toolbar-summary">
+                                    <span>{filteredHistoryCountLabel}</span>
+
+                                    <button
+                                        type="button"
+                                        className="secondary-button compact-reset-button"
+                                        onClick={handleResetHistoryFilters}
+                                        disabled={!hasHistoryFilters}
+                                    >
+                                        Reset Filters
+                                    </button>
+                                </div>
+                            </div>
                         )}
 
                         {history.length > 0 && filteredHistory.length === 0 && (
-                            <p className="history-message">
-                                No history items match your current search or filter.
-                            </p>
+                            <div className="empty-state-card">
+                                <span className="empty-state-icon">🔍</span>
+
+                                <h3>No matching history found</h3>
+
+                                <p>
+                                    Try another search term or reset your filters to view all saved
+                                    practice results.
+                                </p>
+
+                                <button
+                                    type="button"
+                                    className="secondary-button"
+                                    onClick={handleResetHistoryFilters}
+                                >
+                                    Reset Filters
+                                </button>
+                            </div>
                         )}
 
                         {filteredHistory.length > 0 && (
-                            <div className="history-list">
+                            <div className="history-timeline-list">
                                 {filteredHistory.map((item) => (
-                                    <div key={item.id} className="history-card">
-                                        <div className="history-card-header">
-                                            <div>
-                                                <span className="result-label">Text</span>
-                                                <h3>{item.text}</h3>
+                                    <div key={item.id} className="history-timeline-card">
+                                        <div className="history-timeline-marker" />
+
+                                        <div className="history-card-content">
+                                            <div className="history-card-header">
+                                                <div>
+                                                    <span className="result-label">Practice item</span>
+                                                    <h3>{item.text}</h3>
+                                                </div>
+
+                                                <div className="history-card-actions">
+                                                    <div className="accent-badge">{item.accent}</div>
+
+                                                    <button
+                                                        type="button"
+                                                        className="secondary-button danger-soft-button compact-danger-button"
+                                                        onClick={() => handleRemoveHistoryItem(item.id)}
+                                                        disabled={isHistoryLoading}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
                                             </div>
 
-                                            <div className="practice-status-row">
-                                                <button
-                                                    type="button"
-                                                    className="secondary-button"
-                                                    onClick={() => handleRemoveHistoryItem(item.id)}
-                                                    disabled={isHistoryLoading}
-                                                >
-                                                    Delete
-                                                </button>
+                                            <div className="history-detail-grid">
+                                                {item.phonetic && (
+                                                    <div className="history-detail-mini history-detail-main">
+                                                        <span>Pronunciation</span>
+                                                        <strong>{item.phonetic}</strong>
+                                                    </div>
+                                                )}
 
-                                                <div className="accent-badge">{item.accent}</div>
+                                                {item.syllables && item.syllables.length > 0 && (
+                                                    <div className="history-detail-mini">
+                                                        <span>Syllables</span>
+                                                        <strong>{item.syllables.join(" • ")}</strong>
+                                                    </div>
+                                                )}
                                             </div>
+
+                                            {item.tips &&
+                                                item.tips.length > 0 &&
+                                                userPreferences.showTipsByDefault && (
+                                                    <div className="history-tip-box">
+                                                        <span>Tips</span>
+
+                                                        <ul>
+                                                            {item.tips.map((tip) => (
+                                                                <li key={tip}>{tip}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                            {item.tips &&
+                                                item.tips.length > 0 &&
+                                                !userPreferences.showTipsByDefault && (
+                                                    <p className="preference-hidden-note">
+                                                        Tips hidden by your Settings preference.
+                                                    </p>
+                                                )}
+
+                                            <p className="history-date">
+                                                Saved on {formatDate(item.createdAt)}
+                                            </p>
                                         </div>
-
-                                        {item.phonetic && (
-                                            <p>
-                                                <strong>Pronunciation:</strong> {item.phonetic}
-                                            </p>
-                                        )}
-
-                                        {item.syllables && item.syllables.length > 0 && (
-                                            <p>
-                                                <strong>Syllables:</strong>{" "}
-                                                {item.syllables.join(" • ")}
-                                            </p>
-                                        )}
-
-                                        {item.tips &&
-                                            item.tips.length > 0 &&
-                                            userPreferences.showTipsByDefault && (
-                                                <ul>
-                                                    {item.tips.map((tip) => (
-                                                        <li key={tip}>{tip}</li>
-                                                    ))}
-                                                </ul>
-                                            )}
-
-                                        {item.tips &&
-                                            item.tips.length > 0 &&
-                                            !userPreferences.showTipsByDefault && (
-                                                <p className="preference-hidden-note">
-                                                    Tips hidden by your Settings preference.
-                                                </p>
-                                            )}
-
-                                        <p className="history-date">
-                                            Saved on {formatDate(item.createdAt)}
-                                        </p>
                                     </div>
                                 ))}
                             </div>
