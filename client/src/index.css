@@ -1977,6 +1977,56 @@ li {
   justify-content: center;
 }
 
+/* Final page consistency polish */
+
+.settings-card,
+.settings-theme-card,
+.settings-feature-card,
+.about-summary-card,
+.about-card,
+.about-panel,
+.about-safety-note,
+.not-found-card {
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.settings-feature-card:hover,
+.about-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-strong);
+}
+
+.settings-feature-card span,
+.about-card span {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+  background: var(--color-coral-soft);
+}
+
+.about-safety-note,
+.guest-settings-box {
+  border-color: color-mix(in srgb, var(--color-coral) 24%, var(--color-border) 76%);
+}
+
+.not-found-card {
+  overflow: hidden;
+}
+
+.not-found-code {
+  user-select: none;
+}
+
+
 
 /* Final UI safety cleanup */
 
@@ -1995,7 +2045,17 @@ body {
 .result-card,
 .guidance-box,
 .practice-box,
-.history-card {
+.history-card,
+.settings-hero,
+.settings-theme-card,
+.settings-card,
+.settings-feature-card,
+.about-hero,
+.about-summary-card,
+.about-card,
+.about-panel,
+.about-safety-note,
+.not-found-card {
   min-width: 0;
 }
 
@@ -2235,6 +2295,10 @@ textarea {
 
   .quick-example-row {
     justify-content: flex-start;
+  }
+
+  .settings-side-column {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -2482,7 +2546,17 @@ textarea {
   .practice-form-card,
   .side-info-card,
   .result-box,
-  .history-section {
+  .history-section,
+  .settings-hero,
+  .settings-theme-card,
+  .settings-card,
+  .settings-feature-card,
+  .about-hero,
+  .about-summary-card,
+  .about-card,
+  .about-panel,
+  .about-safety-note,
+  .not-found-card {
     padding: 16px;
   }
 }
