@@ -42,6 +42,11 @@ router.get(
     authMiddleware,
     pronunciationController.getHistoryById
 );
+router.delete(
+    "/history",
+    authMiddleware,
+    pronunciationController.clearHistory
+);
 
 router.delete(
     "/history/:id",

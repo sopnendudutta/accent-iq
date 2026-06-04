@@ -3,10 +3,12 @@ import type { FormEvent } from "react";
 import {
     addPronunciationFavorite,
     analyzePronunciation,
+    clearPronunciationHistory,
     getPronunciationFavorites,
     getPronunciationHistory,
     getPronunciationOptions,
     removePronunciationFavorite,
+    removePronunciationHistoryItem,
 } from "../services/api";
 import type {
     AccentOption,
@@ -45,6 +47,11 @@ function Pronunciation() {
     const [history, setHistory] = useState<PronunciationHistoryItem[]>([]);
     const [historyMessage, setHistoryMessage] = useState("");
     const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+    const [historySearchText, setHistorySearchText] = useState("");
+    const [historyAccentFilter, setHistoryAccentFilter] = useState("ALL");
+    const [historyActionMessage, setHistoryActionMessage] = useState("");
+    const [historyActionType, setHistoryActionType] =
+        useState<MessageType>("info");
 
     const [favorites, setFavorites] = useState<PronunciationFavoriteItem[]>([]);
     const [favoritesMessage, setFavoritesMessage] = useState("");
@@ -65,6 +72,21 @@ function Pronunciation() {
                 favorite.accent === result.data.accent
         )
         : undefined;
+
+    const historySearchQuery = historySearchText.trim().toLowerCase();
+
+    const filteredHistory = history.filter((item) => {
+        const matchesText =
+            !historySearchQuery ||
+            item.text.toLowerCase().includes(historySearchQuery) ||
+            item.accent.toLowerCase().includes(historySearchQuery) ||
+            item.phonetic?.toLowerCase().includes(historySearchQuery);
+
+        const matchesAccent =
+            historyAccentFilter === "ALL" || item.accent === historyAccentFilter;
+
+        return matchesText && matchesAccent;
+    });
 
     async function loadPronunciationHistory() {
         const token = localStorage.getItem("accentiq_token");
@@ -161,6 +183,7 @@ function Pronunciation() {
 
         setFormMessage("");
         setFavoriteActionMessage("");
+        setHistoryActionMessage("");
         setResult(null);
 
         const cleanedText = text.trim();
@@ -288,6 +311,86 @@ function Pronunciation() {
         }
     }
 
+    async function handleRemoveHistoryItem(historyId: string) {
+        const shouldDelete = window.confirm(
+            "Delete this pronunciation history item?"
+        );
+
+        if (!shouldDelete) {
+            return;
+        }
+
+        try {
+            setIsHistoryLoading(true);
+            setHistoryActionMessage("");
+
+            await removePronunciationHistoryItem(historyId);
+
+            setHistoryActionType("success");
+            setHistoryActionMessage("History item deleted successfully.");
+
+            await loadPronunciationHistory();
+        } catch (error) {
+            console.error(error);
+            setHistoryActionType("error");
+
+            if (error instanceof Error) {
+                setHistoryActionMessage(error.message);
+            } else {
+                setHistoryActionMessage("Could not delete history item.");
+            }
+        } finally {
+            setIsHistoryLoading(false);
+        }
+    }
+
+    async function handleClearHistory() {
+        if (history.length === 0) {
+            setHistoryActionType("info");
+            setHistoryActionMessage("There is no history to clear.");
+            return;
+        }
+
+        const shouldClear = window.confirm(
+            "Clear all pronunciation history? This cannot be undone."
+        );
+
+        if (!shouldClear) {
+            return;
+        }
+
+        try {
+            setIsHistoryLoading(true);
+            setHistoryActionMessage("");
+
+            const response = await clearPronunciationHistory();
+
+            setHistory([]);
+            setHistorySearchText("");
+            setHistoryAccentFilter("ALL");
+
+            setHistoryMessage(
+                "No pronunciation history yet. Analyze a word to save your first item."
+            );
+            setHistoryActionType("success");
+            setHistoryActionMessage(
+                `Cleared ${response.data.count} history item${response.data.count === 1 ? "" : "s"
+                }.`
+            );
+        } catch (error) {
+            console.error(error);
+            setHistoryActionType("error");
+
+            if (error instanceof Error) {
+                setHistoryActionMessage(error.message);
+            } else {
+                setHistoryActionMessage("Could not clear pronunciation history.");
+            }
+        } finally {
+            setIsHistoryLoading(false);
+        }
+    }
+
     return (
         <section className="page pronunciation-page">
             <div className="pronunciation-hero">
@@ -329,7 +432,9 @@ function Pronunciation() {
                                     <select
                                         id="inputType"
                                         value={selectedInputType}
-                                        onChange={(event) => setSelectedInputType(event.target.value)}
+                                        onChange={(event) =>
+                                            setSelectedInputType(event.target.value)
+                                        }
                                     >
                                         {inputTypes.map((inputType) => (
                                             <option
@@ -349,7 +454,9 @@ function Pronunciation() {
                                     <select
                                         id="accent"
                                         value={selectedAccent}
-                                        onChange={(event) => setSelectedAccent(event.target.value)}
+                                        onChange={(event) =>
+                                            setSelectedAccent(event.target.value)
+                                        }
                                     >
                                         {accents.map((accent) => (
                                             <option
@@ -611,21 +718,90 @@ function Pronunciation() {
                                 <h2>Pronunciation History</h2>
                             </div>
 
-                            <button
-                                type="button"
-                                className="secondary-button"
-                                onClick={loadPronunciationHistory}
-                                disabled={isHistoryLoading}
-                            >
-                                {isHistoryLoading ? "Loading..." : "Refresh History"}
-                            </button>
+                            <div className="practice-status-row">
+                                <button
+                                    type="button"
+                                    className="secondary-button"
+                                    onClick={loadPronunciationHistory}
+                                    disabled={isHistoryLoading}
+                                >
+                                    {isHistoryLoading ? "Loading..." : "Refresh History"}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="secondary-button"
+                                    onClick={handleClearHistory}
+                                    disabled={isHistoryLoading || history.length === 0}
+                                >
+                                    Clear All
+                                </button>
+                            </div>
                         </div>
 
                         {historyMessage && <p className="history-message">{historyMessage}</p>}
 
+                        {historyActionMessage && (
+                            <div className={`inline-message inline-message-${historyActionType}`}>
+                                <strong>History:</strong>
+                                <p>{historyActionMessage}</p>
+                            </div>
+                        )}
+
                         {history.length > 0 && (
+                            <>
+                                <div className="form-grid-two">
+                                    <div className="form-field">
+                                        <label htmlFor="historySearch">Search history</label>
+                                        <input
+                                            id="historySearch"
+                                            type="text"
+                                            value={historySearchText}
+                                            onChange={(event) =>
+                                                setHistorySearchText(event.target.value)
+                                            }
+                                            placeholder="Search by text, accent, or pronunciation"
+                                        />
+                                    </div>
+
+                                    <div className="form-field">
+                                        <label htmlFor="historyAccentFilter">
+                                            Filter by accent
+                                        </label>
+                                        <select
+                                            id="historyAccentFilter"
+                                            value={historyAccentFilter}
+                                            onChange={(event) =>
+                                                setHistoryAccentFilter(event.target.value)
+                                            }
+                                        >
+                                            <option value="ALL">All accents</option>
+
+                                            {accents.map((accent) => (
+                                                <option key={accent.value} value={accent.value}>
+                                                    {accent.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <p className="history-message">
+                                    Showing {filteredHistory.length} of {history.length} history
+                                    item{history.length === 1 ? "" : "s"}.
+                                </p>
+                            </>
+                        )}
+
+                        {history.length > 0 && filteredHistory.length === 0 && (
+                            <p className="history-message">
+                                No history items match your current search or filter.
+                            </p>
+                        )}
+
+                        {filteredHistory.length > 0 && (
                             <div className="history-list">
-                                {history.map((item) => (
+                                {filteredHistory.map((item) => (
                                     <div key={item.id} className="history-card">
                                         <div className="history-card-header">
                                             <div>
@@ -633,7 +809,18 @@ function Pronunciation() {
                                                 <h3>{item.text}</h3>
                                             </div>
 
-                                            <div className="accent-badge">{item.accent}</div>
+                                            <div className="practice-status-row">
+                                                <button
+                                                    type="button"
+                                                    className="secondary-button"
+                                                    onClick={() => handleRemoveHistoryItem(item.id)}
+                                                    disabled={isHistoryLoading}
+                                                >
+                                                    Delete
+                                                </button>
+
+                                                <div className="accent-badge">{item.accent}</div>
+                                            </div>
                                         </div>
 
                                         {item.phonetic && (
@@ -680,7 +867,9 @@ function Pronunciation() {
                             <div className="feature-list">
                                 <div className="feature-row">
                                     <span>Guest analysis</span>
-                                    <strong>{features.guestAnalysis ? "Available" : "Coming soon"}</strong>
+                                    <strong>
+                                        {features.guestAnalysis ? "Available" : "Coming soon"}
+                                    </strong>
                                 </div>
 
                                 <div className="feature-row">
@@ -692,17 +881,23 @@ function Pronunciation() {
 
                                 <div className="feature-row">
                                     <span>Favorites</span>
-                                    <strong>{features.favorites ? "Available" : "Coming soon"}</strong>
+                                    <strong>
+                                        {features.favorites ? "Available" : "Coming soon"}
+                                    </strong>
                                 </div>
 
                                 <div className="feature-row">
                                     <span>Voice input</span>
-                                    <strong>{features.voiceInput ? "Available" : "Coming soon"}</strong>
+                                    <strong>
+                                        {features.voiceInput ? "Available" : "Coming soon"}
+                                    </strong>
                                 </div>
 
                                 <div className="feature-row">
                                     <span>Audio scoring</span>
-                                    <strong>{features.audioScoring ? "Available" : "Coming soon"}</strong>
+                                    <strong>
+                                        {features.audioScoring ? "Available" : "Coming soon"}
+                                    </strong>
                                 </div>
 
                                 <div className="feature-row">

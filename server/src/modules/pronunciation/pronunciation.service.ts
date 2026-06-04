@@ -229,6 +229,16 @@ export const pronunciationService = {
         return historyItem;
     },
 
+    clearHistory: async (userId: string) => {
+        const deletedHistory = await prisma.pronunciationHistory.deleteMany({
+            where: {
+                userId,
+            },
+        });
+
+        return deletedHistory;
+    },
+
     addFavorite: async (
         payload: FavoritePronunciationInput,
         userId: string

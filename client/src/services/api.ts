@@ -8,11 +8,13 @@ import type {
 } from "../types/auth";
 
 import type {
+    ClearPronunciationHistoryResponse,
     PronunciationAnalyzeRequest,
     PronunciationAnalyzeResponse,
     PronunciationFavoriteRequest,
     PronunciationFavoriteResponse,
     PronunciationFavoritesResponse,
+    PronunciationHistoryItemResponse,
     PronunciationHistoryResponse,
     PronunciationOptionsResponse,
 } from "../types/pronunciation";
@@ -89,6 +91,57 @@ export async function getPronunciationHistory(): Promise<PronunciationHistoryRes
 
     if (!response.ok) {
         throw new Error(data.message || "Failed to fetch pronunciation history");
+    }
+
+    return data;
+}
+
+export async function removePronunciationHistoryItem(
+    historyId: string
+): Promise<PronunciationHistoryItemResponse> {
+    const token = getStoredToken();
+
+    if (!token) {
+        throw new Error("Login required to remove pronunciation history");
+    }
+
+    const response = await fetch(
+        `${API_BASE_URL}/api/v1/pronunciation/history/${historyId}`,
+        {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to remove pronunciation history item");
+    }
+
+    return data;
+}
+
+export async function clearPronunciationHistory(): Promise<ClearPronunciationHistoryResponse> {
+    const token = getStoredToken();
+
+    if (!token) {
+        throw new Error("Login required to clear pronunciation history");
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/v1/pronunciation/history`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to clear pronunciation history");
     }
 
     return data;

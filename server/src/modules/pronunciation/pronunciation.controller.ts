@@ -179,6 +179,32 @@ export const pronunciationController = {
             next(error);
         }
     },
+    clearHistory: async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const userId = getUserId(req);
+
+            if (!userId) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Unauthorized",
+                });
+            }
+
+            const deletedHistory = await pronunciationService.clearHistory(userId);
+
+            res.status(200).json({
+                success: true,
+                message: "Pronunciation history cleared successfully",
+                data: deletedHistory,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
 
     addFavorite: async (
         req: Request,

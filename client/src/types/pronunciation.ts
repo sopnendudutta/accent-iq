@@ -91,6 +91,19 @@ export type PronunciationHistoryResponse = {
     message: string;
     data: PronunciationHistoryItem[];
 };
+export type PronunciationHistoryItemResponse = {
+    success: boolean;
+    message: string;
+    data: PronunciationHistoryItem;
+};
+
+export type ClearPronunciationHistoryResponse = {
+    success: boolean;
+    message: string;
+    data: {
+        count: number;
+    };
+};
 
 export type PronunciationFavoriteRequest = Omit<
     PronunciationResultData,
