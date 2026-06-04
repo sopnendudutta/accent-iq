@@ -1,5 +1,18 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import type { AuthUser } from "../types/auth";
+import {
+    DEFAULT_ACCENT_OPTIONS,
+    PRACTICE_GOAL_OPTIONS,
+    getUserPreferences,
+    resetUserPreferences,
+    saveUserPreferences,
+} from "../utils/preferences";
+import type {
+    AccentIQUserPreferences,
+    DefaultAccent,
+    PracticeGoal,
+} from "../utils/preferences";
 
 type ThemeMode = "light" | "dark";
 
@@ -35,6 +48,13 @@ function getInitials(user: AuthUser | null) {
     return label.slice(0, 2).toUpperCase();
 }
 
+function getPracticeGoalLabel(goal: PracticeGoal) {
+    return (
+        PRACTICE_GOAL_OPTIONS.find((option) => option.value === goal)?.label ||
+        "Casual"
+    );
+}
+
 function Settings({
     user,
     isAuthLoading,
@@ -44,11 +64,39 @@ function Settings({
 }: SettingsProps) {
     const navigate = useNavigate();
 
+    const [preferences, setPreferences] = useState<AccentIQUserPreferences>(() =>
+        getUserPreferences()
+    );
+
+    const [preferencesMessage, setPreferencesMessage] = useState(
+        "These preferences are saved on this device."
+    );
+
     const provider = user && "provider" in user ? String(user.provider) : "EMAIL";
 
     async function handleSettingsLogout() {
         await onLogout();
         navigate("/", { replace: true });
+    }
+
+    function updatePreferences(updatedPreferences: Partial<AccentIQUserPreferences>) {
+        setPreferences((currentPreferences) => ({
+            ...currentPreferences,
+            ...updatedPreferences,
+        }));
+
+        setPreferencesMessage("You have unsaved preference changes.");
+    }
+
+    function handleSavePreferences() {
+        saveUserPreferences(preferences);
+        setPreferencesMessage("Preferences saved successfully.");
+    }
+
+    function handleResetPreferences() {
+        const defaultPreferences = resetUserPreferences();
+        setPreferences(defaultPreferences);
+        setPreferencesMessage("Preferences reset to AccentIQ defaults.");
     }
 
     return (
@@ -60,7 +108,7 @@ function Settings({
 
                     <p>
                         View your account status, switch between light and dark mode, and
-                        see what profile features are planned for future versions.
+                        customize simple pronunciation practice preferences.
                     </p>
                 </div>
 
@@ -191,7 +239,9 @@ function Settings({
 
                             <div>
                                 <strong>Pronunciation history</strong>
-                                <span>{user ? "Available for your account" : "Login required"}</span>
+                                <span>
+                                    {user ? "Available for your account" : "Login required"}
+                                </span>
                             </div>
 
                             <div>
@@ -206,24 +256,145 @@ function Settings({
                         <h2>Pronunciation defaults</h2>
 
                         <p>
-                            In a future version, this section can let users choose their
-                            default accent, saved practice goal, and preferred practice style.
+                            Choose a default accent, practice goal, and how much guidance
+                            AccentIQ should show when you analyze a word.
                         </p>
 
-                        <div className="settings-preference-list">
-                            <div>
-                                <strong>Default accent</strong>
-                                <span>Coming soon</span>
+                        <div className="settings-preferences-form">
+                            <div className="form-grid-two">
+                                <div className="form-field">
+                                    <label htmlFor="defaultAccent">Default accent</label>
+
+                                    <select
+                                        id="defaultAccent"
+                                        value={preferences.defaultAccent}
+                                        onChange={(event) =>
+                                            updatePreferences({
+                                                defaultAccent: event.target.value as DefaultAccent,
+                                            })
+                                        }
+                                    >
+                                        {DEFAULT_ACCENT_OPTIONS.map((accent) => (
+                                            <option key={accent.value} value={accent.value}>
+                                                {accent.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="form-field">
+                                    <label htmlFor="practiceGoal">Practice goal</label>
+
+                                    <select
+                                        id="practiceGoal"
+                                        value={preferences.practiceGoal}
+                                        onChange={(event) =>
+                                            updatePreferences({
+                                                practiceGoal: event.target.value as PracticeGoal,
+                                            })
+                                        }
+                                    >
+                                        {PRACTICE_GOAL_OPTIONS.map((goal) => (
+                                            <option key={goal.value} value={goal.value}>
+                                                {goal.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
-                            <div>
-                                <strong>Practice reminder</strong>
-                                <span>Coming soon</span>
+                            <label
+                                className="settings-checkbox-row"
+                                htmlFor="showTipsByDefault"
+                            >
+                                <input
+                                    id="showTipsByDefault"
+                                    type="checkbox"
+                                    checked={preferences.showTipsByDefault}
+                                    onChange={(event) =>
+                                        updatePreferences({
+                                            showTipsByDefault: event.target.checked,
+                                        })
+                                    }
+                                />
+
+                                <span>
+                                    <strong>Show detailed tips by default</strong>
+                                    <small>
+                                        Turn this off if you prefer a cleaner result card.
+                                    </small>
+                                </span>
+                            </label>
+
+                            <label
+                                className="settings-checkbox-row"
+                                htmlFor="rememberLastAccent"
+                            >
+                                <input
+                                    id="rememberLastAccent"
+                                    type="checkbox"
+                                    checked={preferences.rememberLastAccent}
+                                    onChange={(event) =>
+                                        updatePreferences({
+                                            rememberLastAccent: event.target.checked,
+                                        })
+                                    }
+                                />
+
+                                <span>
+                                    <strong>Remember my last used accent</strong>
+                                    <small>
+                                        When enabled, your most recently used accent opens first.
+                                    </small>
+                                </span>
+                            </label>
+
+                            <div className="settings-preference-summary">
+                                <div>
+                                    <span>Default accent</span>
+                                    <strong>{preferences.defaultAccent}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Practice goal</span>
+                                    <strong>{getPracticeGoalLabel(preferences.practiceGoal)}</strong>
+                                </div>
+
+                                <div>
+                                    <span>Detailed tips</span>
+                                    <strong>
+                                        {preferences.showTipsByDefault ? "Shown" : "Hidden"}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Last accent</span>
+                                    <strong>
+                                        {preferences.rememberLastAccent
+                                            ? preferences.lastUsedAccent || "Not used yet"
+                                            : "Disabled"}
+                                    </strong>
+                                </div>
                             </div>
 
-                            <div>
-                                <strong>Saved favorites</strong>
-                                <span>Coming soon</span>
+                            <p className="history-message">{preferencesMessage}</p>
+
+                            <div className="settings-actions">
+                                <button
+                                    type="button"
+                                    className="primary-cta"
+                                    onClick={handleSavePreferences}
+                                >
+                                    Save Preferences
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="secondary-button"
+                                    onClick={handleResetPreferences}
+                                >
+                                    Reset Defaults
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -247,11 +418,11 @@ function Settings({
                     </div>
 
                     <div className="settings-card compact-settings-card">
-                        <span className="result-label">Security note</span>
-                        <h3>Account-first features</h3>
+                        <span className="result-label">Preference storage</span>
+                        <h3>Local device</h3>
                         <p>
-                            History and profile features should stay connected to logged-in
-                            users only.
+                            These V1 preferences use localStorage, so no backend or Prisma
+                            changes are needed.
                         </p>
                     </div>
                 </aside>
@@ -261,7 +432,7 @@ function Settings({
                 <div className="settings-feature-card">
                     <span>👤</span>
                     <h3>Profile editing</h3>
-                    <p>Update name, photo, and personal practice preferences later.</p>
+                    <p>Update name, photo, and advanced profile preferences later.</p>
                 </div>
 
                 <div className="settings-feature-card">

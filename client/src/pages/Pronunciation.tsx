@@ -10,6 +10,7 @@ import {
     removePronunciationFavorite,
     removePronunciationHistoryItem,
 } from "../services/api";
+
 import type {
     AccentOption,
     InputTypeOption,
@@ -20,9 +21,61 @@ import type {
     PronunciationLimits,
 } from "../types/pronunciation";
 
+import {
+    getUserPreferences,
+    saveLastUsedAccent,
+} from "../utils/preferences";
+
+import type {
+    AccentIQUserPreferences,
+    PracticeGoal,
+} from "../utils/preferences";
+
 type MessageType = "success" | "error" | "info";
 
 const quickExamples = ["schedule", "comfortable", "water", "development"];
+
+function getPreferredAccent(
+    availableAccents: AccentOption[],
+    preferences: AccentIQUserPreferences
+) {
+    const enabledAccents = availableAccents.filter((accent) => accent.enabled);
+    const enabledAccentValues = enabledAccents.map((accent) => accent.value);
+
+    if (enabledAccents.length === 0) {
+        return "";
+    }
+
+    if (
+        preferences.rememberLastAccent &&
+        preferences.lastUsedAccent &&
+        enabledAccentValues.includes(preferences.lastUsedAccent)
+    ) {
+        return preferences.lastUsedAccent;
+    }
+
+    if (enabledAccentValues.includes(preferences.defaultAccent)) {
+        return preferences.defaultAccent;
+    }
+
+    if (enabledAccentValues.includes("US")) {
+        return "US";
+    }
+
+    return enabledAccents[0].value;
+}
+
+function getPracticeGoalLabel(goal: PracticeGoal) {
+    if (goal === "REGULAR") {
+        return "Regular";
+    }
+
+    if (goal === "INTENSIVE") {
+        return "Intensive";
+    }
+
+    return "Casual";
+}
 
 function Pronunciation() {
     const [accents, setAccents] = useState<AccentOption[]>([]);
@@ -52,6 +105,9 @@ function Pronunciation() {
     const [historyActionMessage, setHistoryActionMessage] = useState("");
     const [historyActionType, setHistoryActionType] =
         useState<MessageType>("info");
+    const [userPreferences, setUserPreferences] = useState<AccentIQUserPreferences>(() =>
+        getUserPreferences()
+    );
 
     const [favorites, setFavorites] = useState<PronunciationFavoriteItem[]>([]);
     const [favoritesMessage, setFavoritesMessage] = useState("");
@@ -160,9 +216,13 @@ function Pronunciation() {
                 setLimits(response.data.limits);
                 setFeatures(response.data.features);
 
-                if (response.data.accents.length > 0) {
-                    setSelectedAccent(response.data.accents[0].value);
-                }
+                const savedPreferences = getUserPreferences();
+
+                setUserPreferences(savedPreferences);
+
+                setSelectedAccent(
+                    getPreferredAccent(response.data.accents, savedPreferences)
+                );
 
                 setStatusType("success");
                 setStatus("Pronunciation options loaded successfully.");
@@ -216,6 +276,8 @@ function Pronunciation() {
             });
 
             setResult(response);
+            saveLastUsedAccent(selectedAccent);
+            setUserPreferences(getUserPreferences());
             setFormMessageType("success");
             setFormMessage(response.message || "Pronunciation analyzed successfully.");
 
@@ -593,11 +655,17 @@ function Pronunciation() {
                                     {result.data.guidance.commonMistake}
                                 </p>
 
-                                <ul>
-                                    {result.data.guidance.tips.map((tip) => (
-                                        <li key={tip}>{tip}</li>
-                                    ))}
-                                </ul>
+                                {userPreferences.showTipsByDefault ? (
+                                    <ul>
+                                        {result.data.guidance.tips.map((tip) => (
+                                            <li key={tip}>{tip}</li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="preference-hidden-note">
+                                        Detailed tips are hidden by your Settings preference.
+                                    </p>
+                                )}
                             </div>
 
                             <div className="practice-box">
@@ -836,13 +904,23 @@ function Pronunciation() {
                                             </p>
                                         )}
 
-                                        {item.tips && item.tips.length > 0 && (
-                                            <ul>
-                                                {item.tips.map((tip) => (
-                                                    <li key={tip}>{tip}</li>
-                                                ))}
-                                            </ul>
-                                        )}
+                                        {item.tips &&
+                                            item.tips.length > 0 &&
+                                            userPreferences.showTipsByDefault && (
+                                                <ul>
+                                                    {item.tips.map((tip) => (
+                                                        <li key={tip}>{tip}</li>
+                                                    ))}
+                                                </ul>
+                                            )}
+
+                                        {item.tips &&
+                                            item.tips.length > 0 &&
+                                            !userPreferences.showTipsByDefault && (
+                                                <p className="preference-hidden-note">
+                                                    Tips hidden by your Settings preference.
+                                                </p>
+                                            )}
 
                                         <p className="history-date">
                                             Saved on {formatDate(item.createdAt)}
@@ -858,6 +936,38 @@ function Pronunciation() {
                     <div className={`side-info-card side-info-card-${statusType}`}>
                         <span className="result-label">Options status</span>
                         <p>{status}</p>
+                    </div>
+
+                    <div className="side-info-card">
+                        <span className="result-label">Your preferences</span>
+
+                        <div className="feature-list">
+                            <div className="feature-row">
+                                <span>Default accent</span>
+                                <strong>{userPreferences.defaultAccent}</strong>
+                            </div>
+
+                            <div className="feature-row">
+                                <span>Practice goal</span>
+                                <strong>{getPracticeGoalLabel(userPreferences.practiceGoal)}</strong>
+                            </div>
+
+                            <div className="feature-row">
+                                <span>Detailed tips</span>
+                                <strong>
+                                    {userPreferences.showTipsByDefault ? "Shown" : "Hidden"}
+                                </strong>
+                            </div>
+
+                            <div className="feature-row">
+                                <span>Last accent</span>
+                                <strong>
+                                    {userPreferences.rememberLastAccent
+                                        ? userPreferences.lastUsedAccent || "Not used yet"
+                                        : "Disabled"}
+                                </strong>
+                            </div>
+                        </div>
                     </div>
 
                     {features && (

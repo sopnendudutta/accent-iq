@@ -2560,3 +2560,132 @@ textarea {
     padding: 16px;
   }
 }
+
+/* Checkpoint 14: Settings preferences */
+
+.settings-preferences-form {
+  margin-top: 22px;
+  display: grid;
+  gap: 14px;
+}
+
+.settings-preferences-form .form-field {
+  display: grid;
+  gap: 8px;
+}
+
+.settings-preferences-form label {
+  font-weight: 800;
+  color: var(--color-heading);
+}
+
+.settings-preferences-form select {
+  width: 100%;
+  padding: 13px 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+
+  font-size: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.settings-preferences-form select:focus {
+  border-color: var(--color-coral);
+  box-shadow: 0 0 0 4px var(--color-coral-soft);
+}
+
+.settings-checkbox-row {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-soft);
+
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  cursor: pointer;
+}
+
+.settings-checkbox-row input {
+  width: 18px;
+  height: 18px;
+  min-height: auto;
+  margin-top: 3px;
+  accent-color: var(--color-coral);
+  flex: 0 0 auto;
+}
+
+.settings-checkbox-row span {
+  display: grid;
+  gap: 5px;
+}
+
+.settings-checkbox-row strong {
+  color: var(--color-heading);
+  font-size: 15px;
+}
+
+.settings-checkbox-row small {
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.settings-preference-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.settings-preference-summary div {
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-soft);
+}
+
+.settings-preference-summary span {
+  display: block;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.settings-preference-summary strong {
+  display: block;
+  margin-top: 7px;
+  color: var(--color-heading);
+  font-size: 15px;
+}
+
+.preference-hidden-note {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-coral-soft);
+  color: var(--color-heading);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+@media (max-width: 820px) {
+  .settings-preference-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .settings-preference-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-checkbox-row {
+    padding: 14px;
+  }
+}
