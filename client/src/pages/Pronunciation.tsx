@@ -113,7 +113,7 @@ function Pronunciation() {
         useState<BrowserSpeechRecognitionStatus>("idle");
 
     const [voiceMessage, setVoiceMessage] = useState(
-        "Speak a word or short phrase, then review the text before analyzing."
+        "Use voice-to-text to fill the box, then review it before analyzing."
     );
     const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
     const [status, setStatus] = useState("Loading pronunciation options...");
@@ -312,14 +312,14 @@ function Pronunciation() {
         if (!supported) {
             setVoiceStatus("unsupported");
             setVoiceMessage(
-                "Voice input is not supported in this browser yet. You can still type manually."
+                "Voice-to-text is not supported in this browser yet. You can still type manually."
             );
             return;
         }
 
         setVoiceStatus("idle");
         setVoiceMessage(
-            "Speak a word or short phrase, then review the text before analyzing."
+            "Use voice-to-text to fill the box, then review it before analyzing."
         );
     }, []);
 
@@ -354,7 +354,7 @@ function Pronunciation() {
             setIsSpeechSupported(false);
             setVoiceStatus("unsupported");
             setVoiceMessage(
-                "Voice input is not supported in this browser yet. You can still type manually."
+                "Voice-to-text is not supported in this browser yet. You can still type manually."
             );
             return;
         }
@@ -376,7 +376,7 @@ function Pronunciation() {
 
         recognition.onstart = () => {
             setVoiceStatus("listening");
-            setVoiceMessage("Listening... speak clearly.");
+            setVoiceMessage("Listening... speak one word or a short phrase.");
         };
 
         recognition.onresult = (event) => {
@@ -445,13 +445,13 @@ function Pronunciation() {
             if (event.error === "network") {
                 setVoiceStatus("error");
                 setVoiceMessage(
-                    "Voice input had a network problem. Please try again or type manually."
+                    "Voice-to-text had a network problem. Please try again or type manually."
                 );
                 return;
             }
 
             setVoiceStatus("error");
-            setVoiceMessage("Voice input had a problem. Please try again or type manually.");
+            setVoiceMessage("Voice-to-text had a problem. Please try again or type manually.");
         };
 
         recognition.onend = () => {
@@ -471,7 +471,7 @@ function Pronunciation() {
             console.error(error);
             recognitionRef.current = null;
             setVoiceStatus("error");
-            setVoiceMessage("Voice input had a problem. Please try again or type manually.");
+            setVoiceMessage("Voice-to-text had a problem. Please try again or type manually.");
         }
     }
 
@@ -487,7 +487,7 @@ function Pronunciation() {
 
         if (selectedInputType !== "TEXT") {
             setFormMessageType("error");
-            setFormMessage("Voice input is planned but not enabled yet.");
+            setFormMessage("Audio pronunciation scoring is not part of V1. Use Text mode or the Speak button to fill the text box.");
             return;
         }
 
@@ -719,8 +719,8 @@ function Pronunciation() {
     const voiceButtonLabel = voiceIsListening ? "Stop listening" : "Start speaking";
 
     const voiceButtonTitle = isSpeechSupported
-        ? "Use your microphone to fill the text box."
-        : "Voice input is not supported in this browser yet.";
+        ? "Use browser speech recognition to fill the text box."
+        : "Voice-to-text is not supported in this browser yet.";
 
     const voiceButtonAriaLabel = voiceIsListening
         ? "Stop voice input"
@@ -735,16 +735,16 @@ function Pronunciation() {
                     <h1>Practice words with clear accent guidance.</h1>
 
                     <p>
-                        Type a word or short sentence, choose an English accent, and get
-                        readable pronunciation help, syllables, stress pattern, and practice
-                        tips.
+                        Type a word or short sentence, or use voice-to-text to fill the box.
+                        Choose an English accent and get readable pronunciation help,
+                        syllables, stress pattern, and practice tips.
                     </p>
                 </div>
 
                 <div className="practice-status-row">
                     <div className="status-pill status-pill-success">Text input ready</div>
-                    <div className="status-pill">Voice planned</div>
-                    <div className="status-pill">History for users</div>
+                    <div className="status-pill status-pill-success">Voice-to-text ready</div>
+                    <div className="status-pill">Saved history for users</div>
                 </div>
             </div>
 
@@ -754,7 +754,7 @@ function Pronunciation() {
                         <div className="panel-header">
                             <div>
                                 <span className="result-label">Analyze</span>
-                                <h2>Try a word or sentence</h2>
+                                <h2>Enter a word or sentence</h2>
                             </div>
 
                             <span className="accent-badge">{selectedAccentLabel}</span>
@@ -763,7 +763,7 @@ function Pronunciation() {
                         <form className="pronunciation-form" onSubmit={handleSubmit}>
                             <div className="form-grid-two">
                                 <div className="form-field">
-                                    <label htmlFor="inputType">Input Type</label>
+                                    <label htmlFor="inputType">Analysis mode</label>
                                     <select
                                         id="inputType"
                                         value={selectedInputType}
@@ -778,7 +778,7 @@ function Pronunciation() {
                                                 disabled={!inputType.enabled}
                                             >
                                                 {inputType.label}
-                                                {!inputType.enabled ? " - Coming soon" : ""}
+                                                {!inputType.enabled ? " - Audio scoring later" : ""}
                                             </option>
                                         ))}
                                     </select>
@@ -822,8 +822,8 @@ function Pronunciation() {
                                 <div>
                                     <p className="voice-helper-title">Speak instead of typing</p>
                                     <p className="voice-helper-text">
-                                        We use your voice only to fill the text box. Raw audio is not saved by
-                                        AccentIQ.
+                                        Voice-to-text uses your browser’s speech recognition to fill this text
+                                        box. AccentIQ does not save raw audio.
                                     </p>
                                 </div>
 
@@ -892,7 +892,7 @@ function Pronunciation() {
                             </div>
 
                             <button type="submit" disabled={isSubmitting || !selectedAccent}>
-                                {isSubmitting ? "Analyzing..." : "Analyze Pronunciation"}
+                                {isSubmitting ? "Analyzing..." : "Analyze pronunciation"}
                             </button>
                         </form>
 
@@ -908,7 +908,7 @@ function Pronunciation() {
                         <div className="result-box polished-result-box">
                             <div className="result-section-title">
                                 <span className="home-eyebrow">Result ready</span>
-                                <h2>Pronunciation Result</h2>
+                                <h2>Pronunciation result</h2>
                             </div>
 
                             <div className="result-header">
@@ -1013,7 +1013,7 @@ function Pronunciation() {
                             <p className="save-note">
                                 {result.data.saved
                                     ? "This result was saved to your history."
-                                    : "Guest result only. Login later to save pronunciation history and favorites."}
+                                    : "Guest result only. Login to save pronunciation history and favorites."}
                             </p>
                         </div>
                     )}
@@ -1405,10 +1405,8 @@ function Pronunciation() {
                                 </div>
 
                                 <div className="feature-row">
-                                    <span>Voice input</span>
-                                    <strong>
-                                        {features.voiceInput ? "Available" : "Coming soon"}
-                                    </strong>
+                                    <span>Voice-to-text</span>
+                                    <strong>Available</strong>
                                 </div>
 
                                 <div className="feature-row">
