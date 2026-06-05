@@ -1,0 +1,115 @@
+import type { Accent } from "@prisma/client";
+import type {
+    PronunciationAnalysis,
+    PronunciationEngineInput,
+} from "../pronunciation.types.js";
+
+type MockAccentData = {
+    phonetic: string;
+    ipa: string;
+    syllables: string[];
+    stressPattern: string;
+    mouthTip: string;
+};
+
+const scheduleAccentMap: Record<Accent, MockAccentData> = {
+    US: {
+        phonetic: "SKEH-jool",
+        ipa: "/ˈskedʒuːl/",
+        syllables: ["SKEH", "jool"],
+        stressPattern: "First syllable stress",
+        mouthTip: "Start with a clear SK sound.",
+    },
+    UK: {
+        phonetic: "SHED-yool",
+        ipa: "/ˈʃedjuːl/",
+        syllables: ["SHED", "yool"],
+        stressPattern: "First syllable stress",
+        mouthTip: "Start with a soft SH sound.",
+    },
+    AUSTRALIAN: {
+        phonetic: "SHED-yool",
+        ipa: "/ˈʃedjuːl/",
+        syllables: ["SHED", "yool"],
+        stressPattern: "First syllable stress",
+        mouthTip: "Use a relaxed SH sound at the beginning.",
+    },
+    INDIAN: {
+        phonetic: "SKEH-jool",
+        ipa: "/ˈskedʒuːl/",
+        syllables: ["SKEH", "jool"],
+        stressPattern: "First syllable stress",
+        mouthTip: "Keep the first syllable clear and avoid rushing the ending.",
+    },
+};
+
+export const mockPronunciationEngine = {
+    analyze: ({
+        text,
+        accent,
+        inputType,
+    }: PronunciationEngineInput): PronunciationAnalysis => {
+        const normalizedText = text.trim().toLowerCase();
+
+        if (normalizedText === "schedule") {
+            const selected = scheduleAccentMap[accent];
+
+            return {
+                inputType,
+                text,
+                normalizedText,
+                accent,
+                pronunciation: {
+                    phonetic: selected.phonetic,
+                    ipa: selected.ipa,
+                    syllables: selected.syllables,
+                    stressPattern: selected.stressPattern,
+                },
+                guidance: {
+                    mouthTip: selected.mouthTip,
+                    commonMistake: "Avoid saying the word too flat or too fast.",
+                    tips: [
+                        "Say the first syllable clearly.",
+                        "Pause slightly between syllables while practicing.",
+                        "Repeat slowly first, then increase your speed naturally.",
+                    ],
+                },
+                practice: {
+                    slowPractice: selected.syllables.join(" ... "),
+                    exampleSentence: "I need to check my schedule.",
+                    repeatCount: 5,
+                },
+            };
+        }
+
+        const syllables = normalizedText.split(/[\s-]+/).filter(Boolean);
+
+        return {
+            inputType,
+            text,
+            normalizedText,
+            accent,
+            pronunciation: {
+                phonetic: `${text} pronunciation for ${accent}`,
+                ipa: "IPA will be generated later",
+                syllables,
+                stressPattern: "Stress pattern will be generated later",
+            },
+            guidance: {
+                mouthTip: `Focus on clear mouth movement for ${accent} pronunciation.`,
+                commonMistake: "Avoid rushing the word.",
+                tips: [
+                    `Practice saying "${text}" slowly first.`,
+                    `Focus on clarity for ${accent} pronunciation.`,
+                    "Repeat the word multiple times and compare your sound.",
+                ],
+            },
+            practice: {
+                slowPractice:
+                    syllables.length > 0 ? syllables.join(" ... ") : normalizedText,
+                exampleSentence: `Practice using "${text}" in a simple sentence.`,
+                repeatCount: 5,
+            },
+        };
+    },
+};

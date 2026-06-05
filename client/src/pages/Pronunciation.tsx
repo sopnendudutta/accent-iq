@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import {
     addPronunciationFavorite,
@@ -30,6 +30,10 @@ import type {
     AccentIQUserPreferences,
     PracticeGoal,
 } from "../utils/preferences";
+import type {
+    BrowserSpeechRecognition,
+    BrowserSpeechRecognitionStatus,
+} from "../types/speech";
 
 type MessageType = "success" | "error" | "info";
 
@@ -77,6 +81,22 @@ function getPracticeGoalLabel(goal: PracticeGoal) {
     return "Casual";
 }
 
+function getSpeechRecognitionLanguage(accent: string) {
+    if (accent === "UK") {
+        return "en-GB";
+    }
+
+    if (accent === "AUSTRALIAN") {
+        return "en-AU";
+    }
+
+    if (accent === "INDIAN") {
+        return "en-IN";
+    }
+
+    return "en-US";
+}
+
 function Pronunciation() {
     const [accents, setAccents] = useState<AccentOption[]>([]);
     const [inputTypes, setInputTypes] = useState<InputTypeOption[]>([]);
@@ -87,6 +107,15 @@ function Pronunciation() {
     const [selectedInputType, setSelectedInputType] = useState("TEXT");
     const [text, setText] = useState("");
 
+    const [isSpeechSupported, setIsSpeechSupported] = useState(false);
+
+    const [voiceStatus, setVoiceStatus] =
+        useState<BrowserSpeechRecognitionStatus>("idle");
+
+    const [voiceMessage, setVoiceMessage] = useState(
+        "Speak a word or short phrase, then review the text before analyzing."
+    );
+    const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
     const [status, setStatus] = useState("Loading pronunciation options...");
     const [statusType, setStatusType] = useState<MessageType>("info");
 
@@ -267,6 +296,184 @@ function Pronunciation() {
         loadPronunciationHistory();
         loadPronunciationFavorites();
     }, []);
+
+    useEffect(() => {
+        if (typeof window === "undefined") {
+            return;
+        }
+
+        const SpeechRecognitionConstructor =
+            window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        const supported = Boolean(SpeechRecognitionConstructor);
+
+        setIsSpeechSupported(supported);
+
+        if (!supported) {
+            setVoiceStatus("unsupported");
+            setVoiceMessage(
+                "Voice input is not supported in this browser yet. You can still type manually."
+            );
+            return;
+        }
+
+        setVoiceStatus("idle");
+        setVoiceMessage(
+            "Speak a word or short phrase, then review the text before analyzing."
+        );
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (recognitionRef.current) {
+                recognitionRef.current.abort();
+                recognitionRef.current = null;
+            }
+        };
+    }, []);
+
+    function handleStopVoiceInput() {
+        if (recognitionRef.current) {
+            recognitionRef.current.abort();
+            recognitionRef.current = null;
+        }
+
+        setVoiceStatus("idle");
+        setVoiceMessage("Listening stopped. You can start again anytime.");
+    }
+
+    function handleStartVoiceInput() {
+        if (typeof window === "undefined") {
+            return;
+        }
+
+        const SpeechRecognitionConstructor =
+            window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognitionConstructor) {
+            setIsSpeechSupported(false);
+            setVoiceStatus("unsupported");
+            setVoiceMessage(
+                "Voice input is not supported in this browser yet. You can still type manually."
+            );
+            return;
+        }
+
+        if (recognitionRef.current) {
+            recognitionRef.current.abort();
+            recognitionRef.current = null;
+        }
+
+        const recognition = new SpeechRecognitionConstructor();
+
+        recognition.lang = getSpeechRecognitionLanguage(selectedAccent);
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        let didReceiveResult = false;
+        let didHaveError = false;
+
+        recognition.onstart = () => {
+            setVoiceStatus("listening");
+            setVoiceMessage("Listening... speak clearly.");
+        };
+
+        recognition.onresult = (event) => {
+            didReceiveResult = true;
+
+            if (event.results.length === 0 || event.results[0].length === 0) {
+                setVoiceStatus("no-speech");
+                setVoiceMessage("We could not detect speech. Try again or type manually.");
+                return;
+            }
+
+            const transcript = event.results[0][0].transcript.trim();
+
+            if (!transcript) {
+                setVoiceStatus("no-speech");
+                setVoiceMessage("We could not detect speech. Try again or type manually.");
+                return;
+            }
+
+            setText(transcript);
+            setVoiceStatus("transcript-ready");
+            setVoiceMessage(
+                `We heard: "${transcript}". Review it, then click Analyze when ready.`
+            );
+        };
+
+        recognition.onerror = (event) => {
+            didHaveError = true;
+
+            if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+                setVoiceStatus("permission-denied");
+                setVoiceMessage(
+                    "Microphone permission was blocked. You can still type manually."
+                );
+                return;
+            }
+
+            if (event.error === "no-speech") {
+                setVoiceStatus("no-speech");
+                setVoiceMessage("We could not detect speech. Try again or type manually.");
+                return;
+            }
+
+            if (event.error === "aborted") {
+                setVoiceStatus("idle");
+                setVoiceMessage("Listening stopped. You can start again anytime.");
+                return;
+            }
+
+            if (event.error === "audio-capture") {
+                setVoiceStatus("error");
+                setVoiceMessage(
+                    "No microphone was found. Please check your device or type manually."
+                );
+                return;
+            }
+
+            if (event.error === "language-not-supported") {
+                setVoiceStatus("error");
+                setVoiceMessage(
+                    "This voice language is not supported here. You can still type manually."
+                );
+                return;
+            }
+
+            if (event.error === "network") {
+                setVoiceStatus("error");
+                setVoiceMessage(
+                    "Voice input had a network problem. Please try again or type manually."
+                );
+                return;
+            }
+
+            setVoiceStatus("error");
+            setVoiceMessage("Voice input had a problem. Please try again or type manually.");
+        };
+
+        recognition.onend = () => {
+            recognitionRef.current = null;
+
+            if (!didReceiveResult && !didHaveError) {
+                setVoiceStatus("idle");
+                setVoiceMessage("Listening stopped. You can start again anytime.");
+            }
+        };
+
+        recognitionRef.current = recognition;
+
+        try {
+            recognition.start();
+        } catch (error) {
+            console.error(error);
+            recognitionRef.current = null;
+            setVoiceStatus("error");
+            setVoiceMessage("Voice input had a problem. Please try again or type manually.");
+        }
+    }
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -492,6 +699,33 @@ function Pronunciation() {
         }
     }
 
+    const voiceHasIssue = [
+        "unsupported",
+        "permission-denied",
+        "no-speech",
+        "error",
+    ].includes(voiceStatus);
+
+    const voiceIsListening = voiceStatus === "listening";
+
+    const voiceHelperClassName = [
+        "voice-helper",
+        voiceIsListening ? "voice-helper-listening" : "",
+        voiceHasIssue ? "voice-helper-warning" : "",
+    ]
+        .filter(Boolean)
+        .join(" ");
+
+    const voiceButtonLabel = voiceIsListening ? "Stop listening" : "Start speaking";
+
+    const voiceButtonTitle = isSpeechSupported
+        ? "Use your microphone to fill the text box."
+        : "Voice input is not supported in this browser yet.";
+
+    const voiceButtonAriaLabel = voiceIsListening
+        ? "Stop voice input"
+        : "Start voice input";
+
     return (
         <section className="page pronunciation-page">
             <div className="pronunciation-hero">
@@ -582,6 +816,58 @@ function Pronunciation() {
                                     placeholder="Example: schedule"
                                     rows={4}
                                 />
+                            </div>
+
+                            <div className={voiceHelperClassName} aria-live="polite">
+                                <div>
+                                    <p className="voice-helper-title">Speak instead of typing</p>
+                                    <p className="voice-helper-text">
+                                        We use your voice only to fill the text box. Raw audio is not saved by
+                                        AccentIQ.
+                                    </p>
+                                </div>
+
+                                <div className="voice-helper-action-row">
+                                    <button
+                                        type="button"
+                                        className={
+                                            voiceIsListening
+                                                ? "voice-helper-button voice-helper-button-listening"
+                                                : "voice-helper-button"
+                                        }
+                                        onClick={
+                                            voiceIsListening
+                                                ? handleStopVoiceInput
+                                                : handleStartVoiceInput
+                                        }
+                                        disabled={
+                                            !isSpeechSupported ||
+                                            voiceStatus === "unsupported" ||
+                                            isSubmitting
+                                        }
+                                        aria-pressed={voiceIsListening}
+                                        aria-label={voiceButtonAriaLabel}
+                                        title={voiceButtonTitle}
+                                    >
+                                        {voiceButtonLabel}
+                                    </button>
+
+                                    {voiceIsListening && (
+                                        <span className="voice-listening-pill">Listening now</span>
+                                    )}
+                                </div>
+
+                                {voiceMessage && (
+                                    <p
+                                        className={
+                                            voiceHasIssue
+                                                ? "voice-helper-message voice-helper-message-error"
+                                                : "voice-helper-message"
+                                        }
+                                    >
+                                        {voiceMessage}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="form-footer-row">

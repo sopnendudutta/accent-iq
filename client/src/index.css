@@ -452,6 +452,67 @@ select:focus-visible {
   margin: 0;
 }
 
+.voice-helper {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1.1rem;
+  background: rgba(200, 170, 122, 0.16);
+}
+
+.voice-helper-title {
+  margin: 0;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.voice-helper-text {
+  margin: 0.3rem 0 0;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.voice-helper-button {
+  width: fit-content;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-coral);
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.voice-helper-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.voice-helper-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.voice-helper-message {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.voice-helper-message-error {
+  color: var(--color-coral);
+}
+
+@media (max-width: 640px) {
+  .voice-helper-button {
+    width: 100%;
+  }
+}
+
 /* Forms */
 
 .pronunciation-form,
@@ -3264,5 +3325,148 @@ textarea {
 
   .history-detail-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+
+/* Checkpoint 19.10: Voice input final UX polish */
+
+.voice-helper {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  margin-top: 1rem;
+
+  border: 1px solid var(--color-border);
+  border-radius: 1.1rem;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--color-sand) 18%, var(--color-surface) 82%),
+      var(--color-surface-soft));
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.voice-helper-listening {
+  border-color: color-mix(in srgb, var(--color-coral) 42%, var(--color-border) 58%);
+  box-shadow: 0 14px 30px rgba(239, 90, 77, 0.14);
+}
+
+.voice-helper-warning {
+  border-color: color-mix(in srgb, var(--color-coral) 32%, var(--color-border) 68%);
+  background:
+    linear-gradient(135deg,
+      var(--color-coral-soft),
+      var(--color-surface-soft));
+}
+
+.voice-helper-title {
+  margin: 0;
+  font-weight: 900;
+  color: var(--color-heading);
+}
+
+.voice-helper-text {
+  margin: 0.3rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.voice-helper-action-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pronunciation-form .voice-helper-button {
+  width: fit-content;
+  min-height: 44px;
+  margin-top: 0;
+  padding: 0.75rem 1rem;
+
+  border: none;
+  border-radius: 999px;
+  background: var(--color-coral);
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 900;
+  font-family: var(--font-heading);
+
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(239, 90, 77, 0.2);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.pronunciation-form .voice-helper-button:hover:not(:disabled) {
+  background: var(--color-coral-hover);
+  transform: translateY(-1px);
+}
+
+.pronunciation-form .voice-helper-button-listening {
+  background: var(--color-heading);
+  color: var(--color-bg);
+  box-shadow: var(--shadow-card);
+}
+
+.pronunciation-form .voice-helper-button-listening:hover:not(:disabled) {
+  background: var(--color-heading);
+}
+
+.pronunciation-form .voice-helper-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
+.voice-listening-pill {
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  display: inline-flex;
+  align-items: center;
+
+  background: var(--color-coral-soft);
+  color: var(--color-coral);
+
+  font-size: 13px;
+  font-weight: 900;
+  font-family: var(--font-heading);
+}
+
+.voice-helper-message {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.voice-helper-message-error {
+  color: var(--color-error-text);
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .voice-helper-action-row {
+    display: grid;
+  }
+
+  .pronunciation-form .voice-helper-button,
+  .voice-listening-pill {
+    width: 100%;
+    justify-content: center;
   }
 }
