@@ -107,8 +107,8 @@ function Settings({
                     <h1>Manage your AccentIQ experience.</h1>
 
                     <p>
-                        View your account status, switch between light and dark mode, and
-                        customize simple pronunciation practice preferences.
+                        View your account status, switch between light and dark mode,
+                        and customize simple pronunciation practice preferences for V1.
                     </p>
                 </div>
 
@@ -245,8 +245,20 @@ function Settings({
                             </div>
 
                             <div>
-                                <strong>Voice pronunciation upload</strong>
-                                <span>Coming soon</span>
+                                <strong>Favorites</strong>
+                                <span>
+                                    {user ? "Available for your account" : "Login required"}
+                                </span>
+                            </div>
+
+                            <div>
+                                <strong>Voice-to-text input</strong>
+                                <span>Available now</span>
+                            </div>
+
+                            <div>
+                                <strong>Real audio pronunciation scoring</strong>
+                                <span>Planned later</span>
                             </div>
                         </div>
                     </div>
@@ -449,8 +461,11 @@ function Settings({
 
                 <div className="settings-feature-card">
                     <span>🎙️</span>
-                    <h3>Voice practice</h3>
-                    <p>Voice input and audio scoring are planned for a future version.</p>
+                    <h3>Voice and audio</h3>
+                    <p>
+                        Voice-to-text is available now. Real audio pronunciation scoring
+                        is planned for a future version.
+                    </p>
                 </div>
             </div>
         </section>
