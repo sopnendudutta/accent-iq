@@ -113,7 +113,7 @@ function Pronunciation() {
         useState<BrowserSpeechRecognitionStatus>("idle");
 
     const [voiceMessage, setVoiceMessage] = useState(
-        "Use voice-to-text to fill the box, then review it before analyzing."
+        "Speak to fill the text box. Review the words, then click Analyze."
     );
     const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
     const [status, setStatus] = useState("Loading pronunciation options...");
@@ -312,14 +312,14 @@ function Pronunciation() {
         if (!supported) {
             setVoiceStatus("unsupported");
             setVoiceMessage(
-                "Voice-to-text is not supported in this browser yet. You can still type manually."
+                "Voice-to-text is not available in this browser. You can still type your word or sentence."
             );
             return;
         }
 
         setVoiceStatus("idle");
         setVoiceMessage(
-            "Use voice-to-text to fill the box, then review it before analyzing."
+            "Speak to fill the text box. Review the words, then click Analyze."
         );
     }, []);
 
@@ -339,7 +339,7 @@ function Pronunciation() {
         }
 
         setVoiceStatus("idle");
-        setVoiceMessage("Listening stopped. You can start again anytime.");
+        setVoiceMessage("Listening stopped. You can edit the text or start again.");
     }
 
     function handleStartVoiceInput() {
@@ -354,7 +354,7 @@ function Pronunciation() {
             setIsSpeechSupported(false);
             setVoiceStatus("unsupported");
             setVoiceMessage(
-                "Voice-to-text is not supported in this browser yet. You can still type manually."
+                "Voice-to-text is not available in this browser. You can still type your word or sentence."
             );
             return;
         }
@@ -376,7 +376,7 @@ function Pronunciation() {
 
         recognition.onstart = () => {
             setVoiceStatus("listening");
-            setVoiceMessage("Listening... speak one word or a short phrase.");
+            setVoiceMessage("Listening now. Say one word or a short sentence.");
         };
 
         recognition.onresult = (event) => {
@@ -384,7 +384,7 @@ function Pronunciation() {
 
             if (event.results.length === 0 || event.results[0].length === 0) {
                 setVoiceStatus("no-speech");
-                setVoiceMessage("We could not detect speech. Try again or type manually.");
+                setVoiceMessage("No clear speech detected. Try again, move closer to the microphone, or type manually.");
                 return;
             }
 
@@ -392,14 +392,14 @@ function Pronunciation() {
 
             if (!transcript) {
                 setVoiceStatus("no-speech");
-                setVoiceMessage("We could not detect speech. Try again or type manually.");
+                setVoiceMessage("No clear speech detected. Try again, move closer to the microphone, or type manually.");
                 return;
             }
 
             setText(transcript);
             setVoiceStatus("transcript-ready");
             setVoiceMessage(
-                `We heard: "${transcript}". Review it, then click Analyze when ready.`
+                `Transcript added: "${transcript}". Check it, then click Analyze.`
             );
         };
 
@@ -409,27 +409,27 @@ function Pronunciation() {
             if (event.error === "not-allowed" || event.error === "service-not-allowed") {
                 setVoiceStatus("permission-denied");
                 setVoiceMessage(
-                    "Microphone permission was blocked. You can still type manually."
+                    "Microphone permission is blocked. Allow microphone access in your browser settings, or type manually."
                 );
                 return;
             }
 
             if (event.error === "no-speech") {
                 setVoiceStatus("no-speech");
-                setVoiceMessage("We could not detect speech. Try again or type manually.");
+                setVoiceMessage("No clear speech detected. Try again, move closer to the microphone, or type manually.");
                 return;
             }
 
             if (event.error === "aborted") {
                 setVoiceStatus("idle");
-                setVoiceMessage("Listening stopped. You can start again anytime.");
+                setVoiceMessage("Listening stopped. You can edit the text or start again.");
                 return;
             }
 
             if (event.error === "audio-capture") {
                 setVoiceStatus("error");
                 setVoiceMessage(
-                    "No microphone was found. Please check your device or type manually."
+                    "No microphone was found. Check your device microphone, or type manually."
                 );
                 return;
             }
@@ -437,7 +437,7 @@ function Pronunciation() {
             if (event.error === "language-not-supported") {
                 setVoiceStatus("error");
                 setVoiceMessage(
-                    "This voice language is not supported here. You can still type manually."
+                    "Voice-to-text is not available for this accent/language in your browser. You can still type manually."
                 );
                 return;
             }
@@ -445,13 +445,13 @@ function Pronunciation() {
             if (event.error === "network") {
                 setVoiceStatus("error");
                 setVoiceMessage(
-                    "Voice-to-text had a network problem. Please try again or type manually."
+                    "Browser speech recognition had a network issue. Try again, or type manually."
                 );
                 return;
             }
 
             setVoiceStatus("error");
-            setVoiceMessage("Voice-to-text had a problem. Please try again or type manually.");
+            setVoiceMessage("Voice-to-text ran into a problem. Try again, or type manually.");
         };
 
         recognition.onend = () => {
@@ -459,7 +459,7 @@ function Pronunciation() {
 
             if (!didReceiveResult && !didHaveError) {
                 setVoiceStatus("idle");
-                setVoiceMessage("Listening stopped. You can start again anytime.");
+                setVoiceMessage("Listening stopped. You can edit the text or start again.");
             }
         };
 
@@ -471,7 +471,7 @@ function Pronunciation() {
             console.error(error);
             recognitionRef.current = null;
             setVoiceStatus("error");
-            setVoiceMessage("Voice-to-text had a problem. Please try again or type manually.");
+            setVoiceMessage("Voice-to-text ran into a problem. Try again, or type manually.");
         }
     }
 
@@ -719,8 +719,8 @@ function Pronunciation() {
     const voiceButtonLabel = voiceIsListening ? "Stop listening" : "Start speaking";
 
     const voiceButtonTitle = isSpeechSupported
-        ? "Use browser speech recognition to fill the text box."
-        : "Voice-to-text is not supported in this browser yet.";
+        ? "Use browser speech recognition to fill the text box. You will still click Analyze manually."
+        : "Voice-to-text is not available in this browser.";
 
     const voiceButtonAriaLabel = voiceIsListening
         ? "Stop voice input"
@@ -820,10 +820,10 @@ function Pronunciation() {
 
                             <div className={voiceHelperClassName} aria-live="polite">
                                 <div>
-                                    <p className="voice-helper-title">Speak instead of typing</p>
+                                    <p className="voice-helper-title">Speak to fill the text box</p>
                                     <p className="voice-helper-text">
-                                        Voice-to-text uses your browser’s speech recognition to fill this text
-                                        box. AccentIQ does not save raw audio.
+                                        Use your browser’s speech recognition to fill the text box.
+                                        AccentIQ does not upload or save raw audio.
                                     </p>
                                 </div>
 
@@ -853,7 +853,7 @@ function Pronunciation() {
                                     </button>
 
                                     {voiceIsListening && (
-                                        <span className="voice-listening-pill">Listening now</span>
+                                        <span className="voice-listening-pill">Listening</span>
                                     )}
                                 </div>
 
