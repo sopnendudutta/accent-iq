@@ -30,6 +30,7 @@ import type {
     AccentIQUserPreferences,
     PracticeGoal,
 } from "../utils/preferences";
+import type { BrowserSpeechRecognitionStatus } from "../types/speech";
 
 type MessageType = "success" | "error" | "info";
 
@@ -86,6 +87,15 @@ function Pronunciation() {
     const [selectedAccent, setSelectedAccent] = useState("");
     const [selectedInputType, setSelectedInputType] = useState("TEXT");
     const [text, setText] = useState("");
+
+    const [isSpeechSupported, setIsSpeechSupported] = useState(false);
+
+    const [voiceStatus, setVoiceStatus] =
+        useState<BrowserSpeechRecognitionStatus>("idle");
+
+    const [voiceMessage, setVoiceMessage] = useState(
+        "Speak a word or short phrase, then review the text before analyzing."
+    );
 
     const [status, setStatus] = useState("Loading pronunciation options...");
     const [statusType, setStatusType] = useState<MessageType>("info");
@@ -266,6 +276,32 @@ function Pronunciation() {
         loadPronunciationOptions();
         loadPronunciationHistory();
         loadPronunciationFavorites();
+    }, []);
+
+    useEffect(() => {
+        if (typeof window === "undefined") {
+            return;
+        }
+
+        const SpeechRecognitionConstructor =
+            window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        const supported = Boolean(SpeechRecognitionConstructor);
+
+        setIsSpeechSupported(supported);
+
+        if (!supported) {
+            setVoiceStatus("unsupported");
+            setVoiceMessage(
+                "Voice input is not supported in this browser yet. You can still type manually."
+            );
+            return;
+        }
+
+        setVoiceStatus("idle");
+        setVoiceMessage(
+            "Speak a word or short phrase, then review the text before analyzing."
+        );
     }, []);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -582,6 +618,43 @@ function Pronunciation() {
                                     placeholder="Example: schedule"
                                     rows={4}
                                 />
+                            </div>
+
+                            <div className="voice-helper" aria-live="polite">
+                                <div>
+                                    <p className="voice-helper-title">Speak instead of typing</p>
+                                    <p className="voice-helper-text">
+                                        We use your voice only to fill the text box. Raw audio is
+                                        not saved by AccentIQ.
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    className="voice-helper-button"
+                                    disabled={
+                                        !isSpeechSupported || voiceStatus === "unsupported"
+                                    }
+                                    title={
+                                        isSpeechSupported
+                                            ? "Voice input will be available in the next step."
+                                            : "Voice input is not supported in this browser yet."
+                                    }
+                                >
+                                    Start speaking
+                                </button>
+
+                                {voiceMessage && (
+                                    <p
+                                        className={
+                                            voiceStatus === "unsupported"
+                                                ? "voice-helper-message voice-helper-message-error"
+                                                : "voice-helper-message"
+                                        }
+                                    >
+                                        {voiceMessage}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="form-footer-row">

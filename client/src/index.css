@@ -452,6 +452,67 @@ select:focus-visible {
   margin: 0;
 }
 
+.voice-helper {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1.1rem;
+  background: rgba(200, 170, 122, 0.16);
+}
+
+.voice-helper-title {
+  margin: 0;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.voice-helper-text {
+  margin: 0.3rem 0 0;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.voice-helper-button {
+  width: fit-content;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-coral);
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.voice-helper-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.voice-helper-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.voice-helper-message {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.voice-helper-message-error {
+  color: var(--color-coral);
+}
+
+@media (max-width: 640px) {
+  .voice-helper-button {
+    width: 100%;
+  }
+}
+
 /* Forms */
 
 .pronunciation-form,
