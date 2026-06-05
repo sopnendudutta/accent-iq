@@ -699,6 +699,33 @@ function Pronunciation() {
         }
     }
 
+    const voiceHasIssue = [
+        "unsupported",
+        "permission-denied",
+        "no-speech",
+        "error",
+    ].includes(voiceStatus);
+
+    const voiceIsListening = voiceStatus === "listening";
+
+    const voiceHelperClassName = [
+        "voice-helper",
+        voiceIsListening ? "voice-helper-listening" : "",
+        voiceHasIssue ? "voice-helper-warning" : "",
+    ]
+        .filter(Boolean)
+        .join(" ");
+
+    const voiceButtonLabel = voiceIsListening ? "Stop listening" : "Start speaking";
+
+    const voiceButtonTitle = isSpeechSupported
+        ? "Use your microphone to fill the text box."
+        : "Voice input is not supported in this browser yet.";
+
+    const voiceButtonAriaLabel = voiceIsListening
+        ? "Stop voice input"
+        : "Start voice input";
+
     return (
         <section className="page pronunciation-page">
             <div className="pronunciation-hero">
@@ -791,43 +818,49 @@ function Pronunciation() {
                                 />
                             </div>
 
-                            <div className="voice-helper" aria-live="polite">
+                            <div className={voiceHelperClassName} aria-live="polite">
                                 <div>
                                     <p className="voice-helper-title">Speak instead of typing</p>
                                     <p className="voice-helper-text">
-                                        We use your voice only to fill the text box. Raw audio is
-                                        not saved by AccentIQ.
+                                        We use your voice only to fill the text box. Raw audio is not saved by
+                                        AccentIQ.
                                     </p>
                                 </div>
 
-                                <button
-                                    type="button"
-                                    className="voice-helper-button"
-                                    onClick={
-                                        voiceStatus === "listening"
-                                            ? handleStopVoiceInput
-                                            : handleStartVoiceInput
-                                    }
-                                    disabled={
-                                        !isSpeechSupported ||
-                                        voiceStatus === "unsupported" ||
-                                        isSubmitting
-                                    }
-                                    title={
-                                        isSpeechSupported
-                                            ? "Use your microphone to fill the text box."
-                                            : "Voice input is not supported in this browser yet."
-                                    }
-                                >
-                                    {voiceStatus === "listening" ? "Stop listening" : "Start speaking"}
-                                </button>
+                                <div className="voice-helper-action-row">
+                                    <button
+                                        type="button"
+                                        className={
+                                            voiceIsListening
+                                                ? "voice-helper-button voice-helper-button-listening"
+                                                : "voice-helper-button"
+                                        }
+                                        onClick={
+                                            voiceIsListening
+                                                ? handleStopVoiceInput
+                                                : handleStartVoiceInput
+                                        }
+                                        disabled={
+                                            !isSpeechSupported ||
+                                            voiceStatus === "unsupported" ||
+                                            isSubmitting
+                                        }
+                                        aria-pressed={voiceIsListening}
+                                        aria-label={voiceButtonAriaLabel}
+                                        title={voiceButtonTitle}
+                                    >
+                                        {voiceButtonLabel}
+                                    </button>
+
+                                    {voiceIsListening && (
+                                        <span className="voice-listening-pill">Listening now</span>
+                                    )}
+                                </div>
 
                                 {voiceMessage && (
                                     <p
                                         className={
-                                            ["unsupported", "permission-denied", "no-speech", "error"].includes(
-                                                voiceStatus
-                                            )
+                                            voiceHasIssue
                                                 ? "voice-helper-message voice-helper-message-error"
                                                 : "voice-helper-message"
                                         }
