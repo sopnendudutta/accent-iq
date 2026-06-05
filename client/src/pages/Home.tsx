@@ -2,22 +2,22 @@ import { Link } from "react-router";
 
 function Home() {
     return (
-        <section className="page home-page">
+        <section className="home-page">
             <div className="home-hero">
                 <div className="home-hero-content">
-                    <span className="home-eyebrow">Accent practice made simple</span>
+                    <span className="home-eyebrow">Practice by typing or speaking</span>
 
-                    <h1>Speak clearer across English accents.</h1>
+                    <h1>Practice English pronunciation with simple accent guidance.</h1>
 
                     <p className="home-lead">
-                        AccentIQ helps you practice pronunciation with simple text-based
-                        guidance, accent options, syllables, stress patterns, and speaking
-                        tips.
+                        Type a word or use voice-to-text to fill the box, choose an
+                        English accent, and get clear pronunciation help with phonetics,
+                        syllables, stress patterns, and practice tips.
                     </p>
 
                     <div className="home-actions">
                         <Link className="primary-cta" to="/pronunciation">
-                            Start practicing
+                            Try pronunciation now
                         </Link>
 
                         <Link className="secondary-cta" to="/register">
@@ -28,17 +28,22 @@ function Home() {
                     <div className="home-highlights">
                         <div>
                             <strong>Guest friendly</strong>
-                            <span>No login needed to try V1</span>
+                            <span>Practice without creating an account.</span>
                         </div>
 
                         <div>
-                            <strong>Multiple accents</strong>
-                            <span>US, UK, Australian, Indian</span>
+                            <strong>Voice-to-text ready</strong>
+                            <span>
+                                Speak to fill the text box. Raw audio is not saved by
+                                AccentIQ.
+                            </span>
                         </div>
 
                         <div>
-                            <strong>Progress ready</strong>
-                            <span>Logged-in users get history</span>
+                            <strong>Save your practice</strong>
+                            <span>
+                                Login to keep pronunciation history and favorites.
+                            </span>
                         </div>
                     </div>
                 </div>

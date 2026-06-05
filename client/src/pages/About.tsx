@@ -11,8 +11,8 @@ function About() {
 
                     <p>
                         AccentIQ helps learners practice English pronunciation across
-                        different accents using beginner-friendly text guidance, syllables,
-                        stress patterns, and practice tips.
+                        different accents using beginner-friendly guidance, syllables,
+                        stress patterns, voice-to-text input, and practice tips.
                     </p>
 
                     <div className="about-actions">
@@ -28,11 +28,12 @@ function About() {
 
                 <div className="about-summary-card">
                     <span className="result-label">V1 focus</span>
-                    <h2>Text-first pronunciation help</h2>
+                    <h2>Text and voice-to-text pronunciation help</h2>
 
                     <p>
-                        In this version, users can type a word or sentence, select an
-                        accent, and get simple pronunciation guidance.
+                        In this version, users can type a word or use browser
+                        voice-to-text, select an accent, and get simple pronunciation
+                        guidance.
                     </p>
                 </div>
             </div>
@@ -78,8 +79,13 @@ function About() {
                         </div>
 
                         <div>
-                            <strong>Logged-in history</strong>
-                            <span>Save and view pronunciation practice history.</span>
+                            <strong>Browser voice-to-text</strong>
+                            <span>Speak to fill the text box before analyzing.</span>
+                        </div>
+
+                        <div>
+                            <strong>Logged-in history and favorites</strong>
+                            <span>Save useful pronunciation practice after login.</span>
                         </div>
 
                         <div>
@@ -95,18 +101,18 @@ function About() {
 
                     <div className="about-list">
                         <div>
-                            <strong>Voice input</strong>
-                            <span>Upload or record speech for pronunciation practice.</span>
+                            <strong>Real audio pronunciation scoring</strong>
+                            <span>Analyze spoken pronunciation quality more deeply.</span>
                         </div>
 
                         <div>
-                            <strong>AI audio scoring</strong>
-                            <span>Compare pronunciation quality more deeply.</span>
+                            <strong>Progress tracking</strong>
+                            <span>Track consistency and learning improvement over time.</span>
                         </div>
 
                         <div>
-                            <strong>Favorites and progress</strong>
-                            <span>Save difficult words and track learning over time.</span>
+                            <strong>More accent and practice tools</strong>
+                            <span>Add richer practice flows after the V1 foundation.</span>
                         </div>
                     </div>
                 </div>
@@ -118,8 +124,9 @@ function About() {
 
                 <p>
                     Login is optional in V1. Guest users can practice without an account.
-                    Voice upload and real AI voice scoring are not enabled yet, so the app
-                    stays simple and secure while the foundation is being built.
+                    Voice-to-text uses browser speech recognition to fill the text box,
+                    and AccentIQ does not save raw audio. Real audio pronunciation scoring
+                    is planned for a later version.
                 </p>
             </div>
         </section>
