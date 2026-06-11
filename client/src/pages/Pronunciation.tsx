@@ -735,9 +735,7 @@ function Pronunciation() {
                     <h1>Practice words with clear accent guidance.</h1>
 
                     <p>
-                        Type a word or short sentence, or use voice-to-text to fill the box.
-                        Choose an English accent and get readable pronunciation help,
-                        syllables, stress pattern, and practice tips.
+                        Type, speak, and get pronunciation help with AI.
                     </p>
                 </div>
 
@@ -945,69 +943,36 @@ function Pronunciation() {
 
                             <div className="result-grid">
                                 <div className="result-card result-card-main">
-                                    <span className="result-label">Readable pronunciation</span>
+                                    <span className="result-label">Phonetic spelling</span>
                                     <p className="big-pronunciation">
                                         {result.data.pronunciation.phonetic}
                                     </p>
                                 </div>
 
                                 <div className="result-card">
-                                    <span className="result-label">IPA</span>
-                                    <p>{result.data.pronunciation.ipa}</p>
-                                </div>
-
-                                <div className="result-card">
                                     <span className="result-label">Syllables</span>
                                     <p>{result.data.pronunciation.syllables.join(" • ")}</p>
-                                </div>
-
-                                <div className="result-card">
-                                    <span className="result-label">Stress pattern</span>
-                                    <p>{result.data.pronunciation.stressPattern}</p>
                                 </div>
                             </div>
 
                             <div className="guidance-box">
-                                <h3>Guidance</h3>
+                                <h3>Mouth / tongue / lip guidance</h3>
 
-                                <p>
-                                    <strong>Mouth tip:</strong> {result.data.guidance.mouthTip}
-                                </p>
+                                <p>{result.data.guidance.mouthTip}</p>
 
-                                <p>
-                                    <strong>Common mistake:</strong>{" "}
-                                    {result.data.guidance.commonMistake}
-                                </p>
+                                <h3>Practice tips</h3>
 
-                                {userPreferences.showTipsByDefault ? (
-                                    <ul>
-                                        {result.data.guidance.tips.map((tip) => (
-                                            <li key={tip}>{tip}</li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p className="preference-hidden-note">
-                                        Detailed tips are hidden by your Settings preference.
-                                    </p>
-                                )}
+                                <ul>
+                                    {result.data.guidance.tips.map((tip) => (
+                                        <li key={tip}>{tip}</li>
+                                    ))}
+                                </ul>
                             </div>
 
                             <div className="practice-box">
-                                <h3>Practice</h3>
+                                <h3>Example sentence</h3>
 
-                                <p>
-                                    <strong>Slow practice:</strong>{" "}
-                                    {result.data.practice.slowPractice}
-                                </p>
-
-                                <p>
-                                    <strong>Example sentence:</strong>{" "}
-                                    {result.data.practice.exampleSentence}
-                                </p>
-
-                                <p>
-                                    <strong>Repeat:</strong> {result.data.practice.repeatCount} times
-                                </p>
+                                <p>{result.data.practice.exampleSentence}</p>
                             </div>
 
                             <p className="save-note">
@@ -1082,21 +1047,14 @@ function Pronunciation() {
                                             <p className="favorite-pronunciation">{item.phonetic}</p>
                                         )}
 
-                                        <div className="favorite-detail-grid">
-                                            {item.ipa && (
-                                                <div className="favorite-detail-mini">
-                                                    <span>IPA</span>
-                                                    <strong>{item.ipa}</strong>
-                                                </div>
-                                            )}
-
-                                            {item.syllables && item.syllables.length > 0 && (
+                                        {item.syllables && item.syllables.length > 0 && (
+                                            <div className="favorite-detail-grid">
                                                 <div className="favorite-detail-mini">
                                                     <span>Syllables</span>
                                                     <strong>{item.syllables.join(" • ")}</strong>
                                                 </div>
-                                            )}
-                                        </div>
+                                            </div>
+                                        )}
 
                                         {item.mouthTip && (
                                             <div className="favorite-tip-box">
