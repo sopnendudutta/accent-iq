@@ -5,14 +5,12 @@ function Home() {
         <section className="home-page">
             <div className="home-hero">
                 <div className="home-hero-content">
-                    <span className="home-eyebrow">Practice by typing or speaking</span>
+
 
                     <h1>Practice English pronunciation with simple accent guidance.</h1>
 
                     <p className="home-lead">
-                        Type a word or use voice-to-text to fill the box, choose an
-                        English accent, and get clear pronunciation help with phonetics,
-                        syllables, stress patterns, and practice tips.
+                        Type or speak and get clear pronunciation help.
                     </p>
 
                     <div className="home-actions">

@@ -730,9 +730,9 @@ function Pronunciation() {
         <section className="page pronunciation-page">
             <div className="pronunciation-hero">
                 <div>
-                    <span className="home-eyebrow">Pronunciation practice</span>
 
-                    <h1>Practice words with clear accent guidance.</h1>
+
+                    <h1>Practice with clear accent guidance.</h1>
 
                     <p>
                         Type, speak, and get pronunciation help with AI.
@@ -752,7 +752,7 @@ function Pronunciation() {
                         <div className="panel-header">
                             <div>
                                 <span className="result-label">Analyze</span>
-                                <h2>Enter a word or sentence</h2>
+                                <h2>Enter your word or sentence</h2>
                             </div>
 
                             <span className="accent-badge">{selectedAccentLabel}</span>
