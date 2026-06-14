@@ -265,6 +265,31 @@ export async function loginUser(payload: LoginRequest): Promise<AuthResponse> {
     return data;
 }
 
+export function getGoogleOAuthStartUrl() {
+    return `${API_BASE_URL}/api/v1/auth/google`;
+}
+
+export async function exchangeGoogleOAuthToken(
+    handoffToken: string
+): Promise<AuthResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/google/exchange`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ handoffToken }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Google login failed");
+    }
+
+    return data;
+}
+
 export async function getCurrentUser(token: string): Promise<AuthUser> {
     const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
         method: "GET",

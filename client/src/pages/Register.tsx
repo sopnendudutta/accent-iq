@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { Link, useNavigate } from "react-router";
-import { registerUser } from "../services/api";
+import { Link, useNavigate, useSearchParams } from "react-router";
+import { getGoogleOAuthStartUrl, registerUser } from "../services/api";
 import type { AuthUser } from "../types/auth";
 
 type RegisterProps = {
@@ -10,14 +10,43 @@ type RegisterProps = {
 
 type MessageType = "success" | "error" | "info";
 
+const oauthMessages: Record<string, string> = {
+    google_missing_config:
+        "Google login is not configured yet. Please create an account with email for now.",
+    google_denied:
+        "Google login was cancelled. You can try again or create an account with email.",
+    google_missing_code:
+        "Google did not return a login code. Please try again.",
+    google_missing_state:
+        "Google login could not be verified. Please try again.",
+    google_email_conflict:
+        "This email already uses password login. Please login with email for now.",
+    google_failed:
+        "Google login could not be completed. Please try again or use email registration.",
+    failed:
+        "Google login could not be completed. Please try again or use email registration.",
+};
+
 function Register({ onAuthSuccess }: RegisterProps) {
+    const [searchParams] = useSearchParams();
+    const oauthStatus = searchParams.get("oauth");
+    const initialMessage = oauthStatus
+        ? oauthMessages[oauthStatus] ||
+        "Google login could not be completed. Please create an account with email for now."
+        : "";
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
-    const [message, setMessage] = useState("");
-    const [messageType, setMessageType] = useState<MessageType>("info");
+    const [message, setMessage] = useState(initialMessage);
+    const [messageType, setMessageType] = useState<MessageType>(
+        initialMessage ? "error" : "info"
+    );
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    function handleGoogleLogin() {
+        window.location.assign(getGoogleOAuthStartUrl());
+    }
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -107,6 +136,24 @@ function Register({ onAuthSuccess }: RegisterProps) {
                             <h2>Create Account</h2>
                             <p>Save your AccentIQ practice history.</p>
                         </div>
+                    </div>
+
+                    <div className="oauth-action-panel">
+                        <button
+                            type="button"
+                            className="auth-oauth-button"
+                            onClick={handleGoogleLogin}
+                            disabled={isSubmitting}
+                        >
+                            <span className="google-mark" aria-hidden="true">
+                                G
+                            </span>
+                            Continue with Google
+                        </button>
+                    </div>
+
+                    <div className="auth-divider">
+                        <span>or use email</span>
                     </div>
 
                     <form className="auth-form" onSubmit={handleSubmit}>

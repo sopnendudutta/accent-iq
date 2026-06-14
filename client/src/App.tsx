@@ -6,6 +6,7 @@ import Navbar from "./components/layout/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import OAuthCallback from "./pages/OAuthCallback";
 import Pronunciation from "./pages/Pronunciation";
 import Progress from "./pages/Progress";
 import About from "./pages/About";
@@ -130,6 +131,11 @@ function App() {
             <Route
               path="/register"
               element={<Register onAuthSuccess={handleAuthSuccess} />}
+            />
+
+            <Route
+              path="/auth/google/callback"
+              element={<OAuthCallback onAuthSuccess={handleAuthSuccess} />}
             />
 
             <Route path="*" element={<NotFound />} />
