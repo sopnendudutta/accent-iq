@@ -5245,6 +5245,95 @@ body {
   line-height: 1.6;
 }
 
+.progress-streak-band {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(340px, 1.08fr);
+  gap: clamp(24px, 4vw, 48px);
+  align-items: stretch;
+  padding: clamp(24px, 4vw, 38px);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-coral-soft) 54%, transparent),
+      color-mix(in srgb, var(--color-surface) 88%, transparent)
+    );
+}
+
+.progress-streak-copy {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.progress-streak-copy h2 {
+  max-width: 620px;
+  margin: 0;
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+}
+
+.progress-streak-copy p {
+  max-width: 650px;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.progress-streak-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-border);
+}
+
+.progress-streak-metric {
+  min-width: 0;
+  padding: clamp(18px, 3vw, 26px);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+}
+
+.progress-streak-metric-primary {
+  background: color-mix(in srgb, var(--color-coral-soft) 52%, var(--color-surface) 48%);
+}
+
+.progress-streak-metric span {
+  display: block;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.35;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.progress-streak-metric strong {
+  display: block;
+  margin-top: 12px;
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+
+.progress-streak-metric p {
+  margin: 10px 0 0;
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 .progress-insight-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -5443,6 +5532,10 @@ body {
     grid-template-columns: 1fr;
   }
 
+  .progress-streak-band {
+    grid-template-columns: 1fr;
+  }
+
   .progress-panel-wide {
     padding-right: 0;
     padding-bottom: clamp(30px, 4vw, 48px);
@@ -5477,6 +5570,15 @@ body {
   .progress-summary-strip {
     grid-template-columns: 1fr;
     border-radius: 20px;
+  }
+
+  .progress-streak-band {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .progress-streak-metrics {
+    grid-template-columns: 1fr;
   }
 
   .weekly-practice-row {

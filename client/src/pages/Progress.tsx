@@ -25,6 +25,13 @@ type WeeklyPracticeDay = {
     count: number;
 };
 
+type PracticeStreakSummary = {
+    currentStreakDays: number;
+    bestStreakDays: number;
+    practiceDayCount: number;
+    hasPracticedToday: boolean;
+};
+
 const accentLabels: Record<string, string> = {
     US: "American English",
     UK: "British English",
@@ -52,11 +59,21 @@ function normalizePracticeText(text: string) {
 }
 
 function getDateKey(date: Date) {
-    return date.toLocaleDateString("en-CA");
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
 }
 
 function getStartOfLocalDay(date: Date) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function getLocalDateFromKey(dateKey: string) {
+    const [year, month, day] = dateKey.split("-").map(Number);
+
+    return new Date(year, month - 1, day);
 }
 
 function addDays(date: Date, days: number) {
@@ -91,14 +108,18 @@ function formatRelativePracticeDate(dateString: string) {
     return formatDate(dateString);
 }
 
-function calculateCurrentStreak(history: PronunciationHistoryItem[]) {
-    if (history.length === 0) {
+function getUniquePracticeDayKeys(history: PronunciationHistoryItem[]) {
+    return Array.from(
+        new Set(history.map((item) => getDateKey(new Date(item.createdAt))))
+    ).sort();
+}
+
+function calculateCurrentStreakFromDays(dayKeys: string[]) {
+    if (dayKeys.length === 0) {
         return 0;
     }
 
-    const practiceDays = new Set(
-        history.map((item) => getDateKey(new Date(item.createdAt)))
-    );
+    const practiceDays = new Set(dayKeys);
 
     const today = getStartOfLocalDay(new Date());
     const todayKey = getDateKey(today);
@@ -123,6 +144,80 @@ function calculateCurrentStreak(history: PronunciationHistoryItem[]) {
     }
 
     return streak;
+}
+
+function calculateBestStreakFromDays(dayKeys: string[]) {
+    if (dayKeys.length === 0) {
+        return 0;
+    }
+
+    let bestStreak = 1;
+    let currentStreak = 1;
+
+    for (let index = 1; index < dayKeys.length; index += 1) {
+        const previousDay = getLocalDateFromKey(dayKeys[index - 1]);
+        const currentDay = getLocalDateFromKey(dayKeys[index]);
+        const dayDifference = Math.round(
+            (currentDay.getTime() - previousDay.getTime()) / 86_400_000
+        );
+
+        if (dayDifference === 1) {
+            currentStreak += 1;
+            bestStreak = Math.max(bestStreak, currentStreak);
+            continue;
+        }
+
+        if (dayDifference > 1) {
+            currentStreak = 1;
+        }
+    }
+
+    return bestStreak;
+}
+
+function getPracticeStreakSummary(
+    history: PronunciationHistoryItem[]
+): PracticeStreakSummary {
+    const dayKeys = getUniquePracticeDayKeys(history);
+
+    return {
+        currentStreakDays: calculateCurrentStreakFromDays(dayKeys),
+        bestStreakDays: calculateBestStreakFromDays(dayKeys),
+        practiceDayCount: dayKeys.length,
+        hasPracticedToday: dayKeys.includes(getDateKey(new Date())),
+    };
+}
+
+function formatDayLabel(count: number) {
+    return count === 1 ? "day" : "days";
+}
+
+function getStreakHeadline(streakSummary: PracticeStreakSummary) {
+    if (streakSummary.currentStreakDays > 1) {
+        return `You have practiced for ${streakSummary.currentStreakDays} saved days in a row.`;
+    }
+
+    if (streakSummary.currentStreakDays === 1) {
+        return "Your saved practice streak has started.";
+    }
+
+    if (streakSummary.practiceDayCount > 0) {
+        return "Practice today to rebuild your streak.";
+    }
+
+    return "Practice a word to start your streak.";
+}
+
+function getTodayPracticeMessage(streakSummary: PracticeStreakSummary) {
+    if (streakSummary.hasPracticedToday) {
+        return "Today already counts.";
+    }
+
+    if (streakSummary.currentStreakDays > 0) {
+        return "Save one check to keep it going.";
+    }
+
+    return "Save one check to start again.";
 }
 
 function getWeeklyPractice(history: PronunciationHistoryItem[]) {
@@ -259,6 +354,7 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
             (total, day) => total + day.count,
             0
         );
+        const streakSummary = getPracticeStreakSummary(history);
 
         return {
             totalPracticeItems: history.length,
@@ -266,7 +362,12 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
             favoriteCount: favorites.length,
             accentCount: practicedAccentRows.length,
             mostPracticedAccent,
-            currentStreakDays: calculateCurrentStreak(history),
+            currentStreakDays: streakSummary.currentStreakDays,
+            bestStreakDays: streakSummary.bestStreakDays,
+            practiceDayCount: streakSummary.practiceDayCount,
+            hasPracticedToday: streakSummary.hasPracticedToday,
+            streakHeadline: getStreakHeadline(streakSummary),
+            todayPracticeMessage: getTodayPracticeMessage(streakSummary),
             lastPracticeDate: sortedHistory[0]?.createdAt || null,
             practiceThisWeek,
             weeklyPractice,
@@ -372,10 +473,10 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
                 {!hasHistory && !isProgressLoading && (
                     <div className="progress-empty-panel">
                         <span className="result-label">No saved practice yet</span>
-                        <h2>Practice a word to start your dashboard.</h2>
+                        <h2>Practice a word to start your streak.</h2>
                         <p>
                             Analyze a pronunciation while logged in and AccentIQ will build
-                            your progress summary from saved history.
+                            your streak and progress summary from saved history.
                         </p>
                         <Link className="primary-cta" to="/pronunciation">
                             Start practicing
@@ -397,9 +498,9 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
                     </div>
 
                     <div className="progress-summary-item">
-                        <span>Current streak</span>
-                        <strong>{progressSummary.currentStreakDays}</strong>
-                        <p>Consecutive saved practice days.</p>
+                        <span>Practice days</span>
+                        <strong>{progressSummary.practiceDayCount}</strong>
+                        <p>Calendar days with saved practice.</p>
                     </div>
 
                     <div className="progress-summary-item">
@@ -408,6 +509,39 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
                         <p>Out of {accentOrder.length} available accents.</p>
                     </div>
                 </div>
+
+                <section className="progress-streak-band">
+                    <div className="progress-streak-copy">
+                        <span className="result-label">Daily streaks</span>
+                        <h2>{progressSummary.streakHeadline}</h2>
+                        <p>
+                            Streaks count logged-in pronunciation checks only. They track
+                            saved practice activity, not audio accuracy or voice scoring.
+                        </p>
+                    </div>
+
+                    <div className="progress-streak-metrics">
+                        <div className="progress-streak-metric progress-streak-metric-primary">
+                            <span>Current streak</span>
+                            <strong>{progressSummary.currentStreakDays}</strong>
+                            <p>{formatDayLabel(progressSummary.currentStreakDays)}</p>
+                        </div>
+
+                        <div className="progress-streak-metric">
+                            <span>Best streak</span>
+                            <strong>{progressSummary.bestStreakDays}</strong>
+                            <p>{formatDayLabel(progressSummary.bestStreakDays)}</p>
+                        </div>
+
+                        <div className="progress-streak-metric">
+                            <span>Practice today</span>
+                            <strong>
+                                {progressSummary.hasPracticedToday ? "Done" : "Open"}
+                            </strong>
+                            <p>{progressSummary.todayPracticeMessage}</p>
+                        </div>
+                    </div>
+                </section>
 
                 <div className="progress-insight-row">
                     <div className="progress-insight">
