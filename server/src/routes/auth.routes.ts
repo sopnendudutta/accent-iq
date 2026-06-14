@@ -8,8 +8,10 @@ router.post("/register", authController.register);
 
 router.post("/login", authController.login);
 
-//google & meta auth router 
-router.post("/google", authController.googleAuth);
+// Google OAuth uses browser redirects. Meta remains intentionally unimplemented.
+router.get("/google", authController.startGoogleAuth);
+router.get("/google/callback", authController.handleGoogleCallback);
+router.post("/google/exchange", authController.exchangeGoogleAuth);
 router.post("/meta", authController.metaAuth);
 
 router.get("/me", authMiddleware, authController.getMe);

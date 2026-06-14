@@ -1,6 +1,21 @@
 import "dotenv/config";
 import { z } from "zod";
 
+const optionalString = z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.string().optional()
+);
+
+const optionalUrl = z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.string().url().optional()
+);
+
+const clientUrl = z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.string().url().default("http://localhost:5173")
+);
+
 const envSchema = z.object({
     PORT: z.coerce.number().default(5000),
 
@@ -23,6 +38,11 @@ const envSchema = z.object({
 
     GROQ_API_KEY: z.string().optional(),
     GROQ_MODEL: z.string().default("llama-3.1-8b-instant"),
+
+    GOOGLE_CLIENT_ID: optionalString,
+    GOOGLE_CLIENT_SECRET: optionalString,
+    GOOGLE_CALLBACK_URL: optionalUrl,
+    CLIENT_URL: clientUrl,
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
