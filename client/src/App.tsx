@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Pronunciation from "./pages/Pronunciation";
+import Progress from "./pages/Progress";
 import About from "./pages/About";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -103,6 +104,10 @@ function App() {
           <Routes location={location}>
             <Route path="/" element={<Home />} />
             <Route path="/pronunciation" element={<Pronunciation />} />
+            <Route
+              path="/progress"
+              element={<Progress user={user} isAuthLoading={isAuthLoading} />}
+            />
             <Route path="/about" element={<About />} />
             <Route
               path="/settings"

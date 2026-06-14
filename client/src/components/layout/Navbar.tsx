@@ -71,6 +71,14 @@ function Navbar({
                             Pronunciation
                         </NavLink>
 
+                        <NavLink
+                            className={getNavLinkClass}
+                            to="/progress"
+                            onClick={closeMenu}
+                        >
+                            Progress
+                        </NavLink>
+
                         <NavLink className={getNavLinkClass} to="/about" onClick={closeMenu}>
                             About
                         </NavLink>
