@@ -15,6 +15,7 @@ import type {
     AccentOption,
     InputTypeOption,
     PronunciationAnalyzeResponse,
+    PronunciationResultData,
     PronunciationFavoriteItem,
     PronunciationFeatures,
     PronunciationHistoryItem,
@@ -38,6 +39,25 @@ import type {
 type MessageType = "success" | "error" | "info";
 
 const quickExamples = ["schedule", "comfortable", "water", "development"];
+const voiceReadyMessage =
+    "Speak to fill the text box. Review the words, then click Analyze.";
+const voiceUnsupportedMessage =
+    "Voice-to-text is not available in this browser. You can still type your word or sentence.";
+
+const aiCoachingSteps = [
+    {
+        label: "Reading the word",
+        detail: "Checking the accent target and the natural sound pattern.",
+    },
+    {
+        label: "Finding syllables",
+        detail: "Breaking it into pronounceable parts before giving guidance.",
+    },
+    {
+        label: "Preparing coaching",
+        detail: "Turning the answer into a short practice lesson.",
+    },
+];
 
 function getPreferredAccent(
     availableAccents: AccentOption[],
@@ -97,6 +117,33 @@ function getSpeechRecognitionLanguage(accent: string) {
     return "en-US";
 }
 
+function getBrowserSpeechRecognitionConstructor() {
+    if (typeof window === "undefined") {
+        return undefined;
+    }
+
+    return window.SpeechRecognition || window.webkitSpeechRecognition;
+}
+
+function getResultFallbackNotice(data: PronunciationResultData) {
+    const inputText = data.text.trim().toLowerCase();
+    const accent = data.accent.trim().toLowerCase();
+    const phonetic = data.pronunciation.phonetic.trim().toLowerCase();
+    const ipa = data.pronunciation.ipa.trim().toLowerCase();
+    const stressPattern = data.pronunciation.stressPattern.trim().toLowerCase();
+    const genericPhonetic = `${inputText} pronunciation for ${accent}`;
+
+    if (
+        phonetic === genericPhonetic ||
+        ipa === "ipa will be generated later" ||
+        stressPattern === "stress pattern will be generated later"
+    ) {
+        return "AccentIQ returned a simplified fallback result for this word. You can still practice it, or try again for a fuller AI coaching response.";
+    }
+
+    return "";
+}
+
 function Pronunciation() {
     const [accents, setAccents] = useState<AccentOption[]>([]);
     const [inputTypes, setInputTypes] = useState<InputTypeOption[]>([]);
@@ -107,13 +154,19 @@ function Pronunciation() {
     const [selectedInputType, setSelectedInputType] = useState("TEXT");
     const [text, setText] = useState("");
 
-    const [isSpeechSupported, setIsSpeechSupported] = useState(false);
+    const [isSpeechSupported, setIsSpeechSupported] = useState(() =>
+        Boolean(getBrowserSpeechRecognitionConstructor())
+    );
 
     const [voiceStatus, setVoiceStatus] =
-        useState<BrowserSpeechRecognitionStatus>("idle");
+        useState<BrowserSpeechRecognitionStatus>(() =>
+            getBrowserSpeechRecognitionConstructor() ? "idle" : "unsupported"
+        );
 
-    const [voiceMessage, setVoiceMessage] = useState(
-        "Speak to fill the text box. Review the words, then click Analyze."
+    const [voiceMessage, setVoiceMessage] = useState(() =>
+        getBrowserSpeechRecognitionConstructor()
+            ? voiceReadyMessage
+            : voiceUnsupportedMessage
     );
     const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
     const [status, setStatus] = useState("Loading pronunciation options...");
@@ -122,9 +175,11 @@ function Pronunciation() {
     const [formMessage, setFormMessage] = useState("");
     const [formMessageType, setFormMessageType] = useState<MessageType>("info");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [coachingStepIndex, setCoachingStepIndex] = useState(0);
     const [result, setResult] = useState<PronunciationAnalyzeResponse | null>(
         null
     );
+    const resultRef = useRef<HTMLDivElement | null>(null);
 
     const [history, setHistory] = useState<PronunciationHistoryItem[]>([]);
     const [historyMessage, setHistoryMessage] = useState("");
@@ -202,6 +257,17 @@ function Pronunciation() {
         filteredHistory.length === 1
             ? "1 matching item"
             : `${filteredHistory.length} matching items`;
+
+    const activeCoachingStep =
+        aiCoachingSteps[coachingStepIndex % aiCoachingSteps.length];
+
+    const resultFallbackNotice = result
+        ? getResultFallbackNotice(result.data)
+        : "";
+
+    const resultEyebrow = resultFallbackNotice
+        ? "Simplified fallback"
+        : "AI coach result";
 
     async function loadPronunciationHistory() {
         const token = localStorage.getItem("accentiq_token");
@@ -292,35 +358,14 @@ function Pronunciation() {
             }
         }
 
-        loadPronunciationOptions();
-        loadPronunciationHistory();
-        loadPronunciationFavorites();
-    }, []);
+        const accountDataLoadId = window.setTimeout(() => {
+            void loadPronunciationHistory();
+            void loadPronunciationFavorites();
+        }, 0);
 
-    useEffect(() => {
-        if (typeof window === "undefined") {
-            return;
-        }
+        void loadPronunciationOptions();
 
-        const SpeechRecognitionConstructor =
-            window.SpeechRecognition || window.webkitSpeechRecognition;
-
-        const supported = Boolean(SpeechRecognitionConstructor);
-
-        setIsSpeechSupported(supported);
-
-        if (!supported) {
-            setVoiceStatus("unsupported");
-            setVoiceMessage(
-                "Voice-to-text is not available in this browser. You can still type your word or sentence."
-            );
-            return;
-        }
-
-        setVoiceStatus("idle");
-        setVoiceMessage(
-            "Speak to fill the text box. Review the words, then click Analyze."
-        );
+        return () => window.clearTimeout(accountDataLoadId);
     }, []);
 
     useEffect(() => {
@@ -331,6 +376,31 @@ function Pronunciation() {
             }
         };
     }, []);
+
+    useEffect(() => {
+        if (!isSubmitting) {
+            return;
+        }
+
+        const intervalId = window.setInterval(() => {
+            setCoachingStepIndex((currentIndex) =>
+                (currentIndex + 1) % aiCoachingSteps.length
+            );
+        }, 1500);
+
+        return () => window.clearInterval(intervalId);
+    }, [isSubmitting]);
+
+    useEffect(() => {
+        if (!result || !resultRef.current) {
+            return;
+        }
+
+        resultRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    }, [result]);
 
     function handleStopVoiceInput() {
         if (recognitionRef.current) {
@@ -347,15 +417,12 @@ function Pronunciation() {
             return;
         }
 
-        const SpeechRecognitionConstructor =
-            window.SpeechRecognition || window.webkitSpeechRecognition;
+        const SpeechRecognitionConstructor = getBrowserSpeechRecognitionConstructor();
 
         if (!SpeechRecognitionConstructor) {
             setIsSpeechSupported(false);
             setVoiceStatus("unsupported");
-            setVoiceMessage(
-                "Voice-to-text is not available in this browser. You can still type your word or sentence."
-            );
+            setVoiceMessage(voiceUnsupportedMessage);
             return;
         }
 
@@ -504,6 +571,7 @@ function Pronunciation() {
         }
 
         try {
+            setCoachingStepIndex(0);
             setIsSubmitting(true);
 
             const response = await analyzePronunciation({
@@ -516,7 +584,15 @@ function Pronunciation() {
             saveLastUsedAccent(selectedAccent);
             setUserPreferences(getUserPreferences());
             setFormMessageType("success");
-            setFormMessage(response.message || "Pronunciation analyzed successfully.");
+
+            const fallbackNotice = getResultFallbackNotice(response.data);
+            const aiSuccessMessage =
+                "AI coach result is ready. Start with the phonetic spelling, then say the example sentence out loud.";
+            const successMessage = fallbackNotice
+                ? "Simplified result is ready. Try again if you want a fuller AI coaching answer."
+                : response.message || aiSuccessMessage;
+
+            setFormMessage(successMessage);
 
             if (response.data.saved) {
                 await loadPronunciationHistory();
@@ -772,13 +848,18 @@ function Pronunciation() {
                             <span className="accent-badge">{selectedAccentLabel}</span>
                         </div>
 
-                        <form className="pronunciation-form" onSubmit={handleSubmit}>
+                        <form
+                            className="pronunciation-form"
+                            onSubmit={handleSubmit}
+                            aria-busy={isSubmitting}
+                        >
                             <div className="form-grid-two">
                                 <div className="form-field">
                                     <label htmlFor="inputType">Analysis mode</label>
                                     <select
                                         id="inputType"
                                         value={selectedInputType}
+                                        disabled={isSubmitting}
                                         onChange={(event) =>
                                             setSelectedInputType(event.target.value)
                                         }
@@ -801,6 +882,7 @@ function Pronunciation() {
                                     <select
                                         id="accent"
                                         value={selectedAccent}
+                                        disabled={isSubmitting}
                                         onChange={(event) =>
                                             setSelectedAccent(event.target.value)
                                         }
@@ -824,6 +906,7 @@ function Pronunciation() {
                                     id="text"
                                     value={text}
                                     maxLength={limits?.maxTextLength}
+                                    disabled={isSubmitting}
                                     onChange={(event) => setText(event.target.value)}
                                     placeholder="Example: schedule"
                                     rows={4}
@@ -898,6 +981,7 @@ function Pronunciation() {
                                                 key={example}
                                                 type="button"
                                                 className="example-chip"
+                                                disabled={isSubmitting}
                                                 onClick={() => setText(example)}
                                             >
                                                 {example}
@@ -908,9 +992,47 @@ function Pronunciation() {
                             </div>
 
                             <button type="submit" disabled={isSubmitting || !selectedAccent}>
-                                {isSubmitting ? "Analyzing..." : "Analyze pronunciation"}
+                                {isSubmitting ? "Preparing coaching..." : "Analyze pronunciation"}
                             </button>
                         </form>
+
+                        {isSubmitting && (
+                            <div
+                                className="ai-coach-status"
+                                role="status"
+                                aria-live="polite"
+                            >
+                                <div className="ai-coach-status-header">
+                                    <span className="home-eyebrow">AI coach is working</span>
+                                    <strong>{activeCoachingStep.label}</strong>
+                                    <p>{activeCoachingStep.detail}</p>
+                                </div>
+
+                                <ol className="ai-coach-step-list">
+                                    {aiCoachingSteps.map((step, index) => (
+                                        <li
+                                            key={step.label}
+                                            className={
+                                                index === coachingStepIndex
+                                                    ? "ai-coach-step ai-coach-step-active"
+                                                    : "ai-coach-step"
+                                            }
+                                            aria-current={
+                                                index === coachingStepIndex ? "step" : undefined
+                                            }
+                                        >
+                                            <span>{step.label}</span>
+                                        </li>
+                                    ))}
+                                </ol>
+
+                                <div className="ai-coach-progress" aria-hidden="true">
+                                    <span />
+                                    <span />
+                                    <span />
+                                </div>
+                            </div>
+                        )}
 
                         {formMessage && (
                             <div className={`inline-message inline-message-${formMessageType}`}>
@@ -921,14 +1043,14 @@ function Pronunciation() {
                     </div>
 
                     {result && (
-                        <div className="result-box polished-result-box">
+                        <div className="result-box polished-result-box" ref={resultRef}>
                             <div className="result-section-title">
                                 <div>
-                                    <span className="home-eyebrow">Result ready</span>
+                                    <span className="home-eyebrow">{resultEyebrow}</span>
                                     <h2>Pronunciation result</h2>
                                     <p className="section-supporting-text">
-                                        Start with the phonetic spelling, then practice the
-                                        mouth guidance out loud.
+                                        Start with the phonetic spelling, then practice the mouth
+                                        guidance and example sentence out loud.
                                     </p>
                                 </div>
                             </div>
@@ -962,6 +1084,13 @@ function Pronunciation() {
                                 >
                                     <strong>Favorites:</strong>
                                     <p>{favoriteActionMessage}</p>
+                                </div>
+                            )}
+
+                            {resultFallbackNotice && (
+                                <div className="inline-message inline-message-info result-source-note">
+                                    <strong>Coach note:</strong>
+                                    <p>{resultFallbackNotice}</p>
                                 </div>
                             )}
 

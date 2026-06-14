@@ -4822,3 +4822,175 @@ body {
     width: calc(100% - 28px);
   }
 }
+
+/* =========================================================
+   V2 Checkpoint 9 - Frontend AI Polish
+   Direction: clearer live AI states and calmer coaching feedback.
+   ========================================================= */
+
+.pronunciation-form[aria-busy="true"] textarea,
+.pronunciation-form[aria-busy="true"] select {
+  background: color-mix(in srgb, var(--color-surface-muted) 26%, var(--color-surface) 74%);
+  color: var(--color-muted);
+  cursor: wait;
+}
+
+.pronunciation-form[aria-busy="true"] button[type="submit"] {
+  cursor: wait;
+}
+
+.example-chip:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.ai-coach-status {
+  margin-top: 24px;
+  padding: clamp(20px, 3vw, 28px);
+  background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-coral);
+  border-radius: 22px;
+  box-shadow: none;
+}
+
+.ai-coach-status-header {
+  display: grid;
+  gap: 8px;
+}
+
+.ai-coach-status-header strong {
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+.ai-coach-status-header p {
+  max-width: 680px;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.ai-coach-step-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-coach-step {
+  position: relative;
+  padding-top: 14px;
+  color: var(--color-muted);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ai-coach-step::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-border);
+}
+
+.ai-coach-step-active {
+  color: var(--color-heading);
+}
+
+.ai-coach-step-active::before {
+  background: var(--color-coral);
+}
+
+.ai-coach-progress {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.ai-coach-progress span {
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-coral) 44%, var(--color-border) 56%);
+  animation: ai-coach-progress 1.4s ease-in-out infinite;
+}
+
+.ai-coach-progress span:nth-child(2) {
+  animation-delay: 0.18s;
+}
+
+.ai-coach-progress span:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+.polished-result-box {
+  scroll-margin-top: 96px;
+}
+
+.result-source-note {
+  margin-top: 22px;
+}
+
+.result-source-note p {
+  max-width: 760px;
+}
+
+@keyframes ai-coach-progress {
+  0%,
+  100% {
+    opacity: 0.36;
+    transform: scaleX(0.72);
+    transform-origin: left center;
+  }
+
+  45% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-coach-progress span {
+    animation: none;
+    opacity: 0.82;
+    transform: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .ai-coach-step-list,
+  .ai-coach-progress {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-coach-status {
+    border-left-width: 3px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 560px) {
+  .ai-coach-status {
+    padding: 18px;
+  }
+
+  .ai-coach-status-header strong {
+    font-size: 24px;
+  }
+
+  .ai-coach-status-header p {
+    font-size: 16px;
+  }
+}
