@@ -4504,3 +4504,321 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   V2 Checkpoint 6.8 - Mobile Polish and Final Design QA
+   Direction: comfortable small-screen spacing and stable layouts.
+   ========================================================= */
+
+.pronunciation-layout,
+.settings-layout,
+.about-info-layout,
+.about-section-grid,
+.settings-feature-grid {
+  width: min(calc(100% - 48px), var(--container-width));
+}
+
+.history-section,
+.result-box,
+.practice-form-card,
+.settings-card,
+.settings-feature-card,
+.about-card,
+.about-panel,
+.about-safety-note {
+  min-width: 0;
+}
+
+.pronunciation-form textarea,
+.pronunciation-form select,
+.history-toolbar input,
+.history-toolbar select,
+.settings-preferences-form select {
+  min-width: 0;
+}
+
+.result-header,
+.panel-header,
+.history-header,
+.favorites-section-header,
+.favorite-card-top,
+.favorite-card-footer {
+  min-width: 0;
+}
+
+.favorite-pronunciation,
+.big-pronunciation,
+.history-detail-mini strong,
+.favorite-detail-mini strong {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1024px) {
+  .navbar-inner {
+    width: min(100% - 32px, var(--container-width));
+  }
+
+  .home-hero,
+  .pronunciation-hero,
+  .settings-hero,
+  .about-hero {
+    padding-top: clamp(52px, 8vw, 82px);
+    padding-bottom: clamp(48px, 7vw, 74px);
+  }
+
+  .pronunciation-layout,
+  .settings-layout,
+  .about-info-layout,
+  .about-section-grid,
+  .settings-feature-grid {
+    width: min(calc(100% - 40px), var(--container-width));
+  }
+}
+
+@media (max-width: 820px) {
+  .navbar-links {
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 60;
+  }
+
+  .home-actions,
+  .settings-actions,
+  .about-actions,
+  .not-found-actions {
+    justify-content: stretch;
+  }
+
+  .home-product-preview,
+  .auth-card,
+  .auth-benefits-panel {
+    max-width: none;
+  }
+
+  .panel-header,
+  .result-header,
+  .history-header,
+  .favorites-section-header {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .panel-header .accent-badge,
+  .result-header .accent-badge,
+  .history-card-actions .accent-badge {
+    justify-self: start;
+  }
+
+  .section-header-actions {
+    justify-content: flex-start;
+  }
+
+  .history-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .history-toolbar-summary {
+    justify-items: stretch;
+  }
+
+  .history-toolbar-summary span,
+  .history-toolbar-summary .secondary-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .navbar-inner {
+    width: min(100% - 24px, var(--container-width));
+    min-height: 66px;
+  }
+
+  .navbar-logo a {
+    font-size: 20px;
+  }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+  }
+
+  .mobile-menu-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .navbar-links {
+    max-height: calc(100vh - 86px);
+    padding: 14px;
+    border-radius: 20px;
+  }
+
+  .home-page,
+  .auth-page,
+  .not-found-page {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .pronunciation-hero,
+  .settings-hero,
+  .about-hero {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .pronunciation-layout,
+  .settings-layout,
+  .about-info-layout,
+  .about-section-grid,
+  .settings-feature-grid {
+    width: calc(100% - 36px);
+    margin-top: 34px;
+  }
+
+  .home-page h1,
+  .pronunciation-hero h1,
+  .settings-hero h1,
+  .about-hero h1 {
+    font-size: clamp(34px, 11vw, 42px);
+    line-height: 1.03;
+    letter-spacing: -0.025em;
+  }
+
+  .home-lead,
+  .pronunciation-hero p,
+  .settings-hero p,
+  .about-hero p {
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  .home-highlights {
+    margin-top: 30px;
+    gap: 16px;
+  }
+
+  .home-product-preview {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .home-preview-word {
+    font-size: 32px;
+  }
+
+  .home-preview-pronunciation {
+    font-size: 23px;
+  }
+
+  .pronunciation-form {
+    gap: 16px;
+  }
+
+  .form-grid-two,
+  .result-grid,
+  .history-detail-grid,
+  .favorite-detail-grid,
+  .profile-info-grid,
+  .settings-preference-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .pronunciation-form textarea {
+    min-height: 156px;
+    padding: 16px;
+    font-size: 16px;
+  }
+
+  .voice-helper {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .voice-helper-action-row,
+  .form-footer-row,
+  .quick-example-group,
+  .quick-example-row {
+    display: grid;
+    width: 100%;
+    justify-items: stretch;
+  }
+
+  .example-chip,
+  .voice-listening-pill {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .big-pronunciation {
+    font-size: clamp(30px, 12vw, 38px);
+  }
+
+  .guidance-box p,
+  .practice-box p,
+  .guidance-box li {
+    font-size: 16px;
+  }
+
+  .favorite-card,
+  .history-card-content,
+  .empty-state-card {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .favorite-card-top,
+  .favorite-card-footer,
+  .history-card-header,
+  .history-card-actions {
+    display: grid;
+    justify-content: stretch;
+  }
+
+  .favorite-card-footer .secondary-button,
+  .history-card-actions .secondary-button,
+  .history-card-actions .accent-badge {
+    width: 100%;
+  }
+
+  .settings-checkbox-row {
+    align-items: flex-start;
+  }
+
+  .settings-theme-card,
+  .about-summary-card {
+    padding-top: 20px;
+  }
+
+  .about-safety-note {
+    width: calc(100% - 36px);
+  }
+}
+
+@media (max-width: 380px) {
+  .home-page,
+  .auth-page,
+  .not-found-page {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .pronunciation-hero,
+  .settings-hero,
+  .about-hero {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .pronunciation-layout,
+  .settings-layout,
+  .about-info-layout,
+  .about-section-grid,
+  .settings-feature-grid,
+  .about-safety-note {
+    width: calc(100% - 28px);
+  }
+}
