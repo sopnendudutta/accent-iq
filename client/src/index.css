@@ -5206,6 +5206,109 @@ body {
   margin-top: 8px;
 }
 
+.progress-recommendations {
+  display: grid;
+  gap: clamp(20px, 3vw, 30px);
+  padding: clamp(28px, 4vw, 44px) 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.progress-recommendations-header {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(280px, 0.58fr);
+  gap: clamp(20px, 4vw, 54px);
+  align-items: end;
+}
+
+.progress-recommendations-header h2 {
+  max-width: 640px;
+  margin: 8px 0 0;
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  font-size: 44px;
+  line-height: 1.06;
+  letter-spacing: 0;
+}
+
+.progress-recommendations-header p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: var(--color-border);
+}
+
+.recommendation-card {
+  min-width: 0;
+  display: grid;
+  align-content: space-between;
+  gap: 20px;
+  padding: clamp(22px, 3vw, 32px);
+  background: color-mix(in srgb, var(--color-surface) 88%, var(--color-coral-soft) 12%);
+}
+
+.recommendation-source {
+  display: inline-flex;
+  width: fit-content;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.35;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.recommendation-card h3 {
+  margin: 12px 0 0;
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  font-size: 28px;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.recommendation-card p {
+  margin: 12px 0 0;
+  color: var(--color-muted);
+  line-height: 1.65;
+}
+
+.recommendation-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.recommendation-chip {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid color-mix(in srgb, var(--color-coral) 28%, var(--color-border) 72%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-coral-soft) 58%, var(--color-surface) 42%);
+  color: var(--color-heading);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.recommendation-action {
+  width: fit-content;
+}
+
 .progress-summary-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -5528,6 +5631,10 @@ body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .recommendation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .progress-section-grid {
     grid-template-columns: 1fr;
   }
@@ -5556,6 +5663,11 @@ body {
     border-top: 1px solid var(--color-border);
   }
 
+  .progress-recommendations-header {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
   .progress-insight-row {
     grid-template-columns: 1fr;
   }
@@ -5570,6 +5682,19 @@ body {
   .progress-summary-strip {
     grid-template-columns: 1fr;
     border-radius: 20px;
+  }
+
+  .recommendation-grid {
+    grid-template-columns: 1fr;
+    border-radius: 20px;
+  }
+
+  .progress-recommendations-header h2 {
+    font-size: 34px;
+  }
+
+  .recommendation-card h3 {
+    font-size: 24px;
   }
 
   .progress-streak-band {
@@ -5607,6 +5732,7 @@ body {
   }
 
   .progress-empty-panel .primary-cta,
+  .recommendation-action,
   .progress-hero-note .secondary-button,
   .progress-actions .primary-cta,
   .progress-actions .secondary-cta {

@@ -5,12 +5,14 @@ import {
     getPronunciationFavorites,
     getPronunciationHistory,
 } from "../services/api";
+import { getUserPreferences } from "../utils/preferences";
 
 import type { AuthUser } from "../types/auth";
 import type {
     PronunciationFavoriteItem,
     PronunciationHistoryItem,
 } from "../types/pronunciation";
+import type { PracticeGoal } from "../utils/preferences";
 
 type ProgressProps = {
     user: AuthUser | null;
@@ -30,6 +32,33 @@ type PracticeStreakSummary = {
     bestStreakDays: number;
     practiceDayCount: number;
     hasPracticedToday: boolean;
+};
+
+type AccentPracticeRow = {
+    accent: string;
+    label: string;
+    count: number;
+};
+
+type PracticeRecommendation = {
+    id: string;
+    title: string;
+    reason: string;
+    actionLabel: string;
+    to: string;
+    suggestedWords?: string[];
+    suggestedAccent?: string;
+};
+
+type PracticeRecommendationInput = {
+    history: PronunciationHistoryItem[];
+    favorites: PronunciationFavoriteItem[];
+    accentRows: AccentPracticeRow[];
+    mostPracticedAccent?: AccentPracticeRow;
+    currentStreakDays: number;
+    bestStreakDays: number;
+    hasPracticedToday: boolean;
+    practiceGoal: PracticeGoal;
 };
 
 const accentLabels: Record<string, string> = {
@@ -53,6 +82,9 @@ const accentOrder = [
     "NEW_ZEALAND",
     "SOUTH_AFRICAN",
 ];
+
+const pronunciationRoute = "/pronunciation";
+const starterPracticeWords = ["comfortable", "schedule", "water"];
 
 function normalizePracticeText(text: string) {
     return text.trim().toLowerCase();
@@ -252,12 +284,236 @@ function getAccentLabel(accent: string) {
     return accentLabels[accent] || accent;
 }
 
+function getRecommendationLimit(practiceGoal: PracticeGoal) {
+    if (practiceGoal === "INTENSIVE") {
+        return 4;
+    }
+
+    if (practiceGoal === "REGULAR") {
+        return 3;
+    }
+
+    return 2;
+}
+
+function getUniquePracticeTexts<T extends { text: string }>(
+    items: T[],
+    limit: number
+) {
+    const seen = new Set<string>();
+    const texts: string[] = [];
+
+    for (const item of items) {
+        const normalizedText = normalizePracticeText(item.text);
+
+        if (!normalizedText || seen.has(normalizedText)) {
+            continue;
+        }
+
+        seen.add(normalizedText);
+        texts.push(item.text.trim());
+
+        if (texts.length === limit) {
+            break;
+        }
+    }
+
+    return texts;
+}
+
+function getStarterRecommendations(): PracticeRecommendation[] {
+    return [
+        {
+            id: "starter-words",
+            title: "Start with three comfortable words.",
+            reason:
+                "These starter words make syllables, stress, and accent differences easy to notice.",
+            actionLabel: "Start practicing",
+            to: pronunciationRoute,
+            suggestedWords: starterPracticeWords,
+            suggestedAccent: getAccentLabel("US"),
+        },
+        {
+            id: "starter-accent",
+            title: "Try one accent comparison.",
+            reason:
+                "Use one familiar word in another accent to compare rhythm and vowel choices.",
+            actionLabel: "Compare accents",
+            to: pronunciationRoute,
+            suggestedWords: ["schedule"],
+            suggestedAccent: getAccentLabel("UK"),
+        },
+    ];
+}
+
+function getPracticeRecommendations(
+    input: PracticeRecommendationInput
+): PracticeRecommendation[] {
+    const limit = getRecommendationLimit(input.practiceGoal);
+
+    if (input.history.length === 0) {
+        return getStarterRecommendations().slice(0, limit);
+    }
+
+    const recommendations: PracticeRecommendation[] = [];
+    const recentWords = getUniquePracticeTexts(input.history, 3);
+    const favoriteWords = getUniquePracticeTexts(input.favorites, 3);
+
+    if (input.currentStreakDays > 0 && !input.hasPracticedToday) {
+        recommendations.push({
+            id: "streak-continuation",
+            title: "Save one practice check today.",
+            reason:
+                "Based on your saved practice rhythm. Streaks count practice days, not pronunciation scores.",
+            actionLabel: "Keep streak active",
+            to: pronunciationRoute,
+            suggestedWords: recentWords.slice(0, 2),
+        });
+    } else if (input.currentStreakDays === 0 && input.bestStreakDays > 0) {
+        recommendations.push({
+            id: "streak-restart",
+            title: "Restart your streak with one short word.",
+            reason:
+                "Based on your saved practice history. One logged-in check starts a fresh practice day.",
+            actionLabel: "Restart practice",
+            to: pronunciationRoute,
+            suggestedWords: recentWords.slice(0, 2),
+        });
+    }
+
+    if (favoriteWords.length > 0) {
+        recommendations.push({
+            id: "favorite-review",
+            title: "Review three saved favorites today.",
+            reason:
+                "Based on saved favorites. Repeating them is a steady way to build familiarity.",
+            actionLabel: "Review favorites",
+            to: pronunciationRoute,
+            suggestedWords: favoriteWords,
+        });
+    }
+
+    const unusedAccent = input.accentRows.find((row) => row.count === 0);
+    const comparisonAccent =
+        unusedAccent ||
+        input.accentRows.find(
+            (row) => row.accent !== input.mostPracticedAccent?.accent
+        );
+
+    if (comparisonAccent) {
+        recommendations.push({
+            id: "accent-variety",
+            title: `Try ${comparisonAccent.label} for comparison.`,
+            reason: input.mostPracticedAccent
+                ? `Based on accent coverage. You have practiced ${input.mostPracticedAccent.label} most often.`
+                : "Based on accent coverage. Trying another accent helps you compare patterns.",
+            actionLabel: "Try accent",
+            to: pronunciationRoute,
+            suggestedWords: recentWords.slice(0, 1).length
+                ? recentWords.slice(0, 1)
+                : ["schedule"],
+            suggestedAccent: comparisonAccent.label,
+        });
+    }
+
+    if (recentWords.length > 0) {
+        recommendations.push({
+            id: "recent-follow-up",
+            title: "Repeat one recent practice word.",
+            reason:
+                "Based on recent saved practice. Revisiting a familiar word keeps the guidance easy to compare.",
+            actionLabel: "Repeat a word",
+            to: pronunciationRoute,
+            suggestedWords: recentWords,
+        });
+    }
+
+    if (input.history.length > 0 && input.history.length < 5) {
+        recommendations.push({
+            id: "first-five",
+            title: "Build your first five saved practice items.",
+            reason:
+                "Based on saved practice count. A few more checks make the dashboard more useful.",
+            actionLabel: "Add practice",
+            to: pronunciationRoute,
+            suggestedWords: starterPracticeWords,
+        });
+    }
+
+    return recommendations.slice(0, limit);
+}
+
+function RecommendedPracticeSection({
+    recommendations,
+    note,
+    sourceLabel = "Saved-data suggestion",
+}: {
+    recommendations: PracticeRecommendation[];
+    note: string;
+    sourceLabel?: string;
+}) {
+    return (
+        <section
+            className="progress-recommendations"
+            aria-labelledby="progress-recommendations-title"
+        >
+            <div className="progress-recommendations-header">
+                <div>
+                    <span className="result-label">Recommended practice</span>
+                    <h2 id="progress-recommendations-title">What to practice next</h2>
+                </div>
+                <p>{note}</p>
+            </div>
+
+            <div className="recommendation-grid">
+                {recommendations.map((recommendation) => (
+                    <article key={recommendation.id} className="recommendation-card">
+                        <div>
+                            <span className="recommendation-source">
+                                {sourceLabel}
+                            </span>
+                            <h3>{recommendation.title}</h3>
+                            <p>{recommendation.reason}</p>
+                        </div>
+
+                        {(Boolean(recommendation.suggestedAccent) ||
+                            Boolean(recommendation.suggestedWords?.length)) && (
+                            <div className="recommendation-card-meta">
+                                {recommendation.suggestedAccent && (
+                                    <span className="recommendation-chip">
+                                        {recommendation.suggestedAccent}
+                                    </span>
+                                )}
+
+                                {recommendation.suggestedWords?.map((word) => (
+                                    <span key={word} className="recommendation-chip">
+                                        {word}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+
+                        <Link
+                            className="secondary-cta recommendation-action"
+                            to={recommendation.to}
+                        >
+                            {recommendation.actionLabel}
+                        </Link>
+                    </article>
+                ))}
+            </div>
+        </section>
+    );
+}
+
 function Progress({ user, isAuthLoading }: ProgressProps) {
     const [history, setHistory] = useState<PronunciationHistoryItem[]>([]);
     const [favorites, setFavorites] = useState<PronunciationFavoriteItem[]>([]);
     const [isProgressLoading, setIsProgressLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState<MessageType>("info");
+    const userPreferences = useMemo(() => getUserPreferences(), []);
+    const guestRecommendations = useMemo(() => getStarterRecommendations(), []);
 
     const loadProgressData = useCallback(async () => {
         if (!user) {
@@ -374,8 +630,18 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
             accentRows,
             recentPractice: sortedHistory.slice(0, 5),
             reviewQueue: sortedFavorites.slice(0, 4),
+            recommendations: getPracticeRecommendations({
+                history: sortedHistory,
+                favorites: sortedFavorites,
+                accentRows,
+                mostPracticedAccent,
+                currentStreakDays: streakSummary.currentStreakDays,
+                bestStreakDays: streakSummary.bestStreakDays,
+                hasPracticedToday: streakSummary.hasPracticedToday,
+                practiceGoal: userPreferences.practiceGoal,
+            }),
         };
-    }, [history, favorites]);
+    }, [history, favorites, userPreferences.practiceGoal]);
 
     const hasHistory = progressSummary.totalPracticeItems > 0;
     const maxWeeklyCount = Math.max(
@@ -418,6 +684,12 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
                 </div>
 
                 <div className="progress-layout">
+                    <RecommendedPracticeSection
+                        recommendations={guestRecommendations}
+                        sourceLabel="Starter suggestion"
+                        note="Practice as a guest, or login to save history and receive recommendations based on your own practice."
+                    />
+
                     <div className="progress-empty-panel">
                         <span className="result-label">Guest view</span>
                         <h2>Progress uses saved practice only.</h2>
@@ -483,6 +755,11 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
                         </Link>
                     </div>
                 )}
+
+                <RecommendedPracticeSection
+                    recommendations={progressSummary.recommendations}
+                    note="These suggestions use saved practice activity, favorites, streaks, and accent coverage. They do not score your voice."
+                />
 
                 <div className="progress-summary-strip">
                     <div className="progress-summary-item">
