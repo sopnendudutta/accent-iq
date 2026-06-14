@@ -9,6 +9,7 @@ const envSchema = z.object({
         .default("development"),
 
     CORS_ORIGIN: z.string().default("http://localhost:5173"),
+    TRUST_PROXY_HOPS: z.coerce.number().int().min(0).default(1),
 
     JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),
     JWT_EXPIRES_IN: z.string().default("7d"),

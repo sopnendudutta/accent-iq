@@ -13,6 +13,8 @@ import pronunciationRoutes from "./modules/pronunciation/pronunciation.routes.js
 
 const app = express();
 
+app.set("trust proxy", env.TRUST_PROXY_HOPS);
+
 app.use(helmet());
 
 app.use(
