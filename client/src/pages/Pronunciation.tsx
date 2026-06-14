@@ -163,8 +163,8 @@ function Pronunciation() {
             ? "Removing..."
             : "Saving..."
         : currentResultFavorite
-            ? "★ Saved"
-            : "☆ Save Favorite";
+            ? "Saved"
+            : "Save favorite";
 
     const favoriteButtonTitle = currentResultFavorite
         ? "Remove this pronunciation from favorites"
@@ -729,20 +729,30 @@ function Pronunciation() {
     return (
         <section className="page pronunciation-page">
             <div className="pronunciation-hero">
-                <div>
+                <div className="pronunciation-hero-content">
+                    <span className="home-eyebrow">Pronunciation workspace</span>
 
-
-                    <h1>Practice with clear accent guidance.</h1>
+                    <h1>Practice a word, then read guidance like a coach is beside you.</h1>
 
                     <p>
-                        Type, speak, and get pronunciation help with AI.
+                        Type or use browser voice-to-text, choose an accent, and get
+                        simple pronunciation guidance without uploading raw audio.
                     </p>
                 </div>
 
-                <div className="practice-status-row">
-                    <div className="status-pill status-pill-success">Text input ready</div>
-                    <div className="status-pill status-pill-success">Voice-to-text ready</div>
-                    <div className="status-pill">Saved history for users</div>
+                <div className="pronunciation-hero-note">
+                    <span className="result-label">V2 practice flow</span>
+                    <strong>Text first. Audio scoring later.</strong>
+                    <p>
+                        Voice-to-text only fills the text box. You stay in control before
+                        analysis begins.
+                    </p>
+
+                    <div className="practice-status-row">
+                        <div className="status-pill status-pill-success">Text input ready</div>
+                        <div className="status-pill status-pill-success">Voice-to-text ready</div>
+                        <div className="status-pill">Saved history for users</div>
+                    </div>
                 </div>
             </div>
 
@@ -753,6 +763,10 @@ function Pronunciation() {
                             <div>
                                 <span className="result-label">Analyze</span>
                                 <h2>Enter your word or sentence</h2>
+                                <p className="panel-support-text">
+                                    Choose the accent you want to practice, then type a short
+                                    phrase or use the speak button to prepare a transcript.
+                                </p>
                             </div>
 
                             <span className="accent-badge">{selectedAccentLabel}</span>
@@ -820,7 +834,7 @@ function Pronunciation() {
                                 <div>
                                     <p className="voice-helper-title">Speak to fill the text box</p>
                                     <p className="voice-helper-text">
-                                        Use your browser’s speech recognition to fill the text box.
+                                        Use your browser's speech recognition to fill the text box.
                                         AccentIQ does not upload or save raw audio.
                                     </p>
                                 </div>
@@ -875,17 +889,21 @@ function Pronunciation() {
                                     </p>
                                 )}
 
-                                <div className="quick-example-row">
-                                    {quickExamples.map((example) => (
-                                        <button
-                                            key={example}
-                                            type="button"
-                                            className="example-chip"
-                                            onClick={() => setText(example)}
-                                        >
-                                            {example}
-                                        </button>
-                                    ))}
+                                <div className="quick-example-group">
+                                    <span>Try</span>
+
+                                    <div className="quick-example-row">
+                                        {quickExamples.map((example) => (
+                                            <button
+                                                key={example}
+                                                type="button"
+                                                className="example-chip"
+                                                onClick={() => setText(example)}
+                                            >
+                                                {example}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
 
@@ -905,8 +923,14 @@ function Pronunciation() {
                     {result && (
                         <div className="result-box polished-result-box">
                             <div className="result-section-title">
-                                <span className="home-eyebrow">Result ready</span>
-                                <h2>Pronunciation result</h2>
+                                <div>
+                                    <span className="home-eyebrow">Result ready</span>
+                                    <h2>Pronunciation result</h2>
+                                    <p className="section-supporting-text">
+                                        Start with the phonetic spelling, then practice the
+                                        mouth guidance out loud.
+                                    </p>
+                                </div>
                             </div>
 
                             <div className="result-header">
@@ -951,7 +975,7 @@ function Pronunciation() {
 
                                 <div className="result-card">
                                     <span className="result-label">Syllables</span>
-                                    <p>{result.data.pronunciation.syllables.join(" • ")}</p>
+                                    <p>{result.data.pronunciation.syllables.join(" / ")}</p>
                                 </div>
                             </div>
 
@@ -1051,7 +1075,7 @@ function Pronunciation() {
                                             <div className="favorite-detail-grid">
                                                 <div className="favorite-detail-mini">
                                                     <span>Syllables</span>
-                                                    <strong>{item.syllables.join(" • ")}</strong>
+                                                    <strong>{item.syllables.join(" / ")}</strong>
                                                 </div>
                                             </div>
                                         )}
@@ -1260,7 +1284,7 @@ function Pronunciation() {
                                                 {item.syllables && item.syllables.length > 0 && (
                                                     <div className="history-detail-mini">
                                                         <span>Syllables</span>
-                                                        <strong>{item.syllables.join(" • ")}</strong>
+                                                        <strong>{item.syllables.join(" / ")}</strong>
                                                     </div>
                                                 )}
                                             </div>
@@ -1392,7 +1416,7 @@ function Pronunciation() {
                                 <div key={accent.value} className="compact-accent-card">
                                     <strong>{accent.label}</strong>
                                     <span>
-                                        {accent.exampleWord} — {accent.examplePronunciation}
+                                        {accent.exampleWord} - {accent.examplePronunciation}
                                     </span>
                                 </div>
                             ))}

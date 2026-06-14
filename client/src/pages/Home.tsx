@@ -1,16 +1,32 @@
 import { Link } from "react-router";
 
+const learningSteps = [
+    {
+        title: "Type or speak",
+        text: "Start with a word, sentence, or browser voice-to-text transcript.",
+    },
+    {
+        title: "Choose an accent",
+        text: "Practice American, British, Australian, or Indian English guidance.",
+    },
+    {
+        title: "Read the coach notes",
+        text: "See phonetic spelling, syllables, mouth guidance, tips, and an example.",
+    },
+];
+
 function Home() {
     return (
         <section className="home-page">
             <div className="home-hero">
                 <div className="home-hero-content">
+                    <span className="home-eyebrow">AI pronunciation coach</span>
 
-
-                    <h1>Practice English pronunciation with simple accent guidance.</h1>
+                    <h1>Practice English pronunciation with calm, clear guidance.</h1>
 
                     <p className="home-lead">
-                        Type or speak and get clear pronunciation help.
+                        Type a word or speak into the browser, then AccentIQ explains
+                        how to shape the sound in plain language.
                     </p>
 
                     <div className="home-actions">
@@ -44,6 +60,49 @@ function Home() {
                             </span>
                         </div>
                     </div>
+                </div>
+
+                <aside
+                    className="home-product-preview"
+                    aria-label="AccentIQ pronunciation result preview"
+                >
+                    <div className="home-preview-header">
+                        <span className="result-label">Preview</span>
+                        <strong>American English</strong>
+                    </div>
+
+                    <div className="home-preview-word">comfortable</div>
+                    <div className="home-preview-pronunciation">KUHM-fuh-tuh-buhl</div>
+
+                    <div className="home-preview-lesson">
+                        <span>Mouth guidance</span>
+                        <p>
+                            Start relaxed, keep the middle syllable soft, and avoid
+                            over-pronouncing every letter.
+                        </p>
+                    </div>
+
+                    <div className="home-preview-steps">
+                        <span>comf</span>
+                        <span>ta</span>
+                        <span>ble</span>
+                    </div>
+                </aside>
+            </div>
+
+            <div className="home-learning-section">
+                <div className="home-section-heading">
+                    <span className="result-label">How it works</span>
+                    <h2>One focused practice flow.</h2>
+                </div>
+
+                <div className="home-learning-grid">
+                    {learningSteps.map((step) => (
+                        <article key={step.title}>
+                            <h3>{step.title}</h3>
+                            <p>{step.text}</p>
+                        </article>
+                    ))}
                 </div>
             </div>
         </section>
