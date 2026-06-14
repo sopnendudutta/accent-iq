@@ -3,11 +3,19 @@ export const PRONUNCIATION_ACCENTS = [
     "UK",
     "AUSTRALIAN",
     "INDIAN",
+    "CANADIAN",
+    "IRISH",
+    "NEW_ZEALAND",
+    "SOUTH_AFRICAN",
 ] as const;
 
 export const PRONUNCIATION_INPUT_TYPES = ["TEXT", "VOICE"] as const;
 
 export const PRONUNCIATION_MAX_TEXT_LENGTH = 200;
+
+export const PRONUNCIATION_ACCENT_MESSAGE = `Accent must be one of: ${PRONUNCIATION_ACCENTS.join(
+    ", "
+)}`;
 
 export type PronunciationAccentValue = (typeof PRONUNCIATION_ACCENTS)[number];
 
@@ -42,6 +50,34 @@ export const PRONUNCIATION_OPTIONS = {
             label: "Indian English",
             exampleWord: "schedule",
             examplePronunciation: "SKEH-jool",
+            enabled: true,
+        },
+        {
+            value: "CANADIAN",
+            label: "Canadian English",
+            exampleWord: "schedule",
+            examplePronunciation: "SKEH-jool",
+            enabled: true,
+        },
+        {
+            value: "IRISH",
+            label: "Irish English",
+            exampleWord: "schedule",
+            examplePronunciation: "SHED-yool",
+            enabled: true,
+        },
+        {
+            value: "NEW_ZEALAND",
+            label: "New Zealand English",
+            exampleWord: "schedule",
+            examplePronunciation: "SHED-yool",
+            enabled: true,
+        },
+        {
+            value: "SOUTH_AFRICAN",
+            label: "South African English",
+            exampleWord: "schedule",
+            examplePronunciation: "SHED-yool",
             enabled: true,
         },
     ],

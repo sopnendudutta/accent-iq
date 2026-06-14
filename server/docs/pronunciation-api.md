@@ -33,6 +33,10 @@ US
 UK
 AUSTRALIAN
 INDIAN
+CANADIAN
+IRISH
+NEW_ZEALAND
+SOUTH_AFRICAN
 ```
 
 | Accent Value | Label |
@@ -41,6 +45,10 @@ INDIAN
 | `UK` | British English |
 | `AUSTRALIAN` | Australian English |
 | `INDIAN` | Indian English |
+| `CANADIAN` | Canadian English |
+| `IRISH` | Irish English |
+| `NEW_ZEALAND` | New Zealand English |
+| `SOUTH_AFRICAN` | South African English |
 
 ---
 
@@ -112,6 +120,34 @@ This route helps the future frontend avoid hardcoding available accents and inpu
         "label": "Indian English",
         "exampleWord": "schedule",
         "examplePronunciation": "SKEH-jool",
+        "enabled": true
+      },
+      {
+        "value": "CANADIAN",
+        "label": "Canadian English",
+        "exampleWord": "schedule",
+        "examplePronunciation": "SKEH-jool",
+        "enabled": true
+      },
+      {
+        "value": "IRISH",
+        "label": "Irish English",
+        "exampleWord": "schedule",
+        "examplePronunciation": "SHED-yool",
+        "enabled": true
+      },
+      {
+        "value": "NEW_ZEALAND",
+        "label": "New Zealand English",
+        "exampleWord": "schedule",
+        "examplePronunciation": "SHED-yool",
+        "enabled": true
+      },
+      {
+        "value": "SOUTH_AFRICAN",
+        "label": "South African English",
+        "exampleWord": "schedule",
+        "examplePronunciation": "SHED-yool",
         "enabled": true
       }
     ],
@@ -527,7 +563,7 @@ Users cannot delete another user's history item.
 |---|---:|---|
 | `inputType` | No | Defaults to `TEXT` |
 | `text` | Yes for `TEXT` | Must be a string, max 200 characters |
-| `accent` | Yes | Must be `US`, `UK`, `AUSTRALIAN`, or `INDIAN` |
+| `accent` | Yes | Must be one of the supported accent values |
 
 ---
 
@@ -556,7 +592,7 @@ Request:
 {
   "inputType": "TEXT",
   "text": "schedule",
-  "accent": "CANADIAN"
+  "accent": "SCOTTISH"
 }
 ```
 
@@ -569,6 +605,10 @@ US
 UK
 AUSTRALIAN
 INDIAN
+CANADIAN
+IRISH
+NEW_ZEALAND
+SOUTH_AFRICAN
 ```
 
 ---

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+    PRONUNCIATION_ACCENT_MESSAGE,
     PRONUNCIATION_ACCENTS,
     PRONUNCIATION_INPUT_TYPES,
     PRONUNCIATION_MAX_TEXT_LENGTH,
@@ -24,7 +25,7 @@ export const analyzePronunciationSchema = z.object({
                 .optional(),
 
             accent: z.enum(PRONUNCIATION_ACCENTS, {
-                message: "Accent must be US, UK, AUSTRALIAN, or INDIAN",
+                message: PRONUNCIATION_ACCENT_MESSAGE,
             }),
         })
         .superRefine((data, ctx) => {
@@ -76,7 +77,7 @@ export const favoritePronunciationSchema = z.object({
             normalizedText: z.string().trim().optional(),
 
             accent: z.enum(PRONUNCIATION_ACCENTS, {
-                message: "Accent must be US, UK, AUSTRALIAN, or INDIAN",
+                message: PRONUNCIATION_ACCENT_MESSAGE,
             }),
 
             pronunciation: z.object({

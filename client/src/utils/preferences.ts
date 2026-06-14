@@ -1,4 +1,12 @@
-export type DefaultAccent = "US" | "UK" | "AUSTRALIAN" | "INDIAN";
+export type DefaultAccent =
+    | "US"
+    | "UK"
+    | "AUSTRALIAN"
+    | "INDIAN"
+    | "CANADIAN"
+    | "IRISH"
+    | "NEW_ZEALAND"
+    | "SOUTH_AFRICAN";
 
 export type PracticeGoal = "CASUAL" | "REGULAR" | "INTENSIVE";
 
@@ -25,6 +33,10 @@ export const DEFAULT_ACCENT_OPTIONS: { value: DefaultAccent; label: string }[] =
     { value: "UK", label: "British English" },
     { value: "AUSTRALIAN", label: "Australian English" },
     { value: "INDIAN", label: "Indian English" },
+    { value: "CANADIAN", label: "Canadian English" },
+    { value: "IRISH", label: "Irish English" },
+    { value: "NEW_ZEALAND", label: "New Zealand English" },
+    { value: "SOUTH_AFRICAN", label: "South African English" },
 ];
 
 export const PRACTICE_GOAL_OPTIONS: {
@@ -58,7 +70,11 @@ function isDefaultAccent(value: unknown): value is DefaultAccent {
         value === "US" ||
         value === "UK" ||
         value === "AUSTRALIAN" ||
-        value === "INDIAN"
+        value === "INDIAN" ||
+        value === "CANADIAN" ||
+        value === "IRISH" ||
+        value === "NEW_ZEALAND" ||
+        value === "SOUTH_AFRICAN"
     );
 }
 

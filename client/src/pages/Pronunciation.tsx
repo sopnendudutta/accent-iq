@@ -114,6 +114,22 @@ function getSpeechRecognitionLanguage(accent: string) {
         return "en-IN";
     }
 
+    if (accent === "CANADIAN") {
+        return "en-CA";
+    }
+
+    if (accent === "IRISH") {
+        return "en-IE";
+    }
+
+    if (accent === "NEW_ZEALAND") {
+        return "en-NZ";
+    }
+
+    if (accent === "SOUTH_AFRICAN") {
+        return "en-ZA";
+    }
+
     return "en-US";
 }
 

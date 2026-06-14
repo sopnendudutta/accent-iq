@@ -36,6 +36,10 @@ Checklist:
 - [ ] `UK` accent exists
 - [ ] `AUSTRALIAN` accent exists
 - [ ] `INDIAN` accent exists
+- [ ] `CANADIAN` accent exists
+- [ ] `IRISH` accent exists
+- [ ] `NEW_ZEALAND` accent exists
+- [ ] `SOUTH_AFRICAN` accent exists
 - [ ] `TEXT` input type is enabled
 - [ ] `VOICE` input type is disabled
 
@@ -212,7 +216,7 @@ Body:
 {
   "inputType": "TEXT",
   "text": "schedule",
-  "accent": "CANADIAN"
+  "accent": "SCOTTISH"
 }
 ```
 

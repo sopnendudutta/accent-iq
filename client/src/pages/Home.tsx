@@ -7,7 +7,7 @@ const learningSteps = [
     },
     {
         title: "Choose an accent",
-        text: "Practice American, British, Australian, or Indian English guidance.",
+        text: "Practice across American, British, Australian, Indian, Canadian, Irish, New Zealand, and South African English.",
     },
     {
         title: "Read the coach notes",

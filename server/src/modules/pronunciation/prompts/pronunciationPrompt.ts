@@ -10,6 +10,10 @@ const accentLabels: Record<Accent, string> = {
   UK: "British English",
   AUSTRALIAN: "Australian English",
   INDIAN: "Indian English",
+  CANADIAN: "Canadian English",
+  IRISH: "Irish English",
+  NEW_ZEALAND: "New Zealand English",
+  SOUTH_AFRICAN: "South African English",
 };
 
 export const buildPronunciationPrompt = ({

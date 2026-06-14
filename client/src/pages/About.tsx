@@ -52,8 +52,9 @@ function About() {
                     <span>🌍</span>
                     <h3>Accent options</h3>
                     <p>
-                        AccentIQ supports multiple English accent options like US, UK,
-                        Australian, and Indian English in V1.
+                        AccentIQ supports multiple English accent options, including
+                        American, British, Australian, Indian, Canadian, Irish, New
+                        Zealand, and South African English.
                     </p>
                 </div>
 

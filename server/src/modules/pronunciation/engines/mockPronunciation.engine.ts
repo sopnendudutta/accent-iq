@@ -41,6 +41,34 @@ const scheduleAccentMap: Record<Accent, MockAccentData> = {
         stressPattern: "First syllable stress",
         mouthTip: "Keep the first syllable clear and avoid rushing the ending.",
     },
+    CANADIAN: {
+        phonetic: "SKEH-jool",
+        ipa: "/sked-jool/",
+        syllables: ["SKEH", "jool"],
+        stressPattern: "First syllable stress",
+        mouthTip: "Start with a clear SK sound and keep the ending smooth.",
+    },
+    IRISH: {
+        phonetic: "SHED-yool",
+        ipa: "/shed-yool/",
+        syllables: ["SHED", "yool"],
+        stressPattern: "First syllable stress",
+        mouthTip: "Use a light SH sound and keep both syllables crisp.",
+    },
+    NEW_ZEALAND: {
+        phonetic: "SHED-yool",
+        ipa: "/shed-yool/",
+        syllables: ["SHED", "yool"],
+        stressPattern: "First syllable stress",
+        mouthTip: "Use a relaxed first syllable and keep the ending clear.",
+    },
+    SOUTH_AFRICAN: {
+        phonetic: "SHED-yool",
+        ipa: "/shed-yool/",
+        syllables: ["SHED", "yool"],
+        stressPattern: "First syllable stress",
+        mouthTip: "Keep the SH sound clean and avoid flattening the ending.",
+    },
 };
 
 export const mockPronunciationEngine = {

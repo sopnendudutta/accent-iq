@@ -88,7 +88,10 @@ function Login({ onAuthSuccess }: LoginProps) {
 
                         <div>
                             <strong>Practice across accents</strong>
-                            <span>Use US, UK, Australian, and Indian English options.</span>
+                            <span>
+                                Use American, British, Australian, Indian, Canadian, Irish,
+                                New Zealand, and South African English options.
+                            </span>
                         </div>
 
                         <div>

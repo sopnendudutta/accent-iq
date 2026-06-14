@@ -37,6 +37,10 @@ enum Accent {
   UK
   AUSTRALIAN
   INDIAN
+  CANADIAN
+  IRISH
+  NEW_ZEALAND
+  SOUTH_AFRICAN
 }
 
 model PronunciationHistory {
