@@ -59,33 +59,6 @@ function Home() {
                         </div>
                     </div>
                 </div>
-
-                <aside
-                    className="home-product-preview"
-                    aria-label="AccentIQ pronunciation result preview"
-                >
-                    <div className="home-preview-header">
-                        <span className="result-label">Preview</span>
-                        <strong>American English</strong>
-                    </div>
-
-                    <div className="home-preview-word">comfortable</div>
-                    <div className="home-preview-pronunciation">KUHM-fuh-tuh-buhl</div>
-
-                    <div className="home-preview-lesson">
-                        <span>Mouth guidance</span>
-                        <p>
-                            Start relaxed, keep the middle syllable soft, and avoid
-                            over-pronouncing every letter.
-                        </p>
-                    </div>
-
-                    <div className="home-preview-steps">
-                        <span>comf</span>
-                        <span>ta</span>
-                        <span>ble</span>
-                    </div>
-                </aside>
             </div>
 
             <div className="home-learning-section">

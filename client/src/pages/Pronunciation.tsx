@@ -172,8 +172,6 @@ function Pronunciation() {
         );
 
     const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
-    const [status, setStatus] = useState("Loading pronunciation options...");
-    const [statusType, setStatusType] = useState<MessageType>("info");
 
     const [formMessage, setFormMessage] = useState("");
     const [formMessageType, setFormMessageType] = useState<MessageType>("info");
@@ -277,7 +275,7 @@ function Pronunciation() {
 
         if (!token) {
             setHistory([]);
-            setHistoryMessage("Login to save and view pronunciation history.");
+            setHistoryMessage("");
             return;
         }
 
@@ -350,13 +348,8 @@ function Pronunciation() {
                 setSelectedAccent(
                     getPreferredAccent(response.data.accents, savedPreferences)
                 );
-
-                setStatusType("success");
-                setStatus("Pronunciation options loaded successfully.");
             } catch (error) {
                 console.error(error);
-                setStatusType("error");
-                setStatus("Could not load pronunciation options.");
             }
         }
 
@@ -789,20 +782,6 @@ function Pronunciation() {
                     </p>
                 </div>
 
-                <div className="pronunciation-hero-note">
-                    <span className="result-label">V3 practice flow</span>
-                    <strong>Text practice, saved progress, privacy-first coaching.</strong>
-                    <p>
-                        Voice-to-text only fills the text box. Saved history powers streaks
-                        and recommendations without uploading raw audio.
-                    </p>
-
-                    <div className="practice-status-row">
-                        <div className="status-pill status-pill-success">Text input ready</div>
-                        <div className="status-pill status-pill-success">Voice-to-text ready</div>
-                        <div className="status-pill">Streaks and recommendations</div>
-                    </div>
-                </div>
             </div>
 
             <div className="pronunciation-layout">
@@ -1063,7 +1042,7 @@ function Pronunciation() {
                             <p className="save-note">
                                 {result.data.saved
                                     ? "This result was saved to your history."
-                                    : "Guest result only. Login to save pronunciation history and favorites."}
+                                    : "Guest result only."}
                             </p>
                         </div>
                     )}
@@ -1217,24 +1196,6 @@ function Pronunciation() {
                             </div>
                         )}
 
-                        {!isHistoryLoading && history.length === 0 && (
-                            <div className="empty-state-card">
-                                <span className="empty-state-icon">📚</span>
-
-                                <h3>
-                                    {hasAuthToken
-                                        ? "No history saved yet"
-                                        : "Login to save pronunciation history"}
-                                </h3>
-
-                                <p>
-                                    {hasAuthToken
-                                        ? "Analyze a word while logged in and your practice result will appear here."
-                                        : "Guest users can practice freely, but history is saved only after login."}
-                                </p>
-                            </div>
-                        )}
-
                         {history.length > 0 && (
                             <div className="history-toolbar">
                                 <div className="form-field">
@@ -1384,11 +1345,6 @@ function Pronunciation() {
                 </div>
 
                 <aside className="practice-side-panel">
-                    <div className={`side-info-card side-info-card-${statusType}`}>
-                        <span className="result-label">Options status</span>
-                        <p>{status}</p>
-                    </div>
-
                     <div className="side-info-card">
                         <span className="result-label">Your preferences</span>
 

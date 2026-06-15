@@ -396,7 +396,6 @@ select:focus-visible {
 .status-box,
 .result-box,
 .history-section,
-.accent-card,
 .result-card,
 .guidance-box,
 .practice-box,
@@ -430,25 +429,6 @@ select:focus-visible {
 .status-box p {
   color: var(--color-success-text);
   font-weight: 700;
-}
-
-.options-preview {
-  margin-top: 34px;
-}
-
-.accent-card {
-  margin-top: 14px;
-  padding: 18px;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-card);
-}
-
-.accent-card h3 {
-  margin: 0 0 8px;
-}
-
-.accent-card p {
-  margin: 0;
 }
 
 /* Forms */
@@ -1261,23 +1241,6 @@ li {
   gap: 10px;
 }
 
-.status-pill {
-  padding: 9px 13px;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-surface);
-  color: var(--color-muted);
-
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.status-pill-success {
-  background: var(--color-success-bg);
-  border-color: var(--color-success-border);
-  color: var(--color-success-text);
-}
-
 .pronunciation-layout {
   margin-top: 22px;
 
@@ -1413,26 +1376,6 @@ li {
 .side-info-card p {
   margin-top: 10px;
   font-size: 15px;
-}
-
-.side-info-card-success {
-  background: var(--color-success-bg);
-  border-color: var(--color-success-border);
-}
-
-.side-info-card-success p {
-  color: var(--color-success-text);
-  font-weight: 800;
-}
-
-.side-info-card-error {
-  background: var(--color-error-bg);
-  border-color: var(--color-error-border);
-}
-
-.side-info-card-error p {
-  color: var(--color-error-text);
-  font-weight: 800;
 }
 
 .feature-list {
@@ -2388,7 +2331,6 @@ textarea {
     gap: 8px;
   }
 
-  .status-pill,
   .example-chip,
   .accent-badge {
     font-size: 13px;
@@ -2397,8 +2339,7 @@ textarea {
   .result-card,
   .guidance-box,
   .practice-box,
-  .history-card,
-  .accent-card {
+  .history-card {
     padding: 16px;
   }
 
@@ -3594,28 +3535,9 @@ body {
   font-size: clamp(17px, 2vw, 21px);
 }
 
-.pronunciation-hero .practice-status-row,
 .result-header .practice-status-row {
   margin-top: 0;
   justify-content: flex-start;
-}
-
-.pronunciation-hero .practice-status-row {
-  max-width: 320px;
-  justify-content: flex-end;
-}
-
-.status-pill {
-  background: transparent;
-  border-color: var(--color-border);
-  color: var(--color-muted);
-  box-shadow: none;
-}
-
-.status-pill-success {
-  background: color-mix(in srgb, var(--color-coral) 9%, transparent);
-  border-color: color-mix(in srgb, var(--color-coral) 28%, var(--color-border) 72%);
-  color: var(--color-heading);
 }
 
 /* Make practice layout feel like sections, not cards */
@@ -4073,11 +3995,6 @@ body {
     align-items: start;
   }
 
-  .pronunciation-hero .practice-status-row {
-    max-width: none;
-    justify-content: flex-start;
-  }
-
   .home-hero-content {
     text-align: left;
   }
@@ -4173,9 +4090,7 @@ body {
   min-height: calc(100vh - 76px);
   padding: clamp(72px, 9vw, 132px) 0 clamp(56px, 8vw, 104px);
 
-  display: grid;
-  grid-template-columns: minmax(0, 0.96fr) minmax(320px, 0.62fr);
-  gap: clamp(42px, 7vw, 96px);
+  display: flex;
   align-items: center;
 }
 
@@ -4185,88 +4100,6 @@ body {
 
 .home-page h1 {
   max-width: 900px;
-}
-
-.home-product-preview {
-  padding: clamp(24px, 4vw, 38px);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  background: color-mix(in srgb, var(--color-surface) 84%, transparent);
-  box-shadow: var(--shadow-card);
-}
-
-.home-preview-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.home-preview-header strong {
-  color: var(--color-heading);
-  font-family: var(--font-heading);
-}
-
-.home-preview-word {
-  margin-top: clamp(24px, 4vw, 40px);
-  color: var(--color-heading);
-  font-family: var(--font-heading);
-  font-size: clamp(34px, 4.5vw, 58px);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.035em;
-}
-
-.home-preview-pronunciation {
-  margin-top: 12px;
-  color: var(--color-coral);
-  font-family: var(--font-heading);
-  font-size: clamp(24px, 3vw, 34px);
-  font-weight: 900;
-  line-height: 1.1;
-}
-
-.home-preview-lesson {
-  margin-top: clamp(24px, 4vw, 38px);
-  padding-top: 22px;
-  border-top: 1px solid var(--color-border);
-}
-
-.home-preview-lesson span {
-  display: block;
-  color: var(--color-heading);
-  font-family: var(--font-heading);
-  font-weight: 900;
-}
-
-.home-preview-lesson p {
-  margin-top: 8px;
-  font-size: 16px;
-}
-
-.home-preview-steps {
-  margin-top: 24px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.home-preview-steps span {
-  min-height: 44px;
-  padding: 10px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--color-surface-soft) 74%, transparent);
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  color: var(--color-heading);
-  font-family: var(--font-heading);
-  font-weight: 900;
 }
 
 .home-learning-section {
@@ -4310,37 +4143,11 @@ body {
 }
 
 .pronunciation-hero {
-  grid-template-columns: minmax(0, 0.96fr) minmax(290px, 0.44fr);
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .pronunciation-hero-content {
   max-width: 860px;
-}
-
-.pronunciation-hero-note {
-  padding-left: clamp(22px, 3vw, 42px);
-  border-left: 1px solid var(--color-border);
-}
-
-.pronunciation-hero-note strong {
-  display: block;
-  margin-top: 10px;
-  color: var(--color-heading);
-  font-family: var(--font-heading);
-  font-size: 20px;
-  line-height: 1.35;
-}
-
-.pronunciation-hero-note p {
-  margin-top: 10px;
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-.pronunciation-hero-note .practice-status-row {
-  margin-top: 22px;
-  max-width: none;
-  justify-content: flex-start;
 }
 
 .panel-support-text,
@@ -4370,16 +4177,6 @@ body {
   .pronunciation-hero {
     grid-template-columns: 1fr;
   }
-
-  .home-product-preview {
-    max-width: 620px;
-  }
-
-  .pronunciation-hero-note {
-    padding: 24px 0 0;
-    border-left: none;
-    border-top: 1px solid var(--color-border);
-  }
 }
 
 @media (max-width: 820px) {
@@ -4406,13 +4203,6 @@ body {
     padding-bottom: 48px;
   }
 
-  .home-product-preview {
-    padding: 22px;
-  }
-
-  .home-preview-steps {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* Mobile polish and layout stability */
@@ -4497,7 +4287,6 @@ body {
     justify-content: stretch;
   }
 
-  .home-product-preview,
   .auth-card,
   .auth-benefits-panel {
     max-width: none;
@@ -4606,19 +4395,6 @@ body {
   .home-highlights {
     margin-top: 30px;
     gap: 16px;
-  }
-
-  .home-product-preview {
-    padding: 18px;
-    border-radius: 20px;
-  }
-
-  .home-preview-word {
-    font-size: 32px;
-  }
-
-  .home-preview-pronunciation {
-    font-size: 23px;
   }
 
   .pronunciation-form {
