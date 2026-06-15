@@ -17,7 +17,6 @@ import type {
     PronunciationAnalyzeResponse,
     PronunciationResultData,
     PronunciationFavoriteItem,
-    PronunciationFeatures,
     PronunciationHistoryItem,
     PronunciationLimits,
 } from "../types/pronunciation";
@@ -158,7 +157,6 @@ function Pronunciation() {
     const [accents, setAccents] = useState<AccentOption[]>([]);
     const [inputTypes, setInputTypes] = useState<InputTypeOption[]>([]);
     const [limits, setLimits] = useState<PronunciationLimits | null>(null);
-    const [features, setFeatures] = useState<PronunciationFeatures | null>(null);
 
     const [selectedAccent, setSelectedAccent] = useState("");
     const [selectedInputType, setSelectedInputType] = useState("TEXT");
@@ -344,7 +342,6 @@ function Pronunciation() {
                 setAccents(response.data.accents);
                 setInputTypes(response.data.inputTypes);
                 setLimits(response.data.limits);
-                setFeatures(response.data.features);
 
                 const savedPreferences = getUserPreferences();
 
@@ -1424,68 +1421,6 @@ function Pronunciation() {
                         </div>
                     </div>
 
-                    {features && (
-                        <div className="side-info-card">
-                            <span className="result-label">V1 feature status</span>
-
-                            <div className="feature-list">
-                                <div className="feature-row">
-                                    <span>Guest analysis</span>
-                                    <strong>
-                                        {features.guestAnalysis ? "Available" : "Coming soon"}
-                                    </strong>
-                                </div>
-
-                                <div className="feature-row">
-                                    <span>Logged-in history</span>
-                                    <strong>
-                                        {features.loggedInHistory ? "Available" : "Coming soon"}
-                                    </strong>
-                                </div>
-
-                                <div className="feature-row">
-                                    <span>Favorites</span>
-                                    <strong>
-                                        {features.favorites ? "Available" : "Coming soon"}
-                                    </strong>
-                                </div>
-
-                                <div className="feature-row">
-                                    <span>Voice-to-text</span>
-                                    <strong>Available</strong>
-                                </div>
-
-                                <div className="feature-row">
-                                    <span>Audio scoring</span>
-                                    <strong>
-                                        {features.audioScoring ? "Available" : "Coming soon"}
-                                    </strong>
-                                </div>
-
-                                <div className="feature-row">
-                                    <span>Progress tracking</span>
-                                    <strong>
-                                        {features.progressTracking ? "Available" : "Coming soon"}
-                                    </strong>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="side-info-card">
-                        <span className="result-label">Available accents</span>
-
-                        <div className="accent-list">
-                            {accents.map((accent) => (
-                                <div key={accent.value} className="compact-accent-card">
-                                    <strong>{accent.label}</strong>
-                                    <span>
-                                        {accent.exampleWord} - {accent.examplePronunciation}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                 </aside>
             </div>
         </section>
