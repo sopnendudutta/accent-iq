@@ -9,7 +9,6 @@ import Register from "./pages/Register";
 import OAuthCallback from "./pages/OAuthCallback";
 import Pronunciation from "./pages/Pronunciation";
 import Progress from "./pages/Progress";
-import CaseStudy from "./pages/CaseStudy";
 import About from "./pages/About";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -110,7 +109,6 @@ function App() {
               path="/progress"
               element={<Progress user={user} isAuthLoading={isAuthLoading} />}
             />
-            <Route path="/case-study" element={<CaseStudy />} />
             <Route path="/about" element={<About />} />
             <Route
               path="/settings"

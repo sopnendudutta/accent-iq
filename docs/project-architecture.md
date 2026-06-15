@@ -35,7 +35,6 @@ Main files:
 - `client/src/index.css`
 - `client/src/pages/Pronunciation.tsx`
 - `client/src/pages/Progress.tsx`
-- `client/src/pages/CaseStudy.tsx`
 - `client/src/components/layout/Navbar.tsx`
 
 Responsibilities:

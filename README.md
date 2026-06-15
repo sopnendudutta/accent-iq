@@ -16,7 +16,6 @@ Suggested captures:
 - Home page
 - Pronunciation workspace
 - Progress dashboard
-- Case study page
 - Mobile navigation
 
 ## Features
@@ -33,7 +32,6 @@ Suggested captures:
 - Daily practice streaks from saved history
 - Personalized recommendations from saved activity
 - Progress dashboard with weekly rhythm and accent coverage
-- Public `/case-study` portfolio page
 - Light and dark mode
 - Responsive full-screen UI
 
@@ -72,7 +70,6 @@ V3 is the final portfolio polish phase:
 - daily practice streaks
 - personalized practice recommendations
 - audio privacy and voice-scoring planning
-- public case study page
 - README and documentation polish
 - final QA and merge preparation
 

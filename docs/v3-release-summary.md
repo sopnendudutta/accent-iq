@@ -69,29 +69,6 @@ The V3 decision is clear:
 
 Future audio scoring is blocked until consent, provider processing, storage, retention, and deletion rules are designed.
 
-### Public Case Study Page
-
-V3 added a portfolio-ready case study route:
-
-```txt
-/case-study
-```
-
-The page explains:
-
-- what AccentIQ is
-- the problem
-- V1 foundation
-- V2 improvements
-- V3 polish
-- tech stack
-- architecture
-- AI safety and fallback
-- privacy decisions
-- deployment
-- intentionally skipped features
-- future improvements
-
 ### README And GitHub Polish
 
 V3 added portfolio documentation:
@@ -177,7 +154,6 @@ Local Vite route smoke checks passed:
 /                  200
 /pronunciation     200
 /progress          200
-/case-study        200
 /about             200
 /settings          200
 /login             200
@@ -213,7 +189,6 @@ Local automated smoke coverage completed:
 - [x] Home route serves
 - [x] Pronunciation route serves
 - [x] Progress route serves
-- [x] Case Study route serves
 - [x] About route serves
 - [x] Settings route serves
 - [x] Login route serves

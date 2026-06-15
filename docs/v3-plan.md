@@ -49,7 +49,6 @@ The Progress page already calculates a current streak from saved pronunciation h
 - Add daily streaks based on real saved history.
 - Add personalized practice recommendations based on existing history and favorites.
 - Document audio privacy and voice scoring decisions before implementing audio upload.
-- Add a public case study page that explains the project as a portfolio artifact.
 - Polish README and documentation for GitHub reviewers.
 - Run final V3 QA before any merge to `main`.
 
@@ -140,25 +139,6 @@ Do not implement raw audio upload, raw audio storage, or real voice scoring in V
 
 Browser speech-to-text remains the only voice input behavior.
 
-### Public Case Study Page
-
-Add a portfolio-ready app page at `/case-study`.
-
-It should explain:
-
-- What AccentIQ is
-- The problem
-- V1 features
-- V2 improvements
-- V3 final polish
-- Tech stack
-- Architecture
-- AI safety and fallback
-- Privacy decisions
-- Deployment
-- Intentional limitations
-- Future improvements
-
 ### README And GitHub Polish
 
 The repository should be easy for a reviewer to understand.
@@ -224,10 +204,9 @@ Postpone recommendations that claim to identify user weaknesses unless the produ
 8. Personalized recommendations planning.
 9. Personalized recommendations implementation.
 10. Audio privacy and voice scoring planning.
-11. Public case study page.
-12. README and GitHub polish.
-13. Final V3 QA and release summary.
-14. Final merge checklist and PR preparation.
+11. README and GitHub polish.
+12. Final V3 QA and release summary.
+13. Final merge checklist and PR preparation.
 
 ## Safety Rules
 
@@ -284,7 +263,6 @@ Manual QA should cover:
 - Mobile navigation
 - AI mode and mock fallback when applicable
 - Google OAuth once implemented
-- Case study route once implemented
 
 ## Checkpoint 1 Decision
 

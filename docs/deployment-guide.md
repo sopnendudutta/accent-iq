@@ -141,7 +141,7 @@ npm run build
 dist
 ```
 
-The frontend uses `client/vercel.json` to rewrite app routes to `index.html`, so routes like `/case-study`, `/progress`, and `/auth/google/callback` work on refresh.
+The frontend uses `client/vercel.json` to rewrite app routes to `index.html`, so routes like `/progress` and `/auth/google/callback` work on refresh.
 
 ## Frontend Environment Variables
 
@@ -213,7 +213,6 @@ After deployment:
 - [ ] Progress dashboard loads.
 - [ ] Streaks display from saved practice.
 - [ ] Recommendations display from saved practice.
-- [ ] Case study route `/case-study` works.
 - [ ] About page works.
 - [ ] Settings page works.
 - [ ] Dark mode works.

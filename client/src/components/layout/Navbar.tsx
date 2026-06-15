@@ -79,14 +79,6 @@ function Navbar({
                             Progress
                         </NavLink>
 
-                        <NavLink
-                            className={getNavLinkClass}
-                            to="/case-study"
-                            onClick={closeMenu}
-                        >
-                            Case Study
-                        </NavLink>
-
                         <NavLink className={getNavLinkClass} to="/about" onClick={closeMenu}>
                             About
                         </NavLink>
