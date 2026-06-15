@@ -722,7 +722,7 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
                     </p>
                     <button
                         type="button"
-                        className="secondary-button"
+                        className="secondary-button refresh-button"
                         onClick={loadProgressData}
                         disabled={isProgressLoading}
                     >

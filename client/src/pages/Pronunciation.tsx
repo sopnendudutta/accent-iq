@@ -1084,7 +1084,7 @@ function Pronunciation() {
 
                                 <button
                                     type="button"
-                                    className="secondary-button"
+                                    className="secondary-button refresh-button"
                                     onClick={loadPronunciationFavorites}
                                     disabled={isFavoritesLoading}
                                 >
@@ -1190,7 +1190,7 @@ function Pronunciation() {
 
                                 <button
                                     type="button"
-                                    className="secondary-button"
+                                    className="secondary-button refresh-button"
                                     onClick={loadPronunciationHistory}
                                     disabled={isHistoryLoading}
                                 >

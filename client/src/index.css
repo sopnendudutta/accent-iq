@@ -3486,6 +3486,17 @@ body {
   box-shadow: none;
 }
 
+.refresh-button {
+  background: #C8AA7A;
+  border-color: #C8AA7A;
+  color: var(--color-heading);
+}
+
+.refresh-button:hover:not(:disabled) {
+  background: color-mix(in srgb, #C8AA7A 86%, var(--color-heading) 14%);
+  border-color: color-mix(in srgb, #C8AA7A 86%, var(--color-heading) 14%);
+}
+
 /* Home page: true full-screen landing */
 
 .home-page {
