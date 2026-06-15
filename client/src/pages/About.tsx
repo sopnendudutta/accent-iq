@@ -23,45 +23,15 @@ function About() {
                         </Link>
                     </div>
                 </div>
-
-                <div className="about-summary-card">
-                    <span className="result-label">V1 focus</span>
-                    <h2>Text and voice-to-text pronunciation help</h2>
-
-                    <p>
-                        In this version, users can type a word or use browser
-                        voice-to-text, select an accent, and get simple pronunciation
-                        guidance.
-                    </p>
-                </div>
             </div>
 
             <div className="about-section-grid">
                 <div className="about-card">
-                    <span>🎯</span>
-                    <h3>Our goal</h3>
-                    <p>
-                        Help learners speak more clearly by making pronunciation practice
-                        easier to understand and repeat.
-                    </p>
-                </div>
-
-                <div className="about-card">
-                    <span>🌍</span>
                     <h3>Accent options</h3>
                     <p>
                         AccentIQ supports multiple English accent options, including
                         American, British, Australian, Indian, Canadian, Irish, New
                         Zealand, and South African English.
-                    </p>
-                </div>
-
-                <div className="about-card">
-                    <span>📚</span>
-                    <h3>Beginner-friendly</h3>
-                    <p>
-                        Feedback is shown in readable sections: phonetics, IPA, syllables,
-                        stress, guidance, and practice.
                     </p>
                 </div>
             </div>
@@ -111,7 +81,7 @@ function About() {
 
                         <div>
                             <strong>More accent and practice tools</strong>
-                            <span>Add richer practice flows after the V1 foundation.</span>
+                            <span>Add richer practice flows after the current foundation.</span>
                         </div>
                     </div>
                 </div>
@@ -122,7 +92,7 @@ function About() {
                 <h2>Built carefully, one version at a time.</h2>
 
                 <p>
-                    Login is optional in V1. Guest users can practice without an account.
+                    Login is optional. Guest users can practice without an account.
                     Voice-to-text uses browser speech recognition to fill the text box,
                     and AccentIQ does not save raw audio. Real audio pronunciation scoring
                     is planned for a later version.

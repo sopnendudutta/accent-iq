@@ -1788,7 +1788,6 @@ li {
   gap: 12px;
 }
 
-.about-summary-card,
 .about-card,
 .about-panel,
 .about-safety-note,
@@ -1799,32 +1798,16 @@ li {
   box-shadow: var(--shadow-card);
 }
 
-.about-summary-card {
-  padding: 22px;
-}
-
-.about-summary-card h2 {
-  margin: 8px 0 0;
-}
-
-.about-summary-card p {
-  font-size: 15px;
-}
-
 .about-section-grid {
   margin-top: 22px;
 
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 14px;
 }
 
 .about-card {
   padding: 22px;
-}
-
-.about-card span {
-  font-size: 28px;
 }
 
 .about-card h3 {
@@ -1940,7 +1923,6 @@ li {
 .settings-card,
 .settings-theme-card,
 .settings-feature-card,
-.about-summary-card,
 .about-card,
 .about-panel,
 .about-safety-note,
@@ -1959,7 +1941,7 @@ li {
 }
 
 .settings-feature-card span,
-.about-card span {
+.settings-feature-card span {
   display: inline-flex;
   width: 42px;
   height: 42px;
@@ -2007,7 +1989,6 @@ body {
 .settings-card,
 .settings-feature-card,
 .about-hero,
-.about-summary-card,
 .about-card,
 .about-panel,
 .about-safety-note,
@@ -2396,7 +2377,6 @@ textarea {
   }
 
   .about-hero,
-  .about-summary-card,
   .about-card,
   .about-panel,
   .about-safety-note,
@@ -2459,7 +2439,6 @@ textarea {
   .settings-card,
   .settings-feature-card,
   .about-hero,
-  .about-summary-card,
   .about-card,
   .about-panel,
   .about-safety-note,
@@ -3830,6 +3809,10 @@ body {
   box-shadow: none;
 }
 
+.about-hero {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .settings-hero h1,
 .about-hero h1 {
   font-size: clamp(42px, 6vw, 76px);
@@ -3841,8 +3824,7 @@ body {
   font-size: clamp(17px, 2vw, 21px);
 }
 
-.settings-theme-card,
-.about-summary-card {
+.settings-theme-card {
   padding: 0 0 0 clamp(22px, 3vw, 42px);
   background: transparent;
   border: none;
@@ -3872,6 +3854,10 @@ body {
   gap: clamp(22px, 4vw, 42px);
 }
 
+.about-section-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .settings-main-column,
 .settings-side-column {
   gap: 0;
@@ -3885,7 +3871,6 @@ body {
 .settings-card,
 .settings-feature-card,
 .about-card,
-.about-panel,
 .about-safety-note {
   padding: clamp(24px, 4vw, 42px) 0;
   background: transparent;
@@ -3893,6 +3878,14 @@ body {
   border-top: 1px solid var(--color-border);
   border-radius: 0;
   box-shadow: none;
+}
+
+.about-panel {
+  padding: clamp(24px, 4vw, 42px);
+  background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
 }
 
 .about-safety-note {
@@ -3907,10 +3900,13 @@ body {
 }
 
 .settings-card:first-child,
-.about-card:first-child,
-.about-panel:first-child {
+.about-card:first-child {
   border-top: none;
   padding-top: 0;
+}
+
+.about-panel:first-child {
+  border-top-color: var(--color-border);
 }
 
 .compact-settings-card {
@@ -3924,8 +3920,7 @@ body {
   min-height: 100%;
 }
 
-.settings-feature-card span,
-.about-card span {
+.settings-feature-card span {
   width: auto;
   height: auto;
   margin-bottom: 12px;
@@ -3943,13 +3938,26 @@ body {
   margin-top: 0;
 }
 
-.about-list div,
 .current-feature-list div,
 .settings-preference-summary div,
 .guest-settings-box {
   background: color-mix(in srgb, var(--color-surface) 72%, transparent);
   border-color: var(--color-border);
   box-shadow: none;
+}
+
+.about-list div {
+  padding: 14px 0;
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.about-list div:first-child {
+  border-top: none;
+  padding-top: 0;
 }
 
 .not-found-card {
@@ -3991,8 +3999,7 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .settings-theme-card,
-  .about-summary-card {
+  .settings-theme-card {
     padding: 24px 0 0;
     border-left: none;
     border-top: 1px solid var(--color-border);
@@ -4493,8 +4500,7 @@ body {
     align-items: flex-start;
   }
 
-  .settings-theme-card,
-  .about-summary-card {
+  .settings-theme-card {
     padding-top: 20px;
   }
 
