@@ -3195,12 +3195,12 @@ textarea {
   box-shadow: none;
 }
 
-.voice-helper + .form-footer-row {
-  margin-top: -6px;
-}
-
-.form-footer-row + button[type="submit"] {
-  margin-top: 0;
+.pronunciation-action-row {
+  width: min(100%, 560px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 12px;
 }
 
 .voice-helper-action-row {
@@ -3211,9 +3211,15 @@ textarea {
   flex-wrap: wrap;
 }
 
+.pronunciation-action-row .voice-helper,
+.pronunciation-action-row .voice-helper-action-row {
+  min-width: 0;
+  width: 100%;
+}
+
 .pronunciation-form .voice-helper-button {
-  width: fit-content;
-  min-height: 44px;
+  width: 100%;
+  min-height: 50px;
   margin-top: 0;
   padding: 0.75rem 1rem;
 
@@ -3225,6 +3231,8 @@ textarea {
   font-size: 15px;
   font-weight: 900;
   font-family: var(--font-heading);
+  line-height: 1.15;
+  text-align: center;
 
   cursor: pointer;
   box-shadow: none;
@@ -3258,14 +3266,34 @@ textarea {
   box-shadow: none;
 }
 
+.pronunciation-form .analyze-pronunciation-button {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+}
+
 @media (max-width: 640px) {
+  .pronunciation-action-row {
+    width: 100%;
+    gap: 8px;
+  }
+
   .voice-helper-action-row {
     display: grid;
   }
 
-  .pronunciation-form .voice-helper-button {
+  .pronunciation-form .voice-helper-button,
+  .pronunciation-form .analyze-pronunciation-button {
     width: 100%;
     justify-content: center;
+    padding-inline: 0.6rem;
+    font-size: 13px;
   }
 }
 

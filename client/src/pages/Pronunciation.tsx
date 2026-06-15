@@ -865,32 +865,42 @@ function Pronunciation() {
                                 />
                             </div>
 
-                            <div className={voiceHelperClassName}>
-                                <div className="voice-helper-action-row">
-                                    <button
-                                        type="button"
-                                        className={
-                                            voiceIsListening
-                                                ? "voice-helper-button voice-helper-button-listening"
-                                                : "voice-helper-button"
-                                        }
-                                        onClick={
-                                            voiceIsListening
-                                                ? handleStopVoiceInput
-                                                : handleStartVoiceInput
-                                        }
-                                        disabled={
-                                            !isSpeechSupported ||
-                                            voiceStatus === "unsupported" ||
-                                            isSubmitting
-                                        }
-                                        aria-pressed={voiceIsListening}
-                                        aria-label={voiceButtonAriaLabel}
-                                        title={voiceButtonTitle}
-                                    >
-                                        {voiceButtonLabel}
-                                    </button>
+                            <div className="pronunciation-action-row">
+                                <div className={voiceHelperClassName}>
+                                    <div className="voice-helper-action-row">
+                                        <button
+                                            type="button"
+                                            className={
+                                                voiceIsListening
+                                                    ? "voice-helper-button voice-helper-button-listening"
+                                                    : "voice-helper-button"
+                                            }
+                                            onClick={
+                                                voiceIsListening
+                                                    ? handleStopVoiceInput
+                                                    : handleStartVoiceInput
+                                            }
+                                            disabled={
+                                                !isSpeechSupported ||
+                                                voiceStatus === "unsupported" ||
+                                                isSubmitting
+                                            }
+                                            aria-pressed={voiceIsListening}
+                                            aria-label={voiceButtonAriaLabel}
+                                            title={voiceButtonTitle}
+                                        >
+                                            {voiceButtonLabel}
+                                        </button>
+                                    </div>
                                 </div>
+
+                                <button
+                                    type="submit"
+                                    className="analyze-pronunciation-button"
+                                    disabled={isSubmitting || !selectedAccent}
+                                >
+                                    {isSubmitting ? "Preparing coaching..." : "Analyze pronunciation"}
+                                </button>
                             </div>
 
                             <div className="form-footer-row">
@@ -901,10 +911,6 @@ function Pronunciation() {
                                 )}
 
                             </div>
-
-                            <button type="submit" disabled={isSubmitting || !selectedAccent}>
-                                {isSubmitting ? "Preparing coaching..." : "Analyze pronunciation"}
-                            </button>
                         </form>
 
                         {isSubmitting && (
