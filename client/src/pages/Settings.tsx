@@ -107,7 +107,7 @@ function Settings({
 
                     <p>
                         View your account status, switch between light and dark mode,
-                        and customize simple pronunciation practice preferences for V1.
+                        and customize simple pronunciation practice preferences.
                     </p>
                 </div>
 
@@ -221,7 +221,7 @@ function Settings({
                         )}
                     </div>
 
-                    <div className="settings-card">
+                    <div className="settings-card settings-current-card">
                         <span className="result-label">Available now</span>
                         <h2>Your current AccentIQ setup</h2>
 
@@ -262,7 +262,7 @@ function Settings({
                         </div>
                     </div>
 
-                    <div className="settings-card">
+                    <div className="settings-card settings-practice-card">
                         <span className="result-label">Practice preferences</span>
                         <h2>Pronunciation defaults</h2>
 
@@ -428,14 +428,6 @@ function Settings({
                         </p>
                     </div>
 
-                    <div className="settings-card compact-settings-card">
-                        <span className="result-label">Preference storage</span>
-                        <h3>Local device</h3>
-                        <p>
-                            These V1 preferences use localStorage, so no backend or Prisma
-                            changes are needed.
-                        </p>
-                    </div>
                 </aside>
             </div>
 

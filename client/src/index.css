@@ -1533,16 +1533,6 @@ li {
   padding: 24px;
 }
 
-.settings-card-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.settings-card-header h2 {
-  margin: 6px 0 0;
-}
-
 .profile-info-grid {
   margin-top: 24px;
 
@@ -1551,16 +1541,14 @@ li {
   gap: 14px;
 }
 
-.profile-info-grid div,
-.settings-preference-list div {
+.profile-info-grid div {
   padding: 16px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface-soft);
 }
 
-.profile-info-grid span,
-.settings-preference-list span {
+.profile-info-grid span {
   display: block;
   color: var(--color-muted);
   font-size: 13px;
@@ -1569,8 +1557,7 @@ li {
   letter-spacing: 0.06em;
 }
 
-.profile-info-grid strong,
-.settings-preference-list strong {
+.profile-info-grid strong {
   display: block;
   margin-top: 8px;
   color: var(--color-heading);
@@ -1593,12 +1580,6 @@ li {
   margin-top: 18px;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-}
-
-.settings-preference-list {
-  margin-top: 20px;
-  display: grid;
   gap: 12px;
 }
 
@@ -3915,6 +3896,15 @@ body {
   border-bottom: 1px solid var(--color-border);
 }
 
+.settings-current-card,
+.settings-practice-card {
+  padding: clamp(24px, 4vw, 42px);
+  background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
 .settings-feature-card,
 .about-card {
   min-height: 100%;
@@ -3944,6 +3934,24 @@ body {
   background: color-mix(in srgb, var(--color-surface) 72%, transparent);
   border-color: var(--color-border);
   box-shadow: none;
+}
+
+.settings-current-card .current-feature-list div,
+.settings-practice-card .settings-preference-summary div,
+.settings-practice-card .settings-checkbox-row {
+  padding: 14px 0;
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.settings-current-card .current-feature-list div:first-child,
+.settings-practice-card .settings-preference-summary div:first-child,
+.settings-practice-card .settings-checkbox-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
 }
 
 .about-list div {
