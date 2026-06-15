@@ -790,17 +790,17 @@ function Pronunciation() {
                 </div>
 
                 <div className="pronunciation-hero-note">
-                    <span className="result-label">V2 practice flow</span>
-                    <strong>Text first. Audio scoring later.</strong>
+                    <span className="result-label">V3 practice flow</span>
+                    <strong>Text practice, saved progress, privacy-first coaching.</strong>
                     <p>
-                        Voice-to-text only fills the text box. You stay in control before
-                        analysis begins.
+                        Voice-to-text only fills the text box. Saved history powers streaks
+                        and recommendations without uploading raw audio.
                     </p>
 
                     <div className="practice-status-row">
                         <div className="status-pill status-pill-success">Text input ready</div>
                         <div className="status-pill status-pill-success">Voice-to-text ready</div>
-                        <div className="status-pill">Saved history for users</div>
+                        <div className="status-pill">Streaks and recommendations</div>
                     </div>
                 </div>
             </div>

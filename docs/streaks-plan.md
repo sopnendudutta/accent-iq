@@ -4,7 +4,7 @@
 
 Plan AccentIQ V3 daily practice streaks before making any database changes.
 
-The safest V3 decision is to calculate streaks from existing saved pronunciation history. This keeps streaks honest, avoids fake progress, and preserves the V1/V2 behavior where guests can practice freely but only logged-in users build saved history.
+The safest V3 decision is to calculate streaks from existing saved pronunciation history. This keeps streaks honest, avoids fake progress, and preserves the current behavior where guests can practice freely but only logged-in users build saved history.
 
 ## Files Inspected
 

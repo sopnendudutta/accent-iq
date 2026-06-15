@@ -1,12 +1,12 @@
-# AccentIQ V2 Release Summary
+# AccentIQ V3 Release Summary
 
 ## Overview
 
-AccentIQ V2 improves the app from a working pronunciation practice tool into a more polished AI-powered pronunciation learning product.
+AccentIQ V3 improves the app from a working pronunciation practice tool into a portfolio-ready AI pronunciation learning product.
 
-V2 focuses on real AI pronunciation guidance, a cleaner learning experience, more accent support, better UI/UX, and a progress dashboard.
+V3 focuses on AI pronunciation guidance, optional Google OAuth, progress insights, streaks, recommendations, safety documentation, and a polished production-ready experience.
 
-## Completed V2 Features
+## Completed V3 Features
 
 ### 1. Real AI pronunciation engine
 
@@ -64,13 +64,13 @@ Home and Pronunciation are no longer intended to feel like boxed dashboard pages
 
 ### 6. More English accents
 
-AccentIQ V2 adds more English accent options for pronunciation practice.
+AccentIQ V3 includes more English accent options for pronunciation practice.
 
 Supported accents include the original accents plus expanded English variants such as Canadian, Irish, New Zealand, South African, and Singapore English.
 
 ### 7. Progress dashboard
 
-AccentIQ V2 includes a progress dashboard using user practice data.
+AccentIQ V3 includes a progress dashboard using user practice data.
 
 The dashboard helps users understand:
 
@@ -82,9 +82,21 @@ The dashboard helps users understand:
 
 Guest users see a login-focused state.
 
+### 8. Google OAuth
+
+AccentIQ V3 adds Google OAuth as an optional social login path while preserving email auth and guest pronunciation practice.
+
+### 9. Streaks and recommendations
+
+The Progress page now includes activity-based streaks and recommended practice suggestions powered by saved history and favorites.
+
+### 10. Audio privacy planning
+
+V3 documents the product boundary clearly: browser voice-to-text may fill the text box, but AccentIQ does not upload raw audio, store raw audio, or provide real voice pronunciation scoring.
+
 ## Safety Decisions
 
-V2 intentionally does not include:
+V3 intentionally does not include:
 
 - raw audio upload
 - raw audio storage
@@ -117,7 +129,7 @@ npx prisma migrate deploy
 
 ## QA Checklist
 
-Before merging V2 into main:
+Before merging `dev` into `main`:
 
 - frontend build passes
 - backend build passes
@@ -132,6 +144,9 @@ Before merging V2 into main:
 - favorites work
 - preferences work
 - dashboard works
+- Google OAuth works when configured
+- streaks work
+- recommendations work
 - more accents work
 - mobile layout works
 - dark mode works
@@ -142,9 +157,9 @@ Before merging V2 into main:
 
 - Real voice scoring is not included yet.
 - Raw audio upload is not included yet.
-- OAuth may be handled in a later phase if not already implemented.
-- Personalized recommendations and streaks may be future V2.5/V3 work.
+- Meta/Facebook OAuth is postponed until the Google OAuth flow is stable.
+- Recommendations are activity-based and do not claim to detect spoken accuracy.
 
 ## Final Decision
 
-AccentIQ V2 is ready for merge only after manual review confirms that all V1 features still work and all V2 features are stable.
+AccentIQ V3 is ready for merge only after manual review confirms that core features still work and all V3 features are stable.

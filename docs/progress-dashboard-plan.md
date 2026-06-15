@@ -1,4 +1,4 @@
-# AccentIQ V2 Checkpoint 11 - Progress Dashboard Planning
+# AccentIQ V3 Progress Dashboard Planning
 
 ## Goal
 

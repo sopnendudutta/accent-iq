@@ -50,9 +50,9 @@ V1 established the core product foundation:
 - browser voice-to-text
 - no raw audio upload or storage
 
-### V2
+### Current V3 Product
 
-V2 made the product feel more complete:
+V3 is the final portfolio polish phase and includes the full current product story:
 
 - Gemini pronunciation guidance
 - safe mock fallback
@@ -60,12 +60,6 @@ V2 made the product feel more complete:
 - simplified teacher-like result UI
 - warm full-screen redesign
 - progress dashboard
-- production AI setup documentation
-
-### V3
-
-V3 is the final portfolio polish phase:
-
 - Google OAuth
 - daily practice streaks
 - personalized practice recommendations

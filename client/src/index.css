@@ -3328,11 +3328,7 @@ textarea {
   }
 }
 
-/* =========================================================
-   V2 Checkpoint 6.6 — AccentIQ Full-Screen Product Design
-   Direction: warm full-screen pronunciation website,
-   not a card-heavy dashboard.
-   ========================================================= */
+/* Full-screen product design */
 
 :root {
   --font-body: "Nunito Sans", Arial, Helvetica, sans-serif;
@@ -4165,10 +4161,7 @@ body {
   }
 }
 
-/* =========================================================
-   V2 Checkpoint 6.7 - Home and Pronunciation Experience
-   Direction: clearer landing page and focused product workspace.
-   ========================================================= */
+/* Home and pronunciation experience */
 
 .home-page {
   display: block;
@@ -4422,10 +4415,7 @@ body {
   }
 }
 
-/* =========================================================
-   V2 Checkpoint 6.8 - Mobile Polish and Final Design QA
-   Direction: comfortable small-screen spacing and stable layouts.
-   ========================================================= */
+/* Mobile polish and layout stability */
 
 .pronunciation-layout,
 .settings-layout,
@@ -4734,10 +4724,7 @@ body {
   }
 }
 
-/* =========================================================
-   V2 Checkpoint 9 - Frontend AI Polish
-   Direction: clearer live AI states and calmer coaching feedback.
-   ========================================================= */
+/* Frontend AI polish */
 
 .pronunciation-form[aria-busy="true"] textarea,
 .pronunciation-form[aria-busy="true"] select {
@@ -4906,10 +4893,7 @@ body {
   }
 }
 
-/* =========================================================
-   V2 Checkpoint 12 - Progress Dashboard Implementation
-   Direction: calm saved-practice dashboard without fake scoring.
-   ========================================================= */
+/* Progress dashboard */
 
 .progress-page {
   padding: 0;

@@ -6,7 +6,7 @@ AccentIQ V3 is the final portfolio-ready phase of the project.
 
 V1 established the core full-stack app: email auth, guest pronunciation practice, JWT auth, history, favorites, preferences, responsive UI, dark mode, and browser speech-to-text.
 
-V2 upgraded the product with Gemini-powered pronunciation guidance, safe mock fallback, a simplified learner-focused result experience, expanded English accents, warmer full-screen UI, progress dashboard, and release documentation.
+Earlier checkpoints upgraded the product with Gemini-powered pronunciation guidance, safe mock fallback, a simplified learner-focused result experience, expanded English accents, warmer full-screen UI, progress dashboard, and release documentation.
 
 V3 should make AccentIQ feel complete, stable, honest, and production-grade without adding risky audio features before privacy and deletion rules are solved.
 
@@ -148,7 +148,7 @@ Documentation should cover:
 - Project description
 - Live demo
 - Features
-- V1/V2/V3 summary
+- Feature evolution summary
 - Tech stack
 - Architecture
 - AI engine and fallback
@@ -217,7 +217,7 @@ Postpone recommendations that claim to identify user weaknesses unless the produ
 - Do not expose API keys, OAuth secrets, JWT secrets, database URLs, or provider credentials.
 - Use placeholders in docs and `.env.example`.
 - Preserve V1 email auth, guest practice, history, favorites, preferences, light/dark mode, and responsive UI.
-- Preserve V2 AI/mock fallback, expanded accents, simplified result UI, warm full-screen design, and progress dashboard.
+- Preserve AI/mock fallback, expanded accents, simplified result UI, warm full-screen design, and progress dashboard.
 - Do not add raw audio upload or storage in V3.
 - Do not claim real voice scoring exists.
 - Keep Google OAuth optional so missing OAuth env vars do not break normal email auth or guest practice.

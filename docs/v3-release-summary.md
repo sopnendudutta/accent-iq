@@ -80,7 +80,7 @@ docs/environment-variables.md
 docs/deployment-guide.md
 ```
 
-The docs cover setup, architecture, deployment, environment variables, privacy boundaries, and the V1/V2/V3 feature story.
+The docs cover setup, architecture, deployment, environment variables, privacy boundaries, and the full V3 feature story.
 
 ## What Was Intentionally Skipped
 

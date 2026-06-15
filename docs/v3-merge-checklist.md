@@ -1,4 +1,4 @@
-# AccentIQ V2 Merge Checklist
+# AccentIQ V3 Merge Checklist
 
 ## Branches
 
@@ -19,9 +19,12 @@
 - [ ] V1 favorites still work
 - [ ] V1 preferences still work
 - [ ] V1 light/dark mode still works
-- [ ] V2 AI works locally
-- [ ] V2 AI fallback works locally
-- [ ] V2 AI works on Render
+- [ ] AI pronunciation works locally
+- [ ] AI fallback works locally
+- [ ] AI pronunciation works on Render
+- [ ] Google OAuth works when configured
+- [ ] Streaks work
+- [ ] Recommendations work
 - [ ] More accents work
 - [ ] Dashboard works
 - [ ] Home UI works

@@ -2,7 +2,7 @@
 
 ## Goal
 
-Add Google OAuth as the first social login option for AccentIQ V3 while preserving all existing V1/V2 behavior.
+Add Google OAuth as the first social login option for AccentIQ V3 while preserving the existing email-auth and guest-practice behavior.
 
 Google OAuth should be optional. Missing Google environment variables must not break:
 
