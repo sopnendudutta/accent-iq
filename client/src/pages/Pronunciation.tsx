@@ -784,8 +784,6 @@ function Pronunciation() {
         <section className="page pronunciation-page">
             <div className="pronunciation-hero">
                 <div className="pronunciation-hero-content">
-                    <span className="home-eyebrow">Pronunciation workspace</span>
-
                     <h1>Practice a word, then read guidance like a coach is beside you.</h1>
 
                     <p>
@@ -940,7 +938,7 @@ function Pronunciation() {
                                 aria-live="polite"
                             >
                                 <div className="ai-coach-status-header">
-                                    <span className="home-eyebrow">AI coach is working</span>
+                                    <span className="result-label">AI coach is working</span>
                                     <strong>{activeCoachingStep.label}</strong>
                                     <p>{activeCoachingStep.detail}</p>
                                 </div>
@@ -983,7 +981,7 @@ function Pronunciation() {
                         <div className="result-box polished-result-box" ref={resultRef}>
                             <div className="result-section-title">
                                 <div>
-                                    <span className="home-eyebrow">{resultEyebrow}</span>
+                                    <span className="result-label">{resultEyebrow}</span>
                                     <h2>Pronunciation result</h2>
                                     <p className="section-supporting-text">
                                         Start with the phonetic spelling, then practice the mouth

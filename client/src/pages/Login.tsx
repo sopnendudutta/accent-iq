@@ -100,8 +100,6 @@ function Login({ onAuthSuccess }: LoginProps) {
         <section className="page auth-page">
             <div className="auth-layout">
                 <div className="auth-benefits-panel">
-                    <span className="home-eyebrow">Welcome back</span>
-
                     <h1>Continue your pronunciation practice.</h1>
 
                     <p>

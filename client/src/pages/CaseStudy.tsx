@@ -78,7 +78,6 @@ function CaseStudy() {
         <section className="case-study-page">
             <section className="case-study-hero">
                 <div className="case-study-hero-copy">
-                    <span className="home-eyebrow">AccentIQ case study</span>
                     <h1>A full-stack AI pronunciation coach built with safety first.</h1>
                     <p>
                         AccentIQ is a portfolio-ready pronunciation practice app that

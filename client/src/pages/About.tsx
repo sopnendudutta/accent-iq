@@ -5,8 +5,6 @@ function About() {
         <section className="page about-page">
             <div className="about-hero">
                 <div>
-                    <span className="home-eyebrow">About AccentIQ</span>
-
                     <h1>Pronunciation practice that feels simple and friendly.</h1>
 
                     <p>

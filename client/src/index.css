@@ -823,22 +823,6 @@ select:focus-visible {
   text-align: center;
 }
 
-.home-eyebrow {
-  display: inline-flex;
-  align-items: center;
-
-  margin-bottom: 18px;
-  padding: 8px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-
-  background: var(--color-surface);
-  color: var(--color-coral);
-
-  font-size: 14px;
-  font-weight: 900;
-}
-
 .home-page h1 {
   margin: 0;
   color: var(--color-heading);
@@ -968,11 +952,6 @@ select:focus-visible {
 
   .home-lead {
     font-size: 16px;
-  }
-
-  .home-eyebrow {
-    margin-bottom: 14px;
-    font-size: 13px;
   }
 
   .home-actions {
@@ -1294,7 +1273,6 @@ button,
 .nav-link,
 .nav-cta,
 .auth-status,
-.home-eyebrow,
 .result-label,
 .accent-badge {
   font-family: var(--font-heading);
@@ -2100,11 +2078,6 @@ li {
   letter-spacing: -0.08em;
 }
 
-.not-found-card .home-eyebrow {
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .not-found-card p {
   max-width: 520px;
   margin-left: auto;
@@ -2464,11 +2437,6 @@ textarea {
 
   .page p {
     font-size: 16px;
-  }
-
-  .home-eyebrow {
-    margin-bottom: 14px;
-    font-size: 13px;
   }
 
   .home-actions {

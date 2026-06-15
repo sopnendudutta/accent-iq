@@ -653,7 +653,6 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
         return (
             <section className="page progress-page">
                 <div className="progress-hero">
-                    <span className="home-eyebrow">Progress dashboard</span>
                     <h1>Your practice progress</h1>
                     <p>Checking your account before loading saved practice.</p>
                 </div>
@@ -665,7 +664,6 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
         return (
             <section className="page progress-page">
                 <div className="progress-hero">
-                    <span className="home-eyebrow">Progress dashboard</span>
                     <h1>Your practice progress starts after login.</h1>
                     <p>
                         AccentIQ can summarize saved practice, favorite review words,
@@ -707,7 +705,6 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
         <section className="page progress-page">
             <div className="progress-hero">
                 <div>
-                    <span className="home-eyebrow">Progress dashboard</span>
                     <h1>Your practice progress</h1>
                     <p>
                         A calm summary of saved pronunciation practice, review words,

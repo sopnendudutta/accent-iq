@@ -6,8 +6,6 @@ function NotFound() {
             <div className="not-found-card">
                 <span className="not-found-code">404</span>
 
-                <span className="home-eyebrow">Page not found</span>
-
                 <h1>This page took the wrong accent path.</h1>
 
                 <p>

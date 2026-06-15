@@ -102,8 +102,6 @@ function Register({ onAuthSuccess }: RegisterProps) {
         <section className="page auth-page">
             <div className="auth-layout">
                 <div className="auth-benefits-panel">
-                    <span className="home-eyebrow">Start for free</span>
-
                     <h1>Build a simple pronunciation habit.</h1>
 
                     <p>

@@ -103,7 +103,6 @@ function Settings({
         <section className="page settings-page">
             <div className="settings-hero">
                 <div>
-                    <span className="home-eyebrow">Account & preferences</span>
                     <h1>Manage your AccentIQ experience.</h1>
 
                     <p>

@@ -20,8 +20,6 @@ function Home() {
         <section className="home-page">
             <div className="home-hero">
                 <div className="home-hero-content">
-                    <span className="home-eyebrow">AI pronunciation coach</span>
-
                     <h1>Practice English pronunciation with calm, clear guidance.</h1>
 
                     <p className="home-lead">
