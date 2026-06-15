@@ -70,8 +70,8 @@ function About() {
 
                     <div className="about-list">
                         <div>
-                            <strong>Real audio pronunciation scoring</strong>
-                            <span>Analyze spoken pronunciation quality more deeply.</span>
+                            <strong>Deeper spoken practice feedback</strong>
+                            <span>Explore richer speaking guidance after the current foundation.</span>
                         </div>
 
                         <div>
@@ -94,8 +94,8 @@ function About() {
                 <p>
                     Login is optional. Guest users can practice without an account.
                     Voice-to-text uses browser speech recognition to fill the text box,
-                    and AccentIQ does not save raw audio. Real audio pronunciation scoring
-                    is planned for a later version.
+                    and AccentIQ does not save raw audio. Deeper spoken feedback is
+                    planned for a later version.
                 </p>
             </div>
         </section>

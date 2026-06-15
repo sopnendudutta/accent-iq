@@ -37,6 +37,9 @@ import type {
 
 type MessageType = "success" | "error" | "info";
 
+const samplePlaybackTrustNote =
+    "Browser-generated sample. No audio is uploaded or stored.";
+
 const aiCoachingSteps = [
     {
         label: "Reading the word",
@@ -134,6 +137,14 @@ function getBrowserSpeechRecognitionConstructor() {
     return window.SpeechRecognition || window.webkitSpeechRecognition;
 }
 
+function getBrowserSpeechSynthesisSupport() {
+    if (typeof window === "undefined") {
+        return false;
+    }
+
+    return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+}
+
 function getResultFallbackNotice(data: PronunciationResultData) {
     const inputText = data.text.trim().toLowerCase();
     const accent = data.accent.trim().toLowerCase();
@@ -172,6 +183,16 @@ function Pronunciation() {
         );
 
     const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
+    const sampleUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+    const [isSamplePlaybackSupported] = useState(() =>
+        getBrowserSpeechSynthesisSupport()
+    );
+    const [isSamplePlaying, setIsSamplePlaying] = useState(false);
+    const [samplePlaybackMessage, setSamplePlaybackMessage] = useState(
+        samplePlaybackTrustNote
+    );
+    const [samplePlaybackType, setSamplePlaybackType] =
+        useState<MessageType>("info");
 
     const [formMessage, setFormMessage] = useState("");
     const [formMessageType, setFormMessageType] = useState<MessageType>("info");
@@ -369,6 +390,16 @@ function Pronunciation() {
                 recognitionRef.current.abort();
                 recognitionRef.current = null;
             }
+
+            if (sampleUtteranceRef.current) {
+                sampleUtteranceRef.current.onend = null;
+                sampleUtteranceRef.current.onerror = null;
+                sampleUtteranceRef.current = null;
+            }
+
+            if (typeof window !== "undefined" && "speechSynthesis" in window) {
+                window.speechSynthesis.cancel();
+            }
         };
     }, []);
 
@@ -509,6 +540,102 @@ function Pronunciation() {
             console.error(error);
             recognitionRef.current = null;
             setVoiceStatus("error");
+        }
+    }
+
+    function cancelBrowserSamplePlayback() {
+        if (sampleUtteranceRef.current) {
+            sampleUtteranceRef.current.onend = null;
+            sampleUtteranceRef.current.onerror = null;
+            sampleUtteranceRef.current = null;
+        }
+
+        if (typeof window !== "undefined" && "speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+        }
+    }
+
+    function handleToggleSamplePlayback() {
+        if (!isSamplePlaybackSupported) {
+            setSamplePlaybackType("error");
+            setSamplePlaybackMessage(
+                "Speech playback is not supported in this browser."
+            );
+            return;
+        }
+
+        if (isSamplePlaying) {
+            cancelBrowserSamplePlayback();
+            setIsSamplePlaying(false);
+            setSamplePlaybackType("info");
+            setSamplePlaybackMessage("Sample playback stopped.");
+            return;
+        }
+
+        const cleanedText = text.trim();
+
+        if (!cleanedText) {
+            setSamplePlaybackType("info");
+            setSamplePlaybackMessage("Enter a word or sentence first.");
+            return;
+        }
+
+        cancelBrowserSamplePlayback();
+
+        try {
+            const utterance = new SpeechSynthesisUtterance(cleanedText);
+
+            utterance.lang = getSpeechRecognitionLanguage(selectedAccent);
+            utterance.rate = 0.85;
+            utterance.pitch = 1;
+
+            utterance.onend = () => {
+                if (sampleUtteranceRef.current !== utterance) {
+                    return;
+                }
+
+                sampleUtteranceRef.current = null;
+                setIsSamplePlaying(false);
+                setSamplePlaybackType("info");
+                setSamplePlaybackMessage(samplePlaybackTrustNote);
+            };
+
+            utterance.onerror = (event) => {
+                if (sampleUtteranceRef.current !== utterance) {
+                    return;
+                }
+
+                sampleUtteranceRef.current = null;
+                setIsSamplePlaying(false);
+
+                if (event.error === "canceled" || event.error === "interrupted") {
+                    setSamplePlaybackType("info");
+                    setSamplePlaybackMessage("Sample playback stopped.");
+                    return;
+                }
+
+                setSamplePlaybackType("error");
+                setSamplePlaybackMessage(
+                    "Speech playback could not complete in this browser."
+                );
+            };
+
+            sampleUtteranceRef.current = utterance;
+            setIsSamplePlaying(true);
+            setSamplePlaybackType("info");
+            setSamplePlaybackMessage(
+                "Playing browser-generated sample. No audio is uploaded or stored."
+            );
+
+            window.speechSynthesis.speak(utterance);
+        } catch (error) {
+            console.error(error);
+            cancelBrowserSamplePlayback();
+            setIsSamplePlaying(false);
+            setSamplePlaybackType("error");
+            setSamplePlaybackMessage(
+                "Speech playback could not start in this browser."
+            );
         }
     }
 
@@ -863,6 +990,24 @@ function Pronunciation() {
                                     placeholder="Example: schedule"
                                     rows={4}
                                 />
+                            </div>
+
+                            <div className="sample-playback-panel">
+                                <button
+                                    type="button"
+                                    className="sample-playback-button"
+                                    onClick={handleToggleSamplePlayback}
+                                    aria-pressed={isSamplePlaying}
+                                >
+                                    {isSamplePlaying ? "Stop Playback" : "Hear Sample"}
+                                </button>
+
+                                <p
+                                    className={`sample-playback-note sample-playback-note-${samplePlaybackType}`}
+                                    aria-live="polite"
+                                >
+                                    {samplePlaybackMessage}
+                                </p>
                             </div>
 
                             <div className="pronunciation-action-row">

@@ -790,7 +790,7 @@ function Progress({ user, isAuthLoading }: ProgressProps) {
                         <h2>{progressSummary.streakHeadline}</h2>
                         <p>
                             Streaks count logged-in pronunciation checks only. They track
-                            saved practice activity, not audio accuracy or voice scoring.
+                            saved practice activity, not spoken-performance ratings.
                         </p>
                     </div>
 

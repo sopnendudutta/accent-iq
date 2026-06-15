@@ -256,7 +256,7 @@ function Settings({
                             </div>
 
                             <div>
-                                <strong>Real audio pronunciation scoring</strong>
+                                <strong>Deeper spoken practice feedback</strong>
                                 <span>Planned later</span>
                             </div>
                         </div>
@@ -454,8 +454,8 @@ function Settings({
                     <span>🎙️</span>
                     <h3>Voice and audio</h3>
                     <p>
-                        Voice-to-text is available now. Real audio pronunciation scoring
-                        is planned for a future version.
+                        Voice-to-text is available now. Deeper spoken feedback is planned
+                        for a future version.
                     </p>
                 </div>
             </div>
